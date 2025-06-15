@@ -1,0 +1,6 @@
+{
+  "parent": "stellar_sorcery:item/big_handheld",
+  "textures": {
+    "layer0": "stellar_sorcery:item/celestial_blade_big"
+  }
+}

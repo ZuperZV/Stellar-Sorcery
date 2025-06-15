@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "stellar_sorcery:item/celestial_blade_big"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "stellar_sorcery:item/celestial_blade_small"
+    },
+    "ground": {
+      "parent": "stellar_sorcery:item/celestial_blade_small"
+    },
+    "fixed": {
+      "parent": "stellar_sorcery:item/celestial_blade_small"
+    }
+  }
+}

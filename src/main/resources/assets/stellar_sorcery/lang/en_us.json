@@ -1,0 +1,21 @@
+{
+  "creativetab.stellar_sorcery.stellar_sorcery_tab": "Stellar Sorcery",
+
+  "stellar_sorcery.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "stellar_sorcery.tooltip.liquid.amount": "%s mB",
+
+  "item.stellar_sorcery.celestial_blade": "Celestial Blade",
+
+
+
+
+  "block.stellar_sorcery.kiln": "Kiln",
+
+  "item.stellar_sorcery.stellar_sorcery_ingot": "Ingot",
+
+  "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
+
+  "emi.category.stellar_sorcery.centrifuge": "Centrifuge",
+
+  "entity.stellar_sorcery.mob": "Mob"
+}

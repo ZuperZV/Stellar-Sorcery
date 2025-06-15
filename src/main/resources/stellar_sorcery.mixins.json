@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.zuperz.stellar_sorcery.mixin",
+  "refmap": "stellar_sorcery.refmap.json",
+  "mixins": [
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
