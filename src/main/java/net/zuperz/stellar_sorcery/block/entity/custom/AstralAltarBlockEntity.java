@@ -1,21 +1,27 @@
 package net.zuperz.stellar_sorcery.block.entity.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.custom.AstralNexusBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
@@ -26,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AstralAltarBlockEntity extends BlockEntity {
+public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContainer {
     public int progress = 0;
     public int maxProgress = 80;
     private int prevProgress = 0;
@@ -52,14 +58,6 @@ public class AstralAltarBlockEntity extends BlockEntity {
         super(ModBlockEntities.ASTRAL_ALTAR_BE.get(), pos, state);
     }
 
-    public float getProgress() {
-        return this.progress;
-    }
-
-    public int getMaxProgress() {
-        return maxProgress;
-    }
-
     public static void tick(Level level, BlockPos pos, BlockState state, AstralAltarBlockEntity altar) {
         altar.prevProgress = altar.progress;
         if (altar.hasRecipe()) {
@@ -67,16 +65,12 @@ public class AstralAltarBlockEntity extends BlockEntity {
             setCRAFTING(pos, level, true);
             if (altar.progress >= altar.maxProgress) {
                 altar.craftItem();
-                //setCRAFTING(pos, level, false);
             }
             altar.setChanged();
         } else {
             altar.progress = 0;
             altar.setChanged();
         }
-
-        System.out.println("progress: " + altar.progress);
-        System.out.println("progress: " + altar.hasRecipe());
 
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
@@ -124,25 +118,14 @@ public class AstralAltarBlockEntity extends BlockEntity {
     public boolean hasRecipe() {
         if (level == null) return false;
 
-        System.out.println("Checking for AstralAltarRecipe at " + getBlockPos());
-        System.out.println("Inventory input: " + inventory.getStackInSlot(0));
-
-        // Laver et simpelt container med vores input
-        SimpleContainer inventoryContainer = new SimpleContainer(inventory.getSlots());
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            inventoryContainer.setItem(i, inventory.getStackInSlot(i));
-        }
-
-        // Finder en recipe, hvis der er en
         Optional<RecipeHolder<AstralAltarRecipe>> recipeOpt = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get(), getRecipeInput(inventoryContainer), level);
+                .getRecipeFor(ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get(), new BlockRecipeInput(inventory.getStackInSlot(0), worldPosition), level);
 
         if (recipeOpt.isEmpty()) return false;
 
         AstralAltarRecipe altarRecipe = recipeOpt.get().value();
         ItemStack inputStack = inventory.getStackInSlot(0);
 
-        // Tjekker om input matcher moldIngredient
         if (!altarRecipe.moldIngredient.test(inputStack)) return false;
 
         List<Ingredient> ingredientsToMatch = altarRecipe.additionalIngredients.stream()
@@ -150,7 +133,6 @@ public class AstralAltarBlockEntity extends BlockEntity {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
-        // SCANNER efter AstralNexus-blocks i samme område som i craftItem()
         boolean allMatched = true;
 
         for (Ingredient ingredient : ingredientsToMatch) {
@@ -194,8 +176,8 @@ public class AstralAltarBlockEntity extends BlockEntity {
             inventoryContainer.setItem(i, inventory.getStackInSlot(i));
         }
 
-        Optional<RecipeHolder<AstralAltarRecipe>> recipe = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get(), getRecipeInput(inventoryContainer), level);
+        Optional<RecipeHolder<AstralAltarRecipe>> recipe = this.level.getRecipeManager()
+                .getRecipeFor(ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get(), new BlockRecipeInput(inventory.getStackInSlot(0), worldPosition), level);
 
         if (recipe.isEmpty()) return;
 
@@ -251,13 +233,111 @@ public class AstralAltarBlockEntity extends BlockEntity {
         }
     }
 
-    private static class RecipeMatchResult {
-        public final AstralAltarRecipe recipe;
-        public final Map<Ingredient, MatchedItem> matchedIngredients;
+    @Override
+    public int[] getSlotsForFace(Direction p_58363_) {
+        if (p_58363_ == Direction.DOWN) {
+            return new int[]{0};
+        } else {
+            return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
+        }
+    }
 
-        public RecipeMatchResult(AstralAltarRecipe recipe, Map<Ingredient, MatchedItem> matchedIngredients) {
-            this.recipe = recipe;
-            this.matchedIngredients = matchedIngredients;
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
+        if (slot == 0) {
+            return inventory.getStackInSlot(0).isEmpty();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
+        return direction == Direction.DOWN && slot == 0 && progress >= maxProgress;
+    }
+
+    @Override
+    public int getContainerSize() {
+        return inventory.getSlots();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            if (!inventory.getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            if (!inventory.getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public ItemStack getItem(int pSlot) {
+        if (pSlot < 4) {
+            return inventory.getStackInSlot(pSlot);
+        } else {
+            return inventory.getStackInSlot(pSlot - 4);
+        }
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (slot < 4) {
+            inventory.setStackInSlot(slot, stack);
+        }
+        setChanged();
+        if (!level.isClientSide) {
+            markForUpdate();
+        }
+    }
+
+    private void markForUpdate() {
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
+    @Override
+    public ItemStack removeItem(int slotIndex, int count) {
+        if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
+            if (progress >= maxProgress) {
+                return inventory.extractItem(slotIndex, count, false);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slotIndex) {
+        if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
+            ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
+
+            if (!stackInSlot.isEmpty()) {
+                inventory.setStackInSlot(slotIndex, ItemStack.EMPTY);
+                return stackInSlot;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        final double MAX_DISTANCE = 64.0;
+        double distanceSquared = player.distanceToSqr(this.worldPosition.getX() + 0.5,
+                this.worldPosition.getY() + 0.5,
+                this.worldPosition.getZ() + 0.5);
+        return distanceSquared <= MAX_DISTANCE;
+    }
+
+    @Override
+    public void clearContent() {
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            inventory.setStackInSlot(i, ItemStack.EMPTY);
         }
     }
 
@@ -271,30 +351,34 @@ public class AstralAltarBlockEntity extends BlockEntity {
         }
     }
 
+    public static class BlockRecipeInput implements RecipeInput {
+        private final ItemStack stack;
+        private final BlockPos pos;
 
-    private boolean extractMatchingItem(int slot, Ingredient ingredient) {
-        ItemStack stack = inventory.getStackInSlot(slot);
-
-        if (ingredient.test(stack)) {
-            inventory.extractItem(slot, 1, false);
-            return true;
+        public BlockRecipeInput(ItemStack stack, BlockPos pos) {
+            this.stack = stack;
+            this.pos = pos;
         }
-        return false;
+
+        @Override
+        public ItemStack getItem(int pIndex) {
+            return stack;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+
+        public ItemStack stack() {
+            return stack;
+        }
+
+        public BlockPos pos() {
+            return pos;
+        }
     }
 
-    private RecipeInput getRecipeInput(SimpleContainer inventory) {
-        return new RecipeInput() {
-            @Override
-            public ItemStack getItem(int index) {
-                return inventory.getItem(index).copy();
-            }
-
-            @Override
-            public int size() {
-                return inventory.getContainerSize();
-            }
-        };
-    }
 
     public void clearContents() {
         inventory.setStackInSlot(0, ItemStack.EMPTY);

@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -23,5 +24,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
     protected void addTags(HolderLookup.Provider pProvider) {
         this.tag(Tags.Items.TOOLS_BRUSH)
                 .add(Items.BRUSH);
+
+        this.tag(Tags.Items.MELEE_WEAPON_TOOLS)
+                .add(ModItems.CELESTIAL_BLADE.get());
+
+        this.tag(ItemTags.SWORD_ENCHANTABLE)
+                .add(ModItems.CELESTIAL_BLADE.get());
     }
 }

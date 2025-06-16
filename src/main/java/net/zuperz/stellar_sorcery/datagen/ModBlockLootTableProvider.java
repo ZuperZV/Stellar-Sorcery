@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 
 import java.util.Set;
 
@@ -27,7 +28,9 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        //dropSelf(ModBlocks.KILN.get());
+        dropSelf(ModBlocks.ASTRAL_ALTAR.get());
+        dropSelf(ModBlocks.ASTRAL_NEXUS.get());
+        dropSelf(ModBlocks.ARCFORGE.get());
 
         //this.add(ModBlocks.CHROMIUM_ORE.get(),
         //        block -> createMultipleOreDrops(ModBlocks.CHROMIUM_ORE.get(), ModItems.RAW_CHROMIUM.get(), 1, 3));

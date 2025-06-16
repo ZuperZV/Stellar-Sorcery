@@ -1,12 +1,14 @@
 package net.zuperz.stellar_sorcery.block.entity.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,9 +19,10 @@ import net.zuperz.stellar_sorcery.block.custom.AstralNexusBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import org.jetbrains.annotations.Nullable;
 
-public class AstralNexusBlockEntity extends BlockEntity {
+public class AstralNexusBlockEntity extends BlockEntity implements WorldlyContainer {
     public long craftingStartTime = -1;
     public long animationStartTime = 1;
+    public float clientProgress = 0f;
     public int progress = 0;
     public int maxProgress = 80;
 
@@ -41,7 +44,9 @@ public class AstralNexusBlockEntity extends BlockEntity {
     private BlockPos savedPos;
 
     public static void tickClient(Level level, BlockPos pos, BlockState state, AstralNexusBlockEntity blockEntity) {
-
+        if (level.isClientSide) {
+            blockEntity.clientProgress = blockEntity.progress;
+        }
 
         ItemStack currentStack = blockEntity.inventory.getStackInSlot(0);
 
@@ -144,4 +149,80 @@ public class AstralNexusBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         this.loadAdditional(tag, provider);
     }
+
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[]{0};
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 0) {
+            return inventory.getStackInSlot(0).isEmpty();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
+        return canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return direction == Direction.DOWN && slot == 0;
+    }
+
+    @Override
+    public int getContainerSize() {
+        return inventory.getSlots();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return inventory.getStackInSlot(0).isEmpty();
+    }
+
+    @Override
+    public ItemStack getItem(int slot) {
+        return slot == 0 ? inventory.getStackInSlot(0) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (slot == 0) {
+            inventory.setStackInSlot(0, stack);
+            setChanged();
+        }
+    }
+
+    @Override
+    public ItemStack removeItem(int slot, int count) {
+        if (slot == 0) {
+            return inventory.extractItem(0, count, false);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        if (slot == 0) {
+            ItemStack stack = inventory.getStackInSlot(0);
+            inventory.setStackInSlot(0, ItemStack.EMPTY);
+            return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void clearContent() {
+        inventory.setStackInSlot(0, ItemStack.EMPTY);
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        final double MAX_DISTANCE = 64.0;
+        return player.distanceToSqr(worldPosition.getCenter()) < MAX_DISTANCE;
+    }
+
 }
