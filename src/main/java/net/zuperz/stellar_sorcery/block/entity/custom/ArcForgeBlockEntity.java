@@ -15,13 +15,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.entity.ModEntities;
 import net.zuperz.stellar_sorcery.entity.custom.SigilOrbEntity;
 import org.jetbrains.annotations.Nullable;
 
-    public class ArcForgeBlockEntity extends BlockEntity {
+import java.util.List;
+
+public class ArcForgeBlockEntity extends BlockEntity {
         public final ItemStackHandler inventory = new ItemStackHandler(1) {
             @Override
             protected int getStackLimit(int slot, ItemStack stack) {
@@ -91,9 +94,25 @@ import org.jetbrains.annotations.Nullable;
             if (level != null && !level.isClientSide()) {
                 SigilOrbEntity sigil = new SigilOrbEntity(ModEntities.SIGIL_ORB.get(), level);
 
-                sigil.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5);
+                sigil.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 1.9, worldPosition.getZ() + 0.5);
 
                 level.addFreshEntity(sigil);
+            }
+        }
+
+        public void removeSigilEntity() {
+            if (level != null && !level.isClientSide()) {
+                List<SigilOrbEntity> sigils = level.getEntitiesOfClass(
+                        SigilOrbEntity.class,
+                        new AABB(
+                                worldPosition.getX() - 2, worldPosition.getY() - 2, worldPosition.getZ() - 2,
+                                worldPosition.getX() + 3, worldPosition.getY() + 3, worldPosition.getZ() + 3
+                        )
+                );
+
+                for (SigilOrbEntity sigil : sigils) {
+                    sigil.discard();
+                }
             }
         }
     }

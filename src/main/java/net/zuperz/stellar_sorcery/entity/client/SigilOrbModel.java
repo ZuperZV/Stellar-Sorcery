@@ -24,7 +24,7 @@ public class SigilOrbModel extends HierarchicalModel<SigilOrbEntity> {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-10.0F, -16.0F, 0.0F, 20.0F, 20.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-10.0F, -16.0F, 0.1F, 20.0F, 20.0F, 0.1F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}

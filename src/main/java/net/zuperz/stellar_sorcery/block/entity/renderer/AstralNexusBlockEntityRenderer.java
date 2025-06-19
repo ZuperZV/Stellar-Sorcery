@@ -18,6 +18,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
@@ -37,11 +39,10 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
     @Override
     public void render(AstralNexusBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         BlockPos nexusPos = pBlockEntity.getBlockPos();
         BlockPos linkedAltarPos = pBlockEntity.getSavedPos();
         Level level = pBlockEntity.getLevel();
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
         ItemStack stack = pBlockEntity.inventory.getStackInSlot(0);
         if (stack.isEmpty() || level == null || linkedAltarPos == null) {
@@ -119,11 +120,12 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
         poseStack.pushPose();
         poseStack.translate(x - start.getX(), y - start.getY(), z - start.getZ());
         poseStack.scale(0.5f, 0.5f, 0.5f);
+
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
 
         itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED,
-                getLightLevel(level, start),
-                OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, 1);
+                getLightLevel(level, start), OverlayTexture.NO_OVERLAY,
+                poseStack, bufferSource, level, 1);
 
         poseStack.popPose();
     }

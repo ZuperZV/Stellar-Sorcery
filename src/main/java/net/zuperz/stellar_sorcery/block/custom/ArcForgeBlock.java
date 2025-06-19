@@ -61,6 +61,7 @@ public class ArcForgeBlock extends BaseEntityBlock {
         if(pState.getBlock() != pNewState.getBlock()) {
             if(pLevel.getBlockEntity(pPos) instanceof ArcForgeBlockEntity ArcForgeBlockEntity) {
                 ArcForgeBlockEntity.drops();
+                ArcForgeBlockEntity.removeSigilEntity();
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
             }
         }
@@ -80,6 +81,7 @@ public class ArcForgeBlock extends BaseEntityBlock {
                 ItemStack stackOnPedestal = ArcForgeBlockEntity.inventory.extractItem(0, 1, false);
                 pPlayer.setItemInHand(InteractionHand.MAIN_HAND, stackOnPedestal);
                 ArcForgeBlockEntity.clearContents();
+                //ArcForgeBlockEntity.removeSigilEntity();
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
             }
         }
