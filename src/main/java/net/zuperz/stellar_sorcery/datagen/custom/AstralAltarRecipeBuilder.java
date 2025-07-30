@@ -26,7 +26,7 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
     private final ItemStack output;
     private final Ingredient moldIngredient;
     private final List<Optional<Ingredient>> additionalIngredients;
-
+    private Optional<String> essenceType = Optional.empty();
     private Optional<Block> block = Optional.empty();
     private Optional<Map<String, String>> blockState = Optional.empty();
     private Optional<Boolean> needsBlock = Optional.of(false);
@@ -55,6 +55,11 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
             ingredientList.add(Optional.ofNullable(ing));
         }
         return new AstralAltarRecipeBuilder(category, output, moldIngredient, ingredientList);
+    }
+
+    public AstralAltarRecipeBuilder withEssenceType(String essenceType) {
+        this.essenceType = Optional.of(essenceType);
+        return this;
     }
 
     public AstralAltarRecipeBuilder withBlock(Block block) {
@@ -121,6 +126,7 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
                 output,
                 moldIngredient,
                 additionalIngredients,
+                essenceType,
                 block,
                 blockState,
                 needsBlock,

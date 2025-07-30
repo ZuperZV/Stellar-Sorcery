@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -214,6 +215,8 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
 
                         pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
                         pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
+                        boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
                         return ItemInteractionResult.SUCCESS;
                     }
                 }
@@ -224,15 +227,15 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
                     if (boiler.inventory.getStackInSlot(slot).isEmpty()) {
                         boiler.inventory.insertItem(slot, pStack.copyWithCount(1), false);
                         if (boiler.getFluidTankAmount() > 0) {
-                            boiler.triggerSplash();
                             pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1f, 1f);
+                            boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
 
                             pLevel.playSound(null, pPos, SoundEvents.DECORATED_POT_INSERT, SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * 1f);
                             if (pLevel instanceof ServerLevel serverlevel) {
                                 serverlevel.sendParticles(
                                         ParticleTypes.DUST_PLUME,
                                         (double)pPos.getX() + 0.5,
-                                        (double)pPos.getY() + 1.2,
+                                        (double)pPos.getY() + 1,
                                         (double)pPos.getZ() + 0.5,
                                         7,
                                         0.0,

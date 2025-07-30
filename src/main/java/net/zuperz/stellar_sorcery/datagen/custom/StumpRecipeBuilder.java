@@ -27,6 +27,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
     private final ItemStack output;
     private final Ingredient moldIngredient;
     private final List<Optional<Ingredient>> additionalIngredients;
+    private Optional<String> essenceType = Optional.empty();
     private Optional<Block> block = Optional.empty();
     private Optional<Map<String, String>> blockState = Optional.empty();
     private Optional<Boolean> needsBlock = Optional.of(false);
@@ -54,6 +55,11 @@ public class StumpRecipeBuilder implements RecipeBuilder {
             ingredientList.add(Optional.ofNullable(ing));
         }
         return new StumpRecipeBuilder(category, output, moldIngredient, ingredientList);
+    }
+
+    public StumpRecipeBuilder withEssenceType(String essenceType) {
+        this.essenceType = Optional.of(essenceType);
+        return this;
     }
 
     public StumpRecipeBuilder withBlock(Block block) {
@@ -120,6 +126,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
                 output,
                 moldIngredient,
                 additionalIngredients,
+                essenceType,
                 block,
                 blockState,
                 needsBlock,
@@ -127,6 +134,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
                 timeOfDay,
                 time
         );
+
 
         recipeOutput.accept(
                 id,

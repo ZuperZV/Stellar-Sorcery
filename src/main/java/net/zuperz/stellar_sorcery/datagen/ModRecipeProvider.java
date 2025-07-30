@@ -62,9 +62,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.WHEAT_SEEDS),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
                         Ingredient.of(Items.WHEAT),
-                        Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
-                        Ingredient.of(Items.WHEAT)
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
+                .withEssenceType("minecraft:apple,minecraft:stick,minecraft:stone")
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))
                 .needsBlock(false)
@@ -117,8 +117,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
                         Ingredient.of(Items.DIAMOND),
                         Ingredient.of(Items.GOLD_INGOT),
-                        Ingredient.of(Items.EMERALD)
+                        Ingredient.of(Items.EMERALD),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
+                .withEssenceType("minecraft:apple,minecraft:stick,minecraft:stone")
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))
                 .needsBlock(false)

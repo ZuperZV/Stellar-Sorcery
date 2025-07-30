@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -49,6 +50,24 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         BlockPos pos = pBlockEntity.getBlockPos();
         ItemStackHandler itemHandler = pBlockEntity.inventory;
 
+        pPoseStack.pushPose();
+
+        EssenceBoilerBlockEntity.WobbleStyle wobbleStyle = pBlockEntity.lastWobbleStyle;
+        if (wobbleStyle != null && pBlockEntity.getLevel() != null) {
+            float wobbleProgress = ((float)(pBlockEntity.getLevel().getGameTime() - pBlockEntity.wobbleStartedAtTick) + pPartialTick) / wobbleStyle.duration;
+            if (wobbleProgress >= 0.0F && wobbleProgress <= 1.0F) {
+                if (wobbleStyle == EssenceBoilerBlockEntity.WobbleStyle.POSITIVE) {
+                    float angle = -1.5F * (Mth.cos(wobbleProgress * (float)Math.PI * 2) + 0.5F) * Mth.sin(wobbleProgress * (float)Math.PI);
+                    pPoseStack.rotateAround(Axis.XP.rotation(angle * 0.015625F), 0.5F, 0.0F, 0.5F);
+                    pPoseStack.rotateAround(Axis.ZP.rotation(Mth.sin(wobbleProgress * (float)Math.PI * 2) * 0.015625F), 0.5F, 0.0F, 0.5F);
+                } else {
+                    float rotY = Mth.sin(-wobbleProgress * 3.0F * (float)Math.PI) * 0.125F;
+                    float f2 = 1.0F - wobbleProgress;
+                    pPoseStack.rotateAround(Axis.YP.rotation(rotY * f2), 0.5F, 0.0F, 0.5F);
+                }
+            }
+        }
+
         // FLUID RENDERING
         FluidStack fluidStack = pBlockEntity.getFluidTank();
         if (!fluidStack.isEmpty()) {
@@ -61,26 +80,23 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
                 float yOffset = 0.2f;
 
-                // 🔥 Brug translucent layer direkte
                 VertexConsumer builder = pBufferSource.getBuffer(RenderType.translucent());
 
                 float xMin = 0.10f, xMax = 0.90f, zMin = 0.10f, zMax = 0.90f;
                 float yBase = 0.7f;
-                int splashTicks = pBlockEntity.getSplashTicks();
 
-                float splashAmount = (float) Math.sin((splashTicks / 10f) * Math.PI) * 0.05f;
-                if (splashTicks <= 0) splashAmount = 0f;
-
-                float y00 = yBase + yOffset + splashAmount * 0.8f;
-                float y01 = yBase + yOffset + splashAmount * 1.0f;
-                float y11 = yBase + yOffset + splashAmount * 0.6f;
-                float y10 = yBase + yOffset + splashAmount * 0.4f;
+                float y00 = yBase + yOffset * 0.8f;
+                float y01 = yBase + yOffset * 1.0f;
+                float y11 = yBase + yOffset  * 0.6f;
+                float y10 = yBase + yOffset * 0.4f;
 
                 drawQuad(builder, pPoseStack, xMin, y00, zMin, xMax, y11, zMax,
                         sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(),
                         pPackedLight, tintColor);
             }
         }
+
+        pPoseStack.popPose();
 
         // ITEMS RENDERING
         RenderSystem.enableBlend();

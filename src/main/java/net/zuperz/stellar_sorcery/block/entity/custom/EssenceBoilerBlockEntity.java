@@ -40,7 +40,10 @@ import org.jetbrains.annotations.Nullable;
 public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyContainer {
     public int progress = 0;
     public int maxProgress = 60;
-    public int splashTicks = 0;
+    public static final int EVENT_WOBBLE = 1;
+    public long wobbleStartedAtTick;
+    @Nullable
+    public WobbleStyle lastWobbleStyle;
 
     public final ItemStackHandler inventory = new ItemStackHandler(3) {
         @Override
@@ -74,7 +77,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     public static void tick(Level level, BlockPos pos, BlockState state, EssenceBoilerBlockEntity boiler) {
         if (level.isClientSide) return;
-        if (boiler.splashTicks > 0) boiler.splashTicks--;
 
         boolean hasAllItems = true;
 
@@ -148,18 +150,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     public ItemStackHandler getInputItems() {
         return inventory;
-    }
-
-    public void triggerSplash() {
-        if (level == null || worldPosition == null) return;
-
-        this.splashTicks = 10;
-        var state = level.getBlockState(worldPosition);
-        level.sendBlockUpdated(worldPosition, state, state, 3);
-    }
-
-    public int getSplashTicks() {
-        return this.splashTicks;
     }
 
     @Override
@@ -399,4 +389,25 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         fluidTank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
     }
 
+    public enum WobbleStyle {
+        POSITIVE(7), NEGATIVE(10);
+        public final int duration;
+        WobbleStyle(int duration) { this.duration = duration; }
+    }
+
+    public void wobble(WobbleStyle style) {
+        if (this.level != null && !this.level.isClientSide()) {
+            this.level.blockEvent(this.getBlockPos(), this.getBlockState().getBlock(), EVENT_WOBBLE, style.ordinal());
+        }
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int type) {
+        if (id == EVENT_WOBBLE && type >= 0 && type < WobbleStyle.values().length) {
+            this.wobbleStartedAtTick = this.level.getGameTime();
+            this.lastWobbleStyle = WobbleStyle.values()[type];
+            return true;
+        }
+        return super.triggerEvent(id, type);
+    }
 }

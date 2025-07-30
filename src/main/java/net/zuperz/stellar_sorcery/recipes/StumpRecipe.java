@@ -20,6 +20,9 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.VitalStumpBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.StumpBlockEntity;
+import net.zuperz.stellar_sorcery.component.EssenceBottleData;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.item.ModItems;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +32,7 @@ public class StumpRecipe implements Recipe<RecipeInput> {
     public final ItemStack output;
     public final Ingredient moldIngredient;
     public final List<Optional<Ingredient>> additionalIngredients;
+    public final Optional<String> requiredEssenceType;
     public final Optional<Block> additionalBlock;
     public final Optional<Map<String, String>> blockState;
     public final Optional<Boolean> needsBlock;
@@ -36,13 +40,14 @@ public class StumpRecipe implements Recipe<RecipeInput> {
     public final Optional<TimeOfDay> timeOfDay;
     public final int recipeTime;
 
-    public StumpRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients,
+    public StumpRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients, Optional<String> requiredEssenceType,
                        Optional<Block> additionalBlock, Optional<Map<String, String>> blockState, Optional<Boolean> needsBlock,
                        Optional<Block> blockOutput, Optional<TimeOfDay> timeOfDay, int recipeTime) {
         this.output = output;
         this.moldIngredient = moldIngredient;
         this.additionalIngredients = new ArrayList<>(additionalIngredients);
         while (this.additionalIngredients.size() < 4) this.additionalIngredients.add(Optional.empty());
+        this.requiredEssenceType = requiredEssenceType;
         this.additionalBlock = additionalBlock;
         this.blockState = blockState;
         this.needsBlock = needsBlock;
@@ -149,6 +154,20 @@ public class StumpRecipe implements Recipe<RecipeInput> {
                     ItemStack stack = nexus.inventory.getStackInSlot(slot);
                     if (stack.isEmpty()) continue;
 
+                    if (stack.is(ModItems.ESSENCE_BOTTLE.get()) && requiredEssenceType.isPresent()) {
+                        if (!stack.has(ModDataComponentTypes.ESSENCE_BOTTLE)) continue;
+
+                        EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE.get());
+                        boolean matches = checkEssenceItems(
+                                requiredEssenceType.get(),
+                                String.valueOf(data.getEmbeddedItem().getItem()),
+                                String.valueOf(data.getEmbeddedItem1().getItem()),
+                                String.valueOf(data.getEmbeddedItem2().getItem())
+                        );
+
+                        if (!matches) continue;
+                    }
+
                     Ingredient matched = null;
                     for (Ingredient ing : unmatched) {
                         if (ing.test(stack)) {
@@ -167,6 +186,16 @@ public class StumpRecipe implements Recipe<RecipeInput> {
         }
 
         return unmatched.isEmpty();
+    }
+
+    public boolean checkEssenceItems(String input, String actualEssence, String actualEssence1, String actualEssence2) {
+        String[] expectedItems = input.split(",");
+        Arrays.sort(expectedItems);
+
+        String[] actualItems = new String[] { actualEssence, actualEssence1, actualEssence2 };
+        Arrays.sort(actualItems);
+
+        return Arrays.equals(expectedItems, actualItems);
     }
 
     @Override
@@ -236,11 +265,15 @@ public class StumpRecipe implements Recipe<RecipeInput> {
         private final MapCodec<StumpRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
             return instance.group(
                     CodecFix.ITEM_STACK_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+
                     Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.moldIngredient),
-                    Ingredient.CODEC.optionalFieldOf("ingredient2").forGetter(recipe -> recipe.additionalIngredients.get(0)),
-                    Ingredient.CODEC.optionalFieldOf("ingredient3").forGetter(recipe -> recipe.additionalIngredients.get(1)),
-                    Ingredient.CODEC.optionalFieldOf("ingredient4").forGetter(recipe -> recipe.additionalIngredients.get(2)),
-                    Ingredient.CODEC.optionalFieldOf("ingredient5").forGetter(recipe -> recipe.additionalIngredients.get(3)),
+                    Ingredient.CODEC.listOf().optionalFieldOf("ingredients", List.of()).forGetter(recipe ->
+                            recipe.additionalIngredients.stream()
+                                    .filter(Optional::isPresent)
+                                    .map(Optional::get)
+                                    .collect(Collectors.toList())
+                    ),
+                    Codec.STRING.optionalFieldOf("essence_type").forGetter(recipe -> recipe.requiredEssenceType),
 
                     BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block").forGetter(recipe -> recipe.additionalBlock),
                     Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("block_state").forGetter(recipe -> recipe.blockState),
@@ -252,12 +285,13 @@ public class StumpRecipe implements Recipe<RecipeInput> {
                     Codec.INT.fieldOf("time").forGetter(recipe -> recipe.recipeTime)
 
 
-            ).apply(instance, (output, mold, ing2, ing3, ing4, ing5, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime) -> {
-                List<Optional<Ingredient>> ingredients = List.of(
-                        ing2, ing3, ing4, ing5
-                );
+            ).apply(instance, (output, mold, ingredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime) -> {
+                List<Optional<Ingredient>> optionalIngredients = ingredients.stream()
+                        .map(Optional::ofNullable)
+                        .collect(Collectors.toList());
 
-                return new StumpRecipe(output, mold, ingredients, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime);
+
+                return new StumpRecipe(output, mold, optionalIngredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime);
             });
         });
 
@@ -268,10 +302,16 @@ public class StumpRecipe implements Recipe<RecipeInput> {
 
         private static void write(RegistryFriendlyByteBuf buffer, StumpRecipe recipe) {
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.moldIngredient);
+
+            buffer.writeVarInt(recipe.additionalIngredients.size());
+
             for (Optional<Ingredient> optional : recipe.additionalIngredients) {
                 buffer.writeBoolean(optional.isPresent());
                 optional.ifPresent(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient));
             }
+
+            buffer.writeBoolean(recipe.requiredEssenceType.isPresent());
+            recipe.requiredEssenceType.ifPresent(buffer::writeUtf);
 
             if (recipe.additionalBlock.isPresent()) {
                 buffer.writeBoolean(true);
@@ -315,14 +355,22 @@ public class StumpRecipe implements Recipe<RecipeInput> {
         private static StumpRecipe read(RegistryFriendlyByteBuf buffer) {
             Ingredient mold = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
 
+            int ingredientCount = buffer.readVarInt();
+
             List<Optional<Ingredient>> ingredients = new ArrayList<>();
-            for (int i = 0; i < 4; i++) {
+
+            for (int i = 0; i < ingredientCount; i++) {
                 boolean present = buffer.readBoolean();
                 if (present) {
                     ingredients.add(Optional.of(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer)));
                 } else {
                     ingredients.add(Optional.empty());
                 }
+            }
+
+            Optional<String> essenceType = Optional.empty();
+            if (buffer.readBoolean()) {
+                essenceType = Optional.of(buffer.readUtf());
             }
 
             Block additionalBlock = null;
@@ -362,7 +410,7 @@ public class StumpRecipe implements Recipe<RecipeInput> {
             int recipeTime = buffer.readVarInt();
             ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
 
-            return new StumpRecipe(output, mold, ingredients, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, recipeTime
+            return new StumpRecipe(output, mold, ingredients, essenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, recipeTime
             );
         }
 
