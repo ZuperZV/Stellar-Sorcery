@@ -7,17 +7,29 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.*;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.zuperz.stellar_sorcery.block.custom.AstralNexusBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
+import net.zuperz.stellar_sorcery.recipes.ModRecipes;
+import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AstralNexusBlockEntity extends BlockEntity implements WorldlyContainer {
     public long craftingStartTime = -1;
@@ -62,6 +74,10 @@ public class AstralNexusBlockEntity extends BlockEntity implements WorldlyContai
         } else {
             blockEntity.animationStartTime = 1;
         }
+    }
+
+    public ItemStackHandler getInputItems() {
+        return inventory;
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, AstralNexusBlockEntity blockEntity) {
@@ -225,4 +241,84 @@ public class AstralNexusBlockEntity extends BlockEntity implements WorldlyContai
         return player.distanceToSqr(worldPosition.getCenter()) < MAX_DISTANCE;
     }
 
+    public Optional<Vec3> getFlyingItemPosition(float partialTicks) {
+        if (level == null || savedPos == null || inventory.getStackInSlot(0).isEmpty()) return Optional.empty();
+
+        BlockEntity linkedEntity = level.getBlockEntity(savedPos);
+        if (!(linkedEntity instanceof AstralAltarBlockEntity linkedAltar)) return Optional.empty();
+
+        Optional<RecipeHolder<AstralAltarRecipe>> recipe = level.getRecipeManager()
+                .getRecipeFor(ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get(),
+                        new AstralAltarBlockEntity.BlockRecipeInput(linkedAltar.inventory.getStackInSlot(0), linkedAltar.getBlockPos()),
+                        level);
+
+        if (recipe.isEmpty()) return Optional.empty();
+
+        AstralAltarRecipe altarRecipe = recipe.get().value();
+        if (!isIngredientUsedInRecipeForThisNexus(this, altarRecipe)) return Optional.empty();
+
+        float interpolatedProgress = Mth.lerp(partialTicks, clientProgress, progress);
+        float prog = maxProgress == 0 ? 0f : Mth.clamp(interpolatedProgress / maxProgress, 0f, 1f);
+        if (prog <= 0f) return Optional.empty();
+
+        float smoothProgress = prog * prog * (3f - 2f * prog);
+
+        double startX = worldPosition.getX() + 0.5;
+        double startY = worldPosition.getY() + 1.15;
+        double startZ = worldPosition.getZ() + 0.5;
+
+        double endX = savedPos.getX() + 0.5;
+        double endY = savedPos.getY() + 1.15;
+        double endZ = savedPos.getZ() + 0.5;
+
+        double x = Mth.lerp(smoothProgress, startX, endX);
+        double y = Mth.lerp(smoothProgress, startY, endY);
+        double z = Mth.lerp(smoothProgress, startZ, endZ);
+
+        return Optional.of(new Vec3(x, y, z));
+    }
+
+    private boolean isIngredientUsedInRecipeForThisNexus(AstralNexusBlockEntity nexus, AstralAltarRecipe recipe) {
+        BlockPos thisPos = nexus.getBlockPos();
+        Level level = nexus.getLevel();
+        if (level == null) return false;
+
+        List<Ingredient> ingredientsToMatch = recipe.additionalIngredients.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        Set<Ingredient> matchedIngredients = new HashSet<>();
+
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (dx == 0 && dz == 0) continue;
+
+                BlockPos checkPos = nexus.getSavedPos().offset(dx, 0, dz);
+                BlockEntity be = level.getBlockEntity(checkPos);
+
+                if (!(be instanceof AstralNexusBlockEntity nearbyNexus)) continue;
+
+                for (int slot = 0; slot < nearbyNexus.inventory.getSlots(); slot++) {
+                    ItemStack stack = nearbyNexus.inventory.getStackInSlot(slot);
+                    if (stack.isEmpty()) continue;
+
+                    for (Ingredient ingredient : ingredientsToMatch) {
+                        if (matchedIngredients.contains(ingredient)) continue;
+
+                        if (ingredient.test(stack)) {
+                            matchedIngredients.add(ingredient);
+
+                            if (nearbyNexus.getBlockPos().equals(thisPos)) {
+                                return true;
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

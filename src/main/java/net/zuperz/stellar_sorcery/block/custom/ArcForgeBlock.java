@@ -18,11 +18,14 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.zuperz.stellar_sorcery.block.entity.custom.ArcForgeBlockEntity;
+import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -55,6 +58,19 @@ public class ArcForgeBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
+
+
+    @Override
+    public @org.jetbrains.annotations.Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide) return null;
+
+        return (lvl, pos, st, blockEntity) -> {
+            if (blockEntity instanceof AstralAltarBlockEntity tile) {
+                ArcForgeBlockEntity.tick(level, pos, state, tile);
+            }
+        };
+    }
+
     @Override
     protected void onRemove(BlockState pState, Level pLevel, BlockPos pPos,
                             BlockState pNewState, boolean pMovedByPiston) {
@@ -76,12 +92,14 @@ public class ArcForgeBlock extends BaseEntityBlock {
                 ArcForgeBlockEntity.inventory.insertItem(0, pStack.copy(), false);
                 pStack.shrink(1);
                 ArcForgeBlockEntity.spawnSigilEntity(pStack);
+                ArcForgeBlockEntity.setChanged();
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
             } else if(pStack.isEmpty()) {
                 ItemStack stackOnPedestal = ArcForgeBlockEntity.inventory.extractItem(0, 1, false);
                 pPlayer.setItemInHand(InteractionHand.MAIN_HAND, stackOnPedestal);
                 ArcForgeBlockEntity.clearContents();
-                //ArcForgeBlockEntity.removeSigilEntity();
+                ArcForgeBlockEntity.removeSigilEntity();
+                ArcForgeBlockEntity.setChanged();
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
             }
         }

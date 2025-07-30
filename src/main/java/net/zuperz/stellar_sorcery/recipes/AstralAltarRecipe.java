@@ -1,17 +1,22 @@
 package net.zuperz.stellar_sorcery.recipes;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
@@ -24,11 +29,27 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
     public final ItemStack output;
     public final Ingredient moldIngredient;
     public final List<Optional<Ingredient>> additionalIngredients;
+    public final Optional<Block> additionalBlock;
+    public final Optional<Map<String, String>> blockState;
+    public final Optional<Boolean> needsBlock;
+    public final Optional<Block> blockOutput;
+    public final Optional<TimeOfDay> timeOfDay;
+    public final int recipeTime;
 
-    public AstralAltarRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients) {
+    public AstralAltarRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients,
+                             Optional<Block> additionalBlock, Optional<Map<String, String>> blockState, Optional<Boolean> needsBlock, Optional<Block> blockOutput,
+                             Optional<TimeOfDay> timeOfDay, int recipeTime) {
+        this.additionalBlock = additionalBlock;
+        this.blockState = blockState;
+        this.needsBlock = needsBlock;
+        this.blockOutput = blockOutput;
+        this.timeOfDay = timeOfDay;
+        this.recipeTime = recipeTime;
+
         while (additionalIngredients.size() < 8) {
             additionalIngredients.add(Optional.empty());
         }
+
         this.output = output;
         this.moldIngredient = moldIngredient;
         this.additionalIngredients = additionalIngredients;
@@ -57,6 +78,61 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
 
         if (!moldIngredient.test(moldStack)) return false;
 
+        if (additionalBlock.isPresent() && needsBlock.orElse(false)) {
+            boolean found = false;
+
+            for (int dx = -2; dx <= 2 && !found; dx++) {
+                for (int dz = -2; dz <= 2 && !found; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+
+                    BlockPos checkPos = center.offset(dx, 0, dz);
+                    BlockState stateAt = level.getBlockState(checkPos);
+                    if (stateAt.getBlock().equals(additionalBlock.get())) {
+                        if (blockState.isPresent()) {
+                            Map<String, String> requiredStates = blockState.get();
+                            boolean allMatch = true;
+                            for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
+                                Property<?> property = stateAt.getBlock().getStateDefinition().getProperty(entry.getKey());
+                                if (property == null) {
+                                    allMatch = false;
+                                    break;
+                                }
+
+                                Optional<? extends Comparable<?>> parsed = property.getValue(entry.getValue());
+                                if (parsed.isEmpty() || !stateAt.getValue(property).equals(parsed.get())) {
+                                    allMatch = false;
+                                    break;
+                                }
+                            }
+
+                            if (allMatch) {
+                                found = true;
+                            }
+                        } else {
+                            found = true;
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+
+        if (timeOfDay.isPresent()) {
+            boolean isDay = level.isDay();
+            switch (timeOfDay.get()) {
+                case DAY -> {
+                    if (!isDay) return false;
+                }
+                case NIGHT -> {
+                    if (isDay) return false;
+                }
+                case BOTH -> {
+                }
+            }
+        }
+
         List<Ingredient> ingredientsToMatch = additionalIngredients.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -70,24 +146,29 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
 
                 BlockPos checkPos = center.offset(dx, 0, dz);
                 BlockEntity be = level.getBlockEntity(checkPos);
-
                 if (!(be instanceof AstralNexusBlockEntity nexus)) continue;
 
                 for (int slot = 0; slot < nexus.inventory.getSlots(); slot++) {
                     ItemStack stack = nexus.inventory.getStackInSlot(slot);
                     if (stack.isEmpty()) continue;
 
+                    Ingredient matched = null;
                     for (Ingredient ing : unmatched) {
                         if (ing.test(stack)) {
-                            unmatched.remove(ing);
+                            matched = ing;
                             break;
                         }
+                    }
+
+                    if (matched != null) {
+                        unmatched.remove(matched);
                     }
 
                     if (unmatched.isEmpty()) return true;
                 }
             }
         }
+
         return unmatched.isEmpty();
     }
 
@@ -166,8 +247,25 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
                     Ingredient.CODEC.optionalFieldOf("ingredient6").forGetter(recipe -> recipe.additionalIngredients.get(4)),
                     Ingredient.CODEC.optionalFieldOf("ingredient7").forGetter(recipe -> recipe.additionalIngredients.get(5)),
                     Ingredient.CODEC.optionalFieldOf("ingredient8").forGetter(recipe -> recipe.additionalIngredients.get(6)),
-                    Ingredient.CODEC.optionalFieldOf("ingredient9").forGetter(recipe -> recipe.additionalIngredients.get(7))
-            ).apply(instance, (output, mold, ing2, ing3, ing4, ing5, ing6, ing7, ing8, ing9) -> new AstralAltarRecipe(output, mold, List.of(ing2, ing3, ing4, ing5, ing6, ing7, ing8, ing9)));
+                    Ingredient.CODEC.optionalFieldOf("ingredient9").forGetter(recipe -> recipe.additionalIngredients.get(7)),
+
+                    BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block").forGetter(recipe -> recipe.additionalBlock),
+                    Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("block_state").forGetter(recipe -> recipe.blockState),
+                    Codec.BOOL.optionalFieldOf("needs_block").forGetter(recipe -> recipe.needsBlock),
+
+                    BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block_output").forGetter(recipe -> recipe.blockOutput),
+
+                    TimeOfDay.CODEC.optionalFieldOf("time_of_day").forGetter(r -> r.timeOfDay),
+                    Codec.INT.fieldOf("time").forGetter(recipe -> recipe.recipeTime)
+
+
+            ).apply(instance, (output, mold, ing2, ing3, ing4, ing5, ing6, ing7, ing8, ing9, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime) -> {
+                List<Optional<Ingredient>> ingredients = List.of(
+                        ing2, ing3, ing4, ing5, ing6, ing7, ing8, ing9
+                );
+
+                return new AstralAltarRecipe(output, mold, ingredients, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime);
+            });
         });
 
         @Override
@@ -181,6 +279,43 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
                 buffer.writeBoolean(optional.isPresent());
                 optional.ifPresent(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient));
             }
+
+            if (recipe.additionalBlock.isPresent()) {
+                buffer.writeBoolean(true);
+                Block block = recipe.additionalBlock.get();
+                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(block));
+            } else {
+                buffer.writeBoolean(false);
+            }
+
+            if (recipe.blockState.isPresent()) {
+                buffer.writeBoolean(true);
+                Map<String, String> stateMap = recipe.blockState.get();
+                buffer.writeVarInt(stateMap.size());
+                for (Map.Entry<String, String> entry : stateMap.entrySet()) {
+                    buffer.writeUtf(entry.getKey());
+                    buffer.writeUtf(entry.getValue());
+                }
+            } else {
+                buffer.writeBoolean(false);
+            }
+
+            buffer.writeBoolean(recipe.needsBlock.isPresent());
+            recipe.needsBlock.ifPresent(buffer::writeBoolean);
+
+            if (recipe.blockOutput.isPresent()) {
+                buffer.writeBoolean(true);
+                Block block = recipe.blockOutput.get();
+                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(block));
+            } else {
+                buffer.writeBoolean(false);
+            }
+
+            buffer.writeBoolean(recipe.timeOfDay.isPresent());
+            recipe.timeOfDay.ifPresent(t -> buffer.writeUtf("BOTH")); // <--- do not lock at it. it is stil is datagenet
+
+            buffer.writeVarInt(recipe.recipeTime);
+
             ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, recipe.output);
         }
 
@@ -195,8 +330,45 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
                     ingredients.add(Optional.empty());
                 }
             }
+
+            Block additionalBlock = null;
+            if (buffer.readBoolean()) {
+                ResourceLocation loc = buffer.readResourceLocation();
+                additionalBlock = BuiltInRegistries.BLOCK.get(loc);
+            }
+
+            Optional<Map<String, String>> blockState = Optional.empty();
+            if (buffer.readBoolean()) {
+                int size = buffer.readVarInt();
+                Map<String, String> map = new HashMap<>();
+                for (int i = 0; i < size; i++) {
+                    String key = buffer.readUtf();
+                    String value = buffer.readUtf();
+                    map.put(key, value);
+                }
+                blockState = Optional.of(map);
+            }
+
+            Optional<Boolean> needsBlock = Optional.empty();
+            if (buffer.readBoolean()) {
+                needsBlock = Optional.of(buffer.readBoolean());
+            }
+
+            Block blockOutput = null;
+            if (buffer.readBoolean()) {
+                ResourceLocation loc = buffer.readResourceLocation();
+                blockOutput = BuiltInRegistries.BLOCK.get(loc);
+            }
+
+            Optional<TimeOfDay> timeOfDay = Optional.empty();
+            if (buffer.readBoolean()) {
+                timeOfDay = Optional.of(TimeOfDay.valueOf(buffer.readUtf().toUpperCase()));
+            }
+
+            int recipeTime = buffer.readVarInt();
+
             ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
-            return new AstralAltarRecipe(output, mold, ingredients);
+            return new AstralAltarRecipe(output, mold, ingredients, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, recipeTime);
         }
 
         private final StreamCodec<RegistryFriendlyByteBuf, AstralAltarRecipe> STREAM_CODEC = StreamCodec.of(

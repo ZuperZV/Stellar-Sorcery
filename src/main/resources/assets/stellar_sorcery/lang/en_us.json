@@ -4,14 +4,44 @@
   "stellar_sorcery.tooltip.liquid.amount.with.capacity": "%s / %s mB",
   "stellar_sorcery.tooltip.liquid.amount": "%s mB",
 
+  "tooltip.stellar_sorcery.star_dust": "Star Dust",
+  "tooltip.stellar_sorcery.collected_star_dust": "Collected Star Dust",
+
+  "tooltip.stellar_sorcery.runic_channels": "Runic Channels Used",
+  "tooltip.stellar_sorcery.embedded": "Embedded",
+
+  "tooltip.stellar_sorcery.infused": " infused ",
+  "tooltip.stellar_sorcery.with": " with ",
+
+  "item.stellar_sorcery.bottle_essence_diamond_power": "Essence of Diamond Power",
+  "item.stellar_sorcery.bottle_essence_of_nature": "Essence of Nature",
+  "item.stellar_sorcery.bottle_essence_of": "Essence of",
+  "item.stellar_sorcery.essence_bottle": "Essence Bottle",
+
   "item.stellar_sorcery.celestial_blade": "Celestial Blade",
+  "item.stellar_sorcery.aurora_skull": "Aurora Skull",
 
+  "item.stellar_sorcery.root": "Root",
 
+  "item.stellar_sorcery.fritillaria_meleagris_seeds": "Fritillaria Meleagris Seeds",
+  "item.stellar_sorcery.fritillaria_meleagris": "Fritillaria Meleagris",
 
+  "block.stellar_sorcery.fritillaria_meleagris_crop": "Fritillaria Meleagris Crop",
 
-  "block.stellar_sorcery.kiln": "Kiln",
+  "block.stellar_sorcery.astral_altar": "Astral Altar",
+  "block.stellar_sorcery.astral_nexus": "Astral Nexus",
 
-  "item.stellar_sorcery.stellar_sorcery_ingot": "Ingot",
+  "block.stellar_sorcery.vital_stump": "Vital Stump",
+  "block.stellar_sorcery.stump": "Stump",
+
+  "block.stellar_sorcery.red_campion": "Red Campion",
+  "block.stellar_sorcery.potted_red_campion": "Potted Red Campion",
+
+  "block.stellar_sorcery.calendula": "Calendula",
+  "block.stellar_sorcery.potted_calendula": "Potted Calendula",
+
+  "block.stellar_sorcery.nigella_damascena": "Nigella Damascena",
+  "block.stellar_sorcery.potted_nigella_damascena": "Potted Nigella Damascena",
 
   "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
 

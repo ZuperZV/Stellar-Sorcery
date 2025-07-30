@@ -27,6 +27,18 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModBlocks.ASTRAL_ALTAR.get());
                         pOutput.accept(ModBlocks.ASTRAL_NEXUS.get());
+
+                        pOutput.accept(ModBlocks.VITAL_STUMP.get());
+                        pOutput.accept(ModBlocks.STUMP.get());
+
+                        pOutput.accept(ModItems.ROOT.get());
+
+                        pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
+                        pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
+
+                        pOutput.accept(ModBlocks.RED_CAMPION.get());
+                        pOutput.accept(ModBlocks.CALENDULA.get());
+                        pOutput.accept(ModBlocks.NIGELLA_DAMASCENA.get());
                     }).build());
 
     public static void register(IEventBus eventBus) {

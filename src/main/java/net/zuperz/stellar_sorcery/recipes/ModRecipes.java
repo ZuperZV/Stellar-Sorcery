@@ -23,8 +23,14 @@ public class ModRecipes {
     public static final Supplier<RecipeType<AstralAltarRecipe>> ASTRAL_ALTAR_RECIPE_TYPE =
             RECIPE_TYPES.register("astral_altar", () -> AstralAltarRecipe.Type.INSTANCE);
 
+    public static final Supplier<RecipeType<StumpRecipe>> STUMP_RECIPE_TYPE =
+            RECIPE_TYPES.register("stump", () -> StumpRecipe.Type.INSTANCE);
+
 
 
     public static final Supplier<RecipeSerializer<AstralAltarRecipe>> ASTRAL_ALTAR_SERIALIZER =
             SERIALIZERS.register("astral_altar", () -> AstralAltarRecipe.Serializer.INSTANCE);
+
+    public static final Supplier<RecipeSerializer<StumpRecipe>> STUMP_SERIALIZER =
+            SERIALIZERS.register("stump", () -> StumpRecipe.Serializer.INSTANCE);
 }

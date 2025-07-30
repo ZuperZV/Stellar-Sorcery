@@ -9,7 +9,9 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.util.ModTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +30,18 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.tag(Tags.Items.MELEE_WEAPON_TOOLS)
                 .add(ModItems.CELESTIAL_BLADE.get());
 
-        this.tag(ItemTags.SWORD_ENCHANTABLE)
-                .add(ModItems.CELESTIAL_BLADE.get());
+        this.tag(ItemTags.VILLAGER_PLANTABLE_SEEDS)
+                .add(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
+
+        this.tag(Tags.Items.SEEDS)
+                .add(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
+
+        this.tag(Tags.Items.FOODS_FOOD_POISONING)
+                .add(ModItems.FRITILLARIA_MELEAGRIS.get());
+
+        this.tag(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                .add(ModBlocks.RED_CAMPION.get().asItem())
+                .add(ModBlocks.CALENDULA.get().asItem())
+                .add(ModBlocks.NIGELLA_DAMASCENA.get().asItem());
     }
 }

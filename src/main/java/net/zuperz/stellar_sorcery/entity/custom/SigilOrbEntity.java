@@ -15,6 +15,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.zuperz.stellar_sorcery.block.entity.custom.ArcForgeBlockEntity;
+import net.zuperz.stellar_sorcery.component.CelestialData;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class SigilOrbEntity extends Mob {
 
@@ -35,54 +38,47 @@ public class SigilOrbEntity extends Mob {
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
-        System.out.println("Text: ");
 
         if (hand != InteractionHand.MAIN_HAND) {
             return super.mobInteract(player, hand);
         }
 
         if (!level().isClientSide) {
-            System.out.println("Text2: ");
-            // Find den nærmeste ArcForgeBlockEntity i en 3x3x3 kube omkring entiteten
             BlockPos entityPos = this.blockPosition();
             for (BlockPos pos : BlockPos.betweenClosed(
-                    entityPos.offset(-1, -1, -1),
-                    entityPos.offset(1, 1, 1))) {
+                    entityPos.offset(-3, -3, -3),
+                    entityPos.offset(3, 3, 3))) {
 
-                if (level().getBlockEntity(pos) instanceof ArcForgeBlockEntity arcForge) {
+                if (level().getBlockEntity(pos) instanceof ArcForgeBlockEntity arcForge && pos != null) {
 
-                    if (!heldItem.isEmpty() && arcForge.inventory.getStackInSlot(0).isEmpty()) {
-
-                        arcForge.inventory.insertItem(0, heldItem.copyWithCount(1), false);
-
+                    if (!heldItem.isEmpty() && !arcForge.inventory.getStackInSlot(0).isEmpty()) {
+                        arcForge.inventory.getStackInSlot(0).set(ModDataComponentTypes.CELESTIAL.get(), new CelestialData(heldItem));
                         player.getMainHandItem().shrink(1);
-
+                        ItemStack stackOnPedestal = arcForge.inventory.extractItem(0, 1, false);
+                        arcForge.inventory.insertItem(0, stackOnPedestal.copy(), false);
                         level().playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
 
                         return InteractionResult.SUCCESS;
 
-                    } else if (heldItem.isEmpty() && !arcForge.inventory.getStackInSlot(0).isEmpty()) {
+                    } else if (heldItem.isEmpty() && arcForge.inventory.getStackInSlot(0).isEmpty()) {
+                        CelestialData data = arcForge.inventory.getStackInSlot(0).get(ModDataComponentTypes.CELESTIAL.get());
+                        if (data != null) {
 
-                        // Giv spilleren itemet tilbage
-                        ItemStack extracted = arcForge.inventory.extractItem(0, 1, false);
+                            player.setItemInHand(hand, data.getEmbeddedItem());
 
-                        player.setItemInHand(hand, extracted);
+                            arcForge.inventory.getStackInSlot(0).remove(ModDataComponentTypes.CELESTIAL.get());
 
-                        // Ryd indholdet og fjern visuel orb
-                        arcForge.clearContents();
+                            level().playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
 
-                        // Spil lyd
-                        level().playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
-
-                        return InteractionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
+                        }
                     }
 
-                    break; // Stop efter første ArcForge
+                    break;
                 }
             }
         }
 
-        // Brug default mob interaktion hvis intet skete
         return super.mobInteract(player, hand);
     }
 

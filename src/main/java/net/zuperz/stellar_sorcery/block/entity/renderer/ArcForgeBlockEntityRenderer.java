@@ -17,6 +17,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.zuperz.stellar_sorcery.block.entity.custom.ArcForgeBlockEntity;
+import net.zuperz.stellar_sorcery.component.CelestialData;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 
 public class ArcForgeBlockEntityRenderer implements BlockEntityRenderer<ArcForgeBlockEntity> {
     public ArcForgeBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -28,8 +30,6 @@ public class ArcForgeBlockEntityRenderer implements BlockEntityRenderer<ArcForge
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack stack = pBlockEntity.inventory.getStackInSlot(0);
-
-
 
         Block[] blockOptions = new Block[] {
                 Blocks.COBBLESTONE, Blocks.CLAY
@@ -72,7 +72,6 @@ public class ArcForgeBlockEntityRenderer implements BlockEntityRenderer<ArcForge
 
 
 
-
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 1.15f, 0.5f);
         pPoseStack.scale(0.5f, 0.5f, 0.5f);
@@ -81,6 +80,26 @@ public class ArcForgeBlockEntityRenderer implements BlockEntityRenderer<ArcForge
         itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, getLightLevel(pBlockEntity.getLevel(),
                 pBlockEntity.getBlockPos()), OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
         pPoseStack.popPose();
+
+
+        ItemStack input = pBlockEntity.inventory.getStackInSlot(0);
+
+        //System.out.println("input: " + input.getComponents());
+
+        if (input.has(ModDataComponentTypes.CELESTIAL.get())) {
+            CelestialData data = input.get(ModDataComponentTypes.CELESTIAL.get());
+
+            //System.out.println("Text: " + data);
+
+            pPoseStack.pushPose();
+            pPoseStack.translate(0.5f, 1.9f, 0.5f);
+            pPoseStack.scale(0.5f, 0.5f, 0.5f);
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation()));
+            itemRenderer.renderStatic(data.getEmbeddedItem(), ItemDisplayContext.FIXED,
+                    getLightLevel(pBlockEntity.getLevel(), pBlockEntity.getBlockPos()),
+                    OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
+            pPoseStack.popPose();
+        }
     }
 
     private int getLightLevel(Level level, BlockPos pos) {

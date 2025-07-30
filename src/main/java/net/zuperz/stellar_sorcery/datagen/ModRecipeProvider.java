@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,6 +18,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.datagen.custom.AstralAltarRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.StumpRecipeBuilder;
+import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.recipes.TimeOfDay;
+import net.zuperz.stellar_sorcery.util.ModTags;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,75 +37,107 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput pWriter) {
+        System.out.println("pWriter: " + pWriter);
 
-        //fourBlockStorageRecipes(pWriter, RecipeCategory.BUILDING_BLOCKS, ModItems.CHROMIUM_INGOT.get(), RecipeCategory.MISC,
-        //        ModBlocks.CHROMIUM_BLOCK.get());
-
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KILN.get())
-                .pattern("C C")
-                .pattern("ABA")
-                .pattern("AAA")
-                .define('A', ModBlocks.HARDENED_BRICKS)
-                .define('B', Blocks.FURNACE)
-                .define('C', Items.IRON_INGOT)
-                .unlockedBy("has_hardened_bricks", inventoryTrigger(ItemPredicate.Builder.item().
-                        of(ModBlocks.HARDENED_BRICKS).build()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.STUMP)
+                .requires(Items.OAK_LOG)
+                .requires(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                .requires(Items.DIRT)
+                .group("stellar_sorcery_stumps")
+                .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
                 .save(pWriter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TERRAMIX.get())
-                .pattern("AB")
-                .pattern("BA")
-                .define('A', Blocks.PACKED_MUD)
-                .define('B', Items.CLAY_BALL)
-                .unlockedBy("has_clay", inventoryTrigger(ItemPredicate.Builder.item().
-                        of(Items.CLAY_BALL).build()))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.VITAL_STUMP)
+                .pattern("DCD")
+                .pattern("BAB")
+                .define('A', ModBlocks.STUMP.asItem())
+                .define('B', ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                .define('C', ModBlocks.RED_CAMPION.asItem())
+                .define('D', Items.GOLD_INGOT)
+                .group("stellar_sorcery_stumps")
+                .unlockedBy("has_red_campion", has(ModBlocks.RED_CAMPION.asItem()))
                 .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get()),
+                        Ingredient.of(Items.WHEAT_SEEDS),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
+                        Ingredient.of(Items.WHEAT),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
+                        Ingredient.of(Items.WHEAT)
+                )
+                .withBlock(Blocks.WHEAT)
+                .withBlockState(Map.of("age", "7"))
+                .needsBlock(false)
+                .blockOutput(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(80)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.RED_CAMPION.asItem()),
+                        Ingredient.of(Blocks.POPPY),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS)
+                )
+                .withBlock(Blocks.POPPY)
+                .needsBlock(true)
+                .blockOutput(ModBlocks.RED_CAMPION.get())
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(80)
+                .unlockedBy("has_poppy", has(Blocks.POPPY))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.CALENDULA.asItem()),
+                        Ingredient.of(Blocks.OXEYE_DAISY),
+                        Ingredient.of(ModBlocks.CALENDULA.asItem()),
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS)
+                )
+                .withBlock(Blocks.OXEYE_DAISY)
+                .needsBlock(true)
+                .blockOutput(ModBlocks.CALENDULA.get())
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(90)
+                .unlockedBy("has_oxeye_daisy", has(Blocks.OXEYE_DAISY))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.NIGELLA_DAMASCENA.asItem()),
+                        Ingredient.of(Blocks.WITHER_ROSE),
+                        Ingredient.of(ModBlocks.NIGELLA_DAMASCENA.asItem()),
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS)
+                )
+                .withBlock(Blocks.WITHER_ROSE)
+                .needsBlock(true)
+                .blockOutput(ModBlocks.NIGELLA_DAMASCENA.get())
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(100)
+                .unlockedBy("has_wither_rose", has(Blocks.WITHER_ROSE))
+                .save(pWriter);
+
+
+        AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
+                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(Items.GOLD_INGOT),
+                        Ingredient.of(Items.EMERALD)
+                )
+                .withBlock(Blocks.WHEAT)
+                .withBlockState(Map.of("age", "7"))
+                .needsBlock(false)
+                .blockOutput(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(120)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(pWriter);
+
+
+        /*fourBlockStorageRecipes(pWriter, RecipeCategory.BUILDING_BLOCKS, ModItems.CHROMIUM_INGOT.get(), RecipeCategory.MISC,
+                ModBlocks.CHROMIUM_BLOCK.get());
 
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModBlocks.TERRAMIX.get()), RecipeCategory.MISC, ModBlocks.HARDENED_BRICKS.get(), 5, 60)
                 .unlockedBy("has_" + getItemName(ModBlocks.TERRAMIX.get()), inventoryTrigger(ItemPredicate.Builder.item().of(ModBlocks.TERRAMIX.get()).build()))
                 .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, getItemName(ModBlocks.HARDENED_BRICKS.get()) + "_from_smelting"));
 
         rawToIngot(ModItems.RAW_COBALT.get(), RecipeCategory.MISC, "cobalt_ingot", 0.2f, 300, pWriter);
-        
          */
-
-        //for (var scute : ArmadilloScuteRegistry.getInstance().getArmadilloScuteTypes()) {
-        //    if (scute == ModArmadilloScutes.NONE) continue;
-//
-        //    if (!scute.getName().equals("none")) {
-        //        String scuteName = scute.getName() + "_scute";
-        //        ItemStack scuteItem = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, scuteName)), 1);
-//
-        //        String essenceName = scute.getName() + "_essence";
-        //        ItemStack essenceItem = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, essenceName)), 1);
-//
-//
-        //        String armorName = scute.getName() + "_armor";
-        //        ItemStack armorItem = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, armorName)), 1);
-//
-        //        if (scuteItem != null && essenceItem != null && essenceItem != Items.AIR.getDefaultInstance()) {
-        //            CentrifugeRecipeBuilder.centrifuge(Ingredient.of(scuteItem), RecipeCategory.MISC, essenceItem)
-        //                    .group("centrifuge_" + scute.getName())
-        //                    .unlockedBy("has_" + scuteName, inventoryTrigger(ItemPredicate.Builder.item().of(scuteItem.getItem()).build()))
-        //                    .save(pWriter, ResourceLocation.fromNamespaceAndPath("resource_armadillo", scute.getName() + "_crafted_from_centrifuge"));
-        //        }
-//
-        //        if (scuteItem != null && armorItem != null && armorItem != Items.AIR.getDefaultInstance()) {
-        //            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, armorItem)
-        //                    .pattern("A  ")
-        //                    .pattern("AAA")
-        //                    .pattern("A A")
-        //                    .define('A', scuteItem.getItem())
-        //                    .unlockedBy("has_" + armorName, inventoryTrigger(ItemPredicate.Builder.item().of(scuteItem.getItem()).build()))
-        //                    .save(pWriter, ResourceLocation.fromNamespaceAndPath("resource_armadillo", armorName + "_crafted_from_" + scuteName));
-        //        }
-//
-        //        if (scuteItem != null) {
-        //            //hiveScuteBreeding( String.valueOf(scuteItem), String.valueOf(scuteItem), String.valueOf(scuteItem), pWriter);
-        //            nestRecipe(String.valueOf(scuteItem), String.valueOf(scuteItem), pWriter);
-        //        }
-        //    }
-        //}
     }
 
     protected static void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
@@ -181,43 +220,5 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(rawItem), category, (BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("metal_morph", ingot))), blastingExperience, blastingTime)
                 .unlockedBy("has_" + getItemName(rawItem), inventoryTrigger(ItemPredicate.Builder.item().of(rawItem).build()))
                 .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, getItemName((BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("metal_morph", ingot)))) + "_from_blasting"));
-    }
-
-    private static void essenceShapedRecipe(Object output, int count, String[] pattern, Map<Character, String> ingredients, RecipeOutput pWriter, String recipeName) {
-        ItemStack outputStack;
-        String outputName;
-
-        if (output instanceof Item item) {
-            outputStack = new ItemStack(item, count);
-            outputName = BuiltInRegistries.ITEM.getKey(item).getPath();
-        } else if (output instanceof String itemName) {
-            outputStack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemName)), count);
-            outputName = ResourceLocation.parse(itemName).getPath();
-        } else {
-            throw new IllegalArgumentException("Output must be either an Item or a String representing an item name.");
-        }
-
-        ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputStack);
-        for (String line : pattern) {
-            builder.pattern(line);
-        }
-
-        for (Map.Entry<Character, String> entry : ingredients.entrySet()) {
-            builder.define(entry.getKey(), BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, entry.getValue())));
-        }
-
-        for (String ingredient : ingredients.values()) {
-            builder.unlockedBy("has_" + ingredient, inventoryTrigger(
-                    ItemPredicate.Builder.item()
-                            .of(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, ingredient)))
-                            .build()
-            ));
-        }
-
-        if (recipeName != null && !recipeName.isEmpty()) {
-            outputName += "_" + recipeName;
-        }
-
-        builder.save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, outputName + "_essence_recipe"));
     }
 }

@@ -6,9 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
-import net.zuperz.stellar_sorcery.block.entity.custom.ArcForgeBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
+import net.zuperz.stellar_sorcery.block.entity.custom.*;
 
 import java.util.function.Supplier;
 
@@ -23,6 +21,18 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<AstralNexusBlockEntity>> ASTRAL_NEXUS_BE =
             BLOCK_ENTITIES.register("astral_nexus_be", () -> BlockEntityType.Builder.of(
                     AstralNexusBlockEntity::new, ModBlocks.ASTRAL_NEXUS.get()).build(null));
+
+    public static final Supplier<BlockEntityType<VitalStumpBlockEntity>> VITAL_STUMP_BE =
+            BLOCK_ENTITIES.register("vital_stump_be", () -> BlockEntityType.Builder.of(
+                    VitalStumpBlockEntity::new, ModBlocks.VITAL_STUMP.get()).build(null));
+
+    public static final Supplier<BlockEntityType<StumpBlockEntity>> STUMP_BE =
+            BLOCK_ENTITIES.register("stump_be", () -> BlockEntityType.Builder.of(
+                    StumpBlockEntity::new, ModBlocks.STUMP.get()).build(null));
+
+    public static final Supplier<BlockEntityType<EssenceBoilerBlockEntity>> ESSENCE_BOILER_BE =
+            BLOCK_ENTITIES.register("essence_boiler_be", () -> BlockEntityType.Builder.of(
+                    EssenceBoilerBlockEntity::new, ModBlocks.ESSENCE_BOILER.get()).build(null));
 
     public static final Supplier<BlockEntityType<ArcForgeBlockEntity>> ARCFORGE_BE =
             BLOCK_ENTITIES.register("arcforge_be", () -> BlockEntityType.Builder.of(

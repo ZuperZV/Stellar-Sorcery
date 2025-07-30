@@ -7,6 +7,9 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.worldgen.ModBiomeModifiers;
+import net.zuperz.stellar_sorcery.worldgen.ModConfiguredFeatures;
+import net.zuperz.stellar_sorcery.worldgen.ModPlacedFeatures;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -16,9 +19,9 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
         super(output, registries, modIds);
     }
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            //.add(Registries.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap)
-            //.add(Registries.PLACED_FEATURE, ModPlacedFeatures::bootstrap)
-            //.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
+            .add(Registries.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap)
+            .add(Registries.PLACED_FEATURE, ModPlacedFeatures::bootstrap)
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
             //.add(Registries.BIOME, ModBiomes::boostrap)
     ;
 

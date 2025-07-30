@@ -11,6 +11,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 public class ModItemModelProvider extends ItemModelProvider {
@@ -20,8 +21,14 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        //handheldItem(ModItems.CELESTIAL_BLADE);
+        basicItem(ModItems.FRITILLARIA_MELEAGRIS.get());
+        basicItem(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
 
+        basicItem(ModItems.ROOT.get());
+
+        flowerItem(ModBlocks.RED_CAMPION);
+        flowerItem(ModBlocks.CALENDULA);
+        flowerItem(ModBlocks.NIGELLA_DAMASCENA);
     }
 
     public ItemModelBuilder basicModItem(String item) {
@@ -65,5 +72,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/wall_inventory"))
                 .texture("wall",  ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID,
                         "block/" + baseBlock.getId().getPath()));
+    }
+
+    public void flowerItem(DeferredBlock<Block> block) {
+        this.withExistingParent(block.getId().getPath(), mcLoc("item/generated"))
+                .texture("layer0",  ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID,
+                        "block/" + block.getId().getPath()));
     }
 }

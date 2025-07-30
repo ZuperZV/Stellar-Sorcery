@@ -18,23 +18,38 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
+import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<AstralNexusBlockEntity> {
 
     public AstralNexusBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+
+    @Override
+    public AABB getRenderBoundingBox(AstralNexusBlockEntity blockEntity) {
+        BlockPos pos = blockEntity.getBlockPos();
+
+        Vec3 min = new Vec3(
+                pos.getX() - 3,
+                pos.getY() - 3,
+                pos.getZ() - 3
+        );
+
+        Vec3 max = new Vec3(
+                pos.getX() + 4,
+                pos.getY() + 4,
+                pos.getZ() + 4
+        );
+
+        return new AABB(min, max);
+    }
 
     @Override
     public void render(AstralNexusBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
@@ -45,12 +60,14 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
         Level level = pBlockEntity.getLevel();
 
         ItemStack stack = pBlockEntity.inventory.getStackInSlot(0);
-        if (stack.isEmpty() || level == null || linkedAltarPos == null) {
+
+        if (linkedAltarPos == null || level == null) {
             renderIdleItem(pPoseStack, pBufferSource, itemRenderer, stack, level, nexusPos, pBlockEntity.getRenderingRotation());
             return;
         }
 
         BlockEntity linkedEntity = level.getBlockEntity(linkedAltarPos);
+
         if (!(linkedEntity instanceof AstralAltarBlockEntity linkedAltar)) {
             renderIdleItem(pPoseStack, pBufferSource, itemRenderer, stack, level, nexusPos, pBlockEntity.getRenderingRotation());
             return;
@@ -103,24 +120,16 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
     private void renderFlyingItem(PoseStack poseStack, MultiBufferSource bufferSource, ItemRenderer itemRenderer,
                                   ItemStack stack, Level level, BlockPos start, BlockPos end,
                                   float progress, float rotation) {
+
         float smoothProgress = easeInOut(progress);
 
-        double startX = start.getX() + 0.5;
-        double startY = start.getY() + 1.15;
-        double startZ = start.getZ() + 0.5;
+        List<Vec3> waypoints = getWaypoints(start, end);
 
-        double endX = end.getX() + 0.5;
-        double endY = end.getY() + 1.15;
-        double endZ = end.getZ() + 0.5;
-
-        double x = Mth.lerp(smoothProgress, startX, endX);
-        double y = Mth.lerp(smoothProgress, startY, endY);
-        double z = Mth.lerp(smoothProgress, startZ, endZ);
+        Vec3 currentPos = interpolateWaypoints(waypoints, smoothProgress);
 
         poseStack.pushPose();
-        poseStack.translate(x - start.getX(), y - start.getY(), z - start.getZ());
+        poseStack.translate(currentPos.x - start.getX(), currentPos.y - start.getY(), currentPos.z - start.getZ());
         poseStack.scale(0.5f, 0.5f, 0.5f);
-
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
 
         itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED,
@@ -135,10 +144,7 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
         Level level = nexus.getLevel();
         if (level == null) return false;
 
-        List<Ingredient> ingredientsToMatch = recipe.additionalIngredients.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        List<Ingredient> ingredientsToMatch = recipe.getAdditionalIngredients();
 
         Set<Ingredient> matchedIngredients = new HashSet<>();
 
@@ -172,6 +178,52 @@ public class AstralNexusBlockEntityRenderer implements BlockEntityRenderer<Astra
             }
         }
         return false;
+    }
+
+    private Vec3 interpolateWaypoints(List<Vec3> points, float t) {
+        if (points.size() < 2) return points.get(0);
+
+        int segmentCount = points.size() - 1;
+        float totalT = t * segmentCount;
+        int index = Mth.floor(totalT);
+        float localT = totalT - index;
+
+        index = Mth.clamp(index, 0, segmentCount - 1);
+        Vec3 start = points.get(index);
+        Vec3 end = points.get(index + 1);
+
+        float smooth = easeInOut(localT);
+        double x = Mth.lerp(smooth, start.x, end.x);
+        double y = Mth.lerp(smooth, start.y, end.y);
+        double z = Mth.lerp(smooth, start.z, end.z);
+
+        return new Vec3(x, y, z);
+    }
+
+    private Vec3 interpolateBetween(Vec3 start, Vec3 end, double t) {
+        return new Vec3(
+                Mth.lerp(t, start.x, end.x),
+                Mth.lerp(t, start.y, end.y),
+                Mth.lerp(t, start.z, end.z)
+        );
+    }
+
+    private List<Vec3> getWaypoints(BlockPos start, BlockPos end) {
+        List<Vec3> points = new ArrayList<>();
+
+        Vec3 startPos = new Vec3(start.getX() + 0.5, start.getY() + 1.15, start.getZ() + 0.5);
+        Vec3 endPos = new Vec3(end.getX() + 0.5, end.getY() + 1.15, end.getZ() + 0.5);
+
+
+        points.add(startPos);
+
+        //Vec3 at70 = interpolateBetween(startPos, endPos, 0.9);
+        //at70 = at70.add(0, 0.05, 0);
+        //points.add(at70);
+
+        points.add(endPos);
+
+        return points;
     }
 
     private float easeInOut(float tp) {
