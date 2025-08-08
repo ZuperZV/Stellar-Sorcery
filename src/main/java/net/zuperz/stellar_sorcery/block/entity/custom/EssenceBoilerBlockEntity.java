@@ -45,7 +45,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     @Nullable
     public WobbleStyle lastWobbleStyle;
 
-    public final ItemStackHandler inventory = new ItemStackHandler(3) {
+    public final ItemStackHandler inventory = new ItemStackHandler(4) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return 1;
@@ -87,19 +87,21 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
             }
         }
 
-        if (hasAllItems && boiler.getFluidTankAmount() > 0 && boiler.getFluidTank().getFluid().isSame(Fluids.WATER)) {
-            boiler.progress++;
-
+        if (boiler.progress > 0) {
             if (level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ParticleTypes.BUBBLE,
-                        pos.getX() + 0.5,
-                        pos.getY() + 0.8,
-                        pos.getZ() + 0.5,
-                        1, // antal partikler
-                        0.2, 0.2, 0.2, // spread
-                        1f // fart
+                serverLevel.getLevel().sendParticles(ParticleTypes.BUBBLE,
+                        (double) pos.getX() + 0.5,
+                        (double) pos.getY() + 1,
+                        (double) pos.getZ() + 0.5,
+                        1,
+                        0.2, 0.2, 0.2,
+                        0.0
                 );
             }
+        }
+
+        if (hasAllItems && boiler.getFluidTankAmount() > 0 && boiler.getFluidTank().getFluid().isSame(Fluids.WATER) && boiler.inventory.getStackInSlot(3).is(ModItems.EMPTY_ESSENCE_BOTTLE)) {
+            boiler.progress++;
 
             level.playSound(null, pos, SoundEvents.WATER_AMBIENT,
                     SoundSource.BLOCKS, 0.12f, 0.17f);
@@ -109,7 +111,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
                 ItemStack input1 = boiler.inventory.getStackInSlot(1).copy();
                 ItemStack input2 = boiler.inventory.getStackInSlot(2).copy();
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     boiler.inventory.setStackInSlot(i, ItemStack.EMPTY);
                 }
 
@@ -375,18 +377,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     public void drainFluidTank(int amount) {
         fluidTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-    }
-
-    public FluidStack extractFluid(Direction direction, int amount, boolean simulate) {
-        return fluidTank.drain(amount, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
-    }
-
-    public void receiveFluid(Direction direction, FluidStack fluid) {
-        if (fluid.isEmpty()) {
-            return;
-        }
-
-        fluidTank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
     }
 
     public enum WobbleStyle {

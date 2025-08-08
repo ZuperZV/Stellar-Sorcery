@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.component;
+package net.zuperz.stellar_sorcery.item.custom;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

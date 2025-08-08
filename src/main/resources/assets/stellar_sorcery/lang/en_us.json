@@ -13,18 +13,22 @@
   "tooltip.stellar_sorcery.infused": " infused ",
   "tooltip.stellar_sorcery.with": " with ",
 
-  "item.stellar_sorcery.bottle_essence_diamond_power": "Essence of Diamond Power",
-  "item.stellar_sorcery.bottle_essence_of_nature": "Essence of Nature",
-  "item.stellar_sorcery.bottle_essence_of": "Essence of",
+  "item.stellar_sorcery.empty_essence_bottle": "Empty Essence Bottle",
   "item.stellar_sorcery.essence_bottle": "Essence Bottle",
 
   "item.stellar_sorcery.celestial_blade": "Celestial Blade",
   "item.stellar_sorcery.aurora_skull": "Aurora Skull",
 
-  "item.stellar_sorcery.root": "Root",
-
   "item.stellar_sorcery.fritillaria_meleagris_seeds": "Fritillaria Meleagris Seeds",
   "item.stellar_sorcery.fritillaria_meleagris": "Fritillaria Meleagris",
+
+  "item.stellar_sorcery.moonshine_shard": "Moonshine Shard",
+  "item.stellar_sorcery.moonshine_catalyst": "Moonshine Catalyst",
+
+  "item.stellar_sorcery.root": "Root",
+
+  "item.stellar_sorcery.noctilume_bucket": "Noctilume Bucket",
+
 
   "block.stellar_sorcery.fritillaria_meleagris_crop": "Fritillaria Meleagris Crop",
 
@@ -33,6 +37,8 @@
 
   "block.stellar_sorcery.vital_stump": "Vital Stump",
   "block.stellar_sorcery.stump": "Stump",
+
+  "block.stellar_sorcery.essence_boiler": "Essence Boiler",
 
   "block.stellar_sorcery.red_campion": "Red Campion",
   "block.stellar_sorcery.potted_red_campion": "Potted Red Campion",
@@ -43,9 +49,35 @@
   "block.stellar_sorcery.nigella_damascena": "Nigella Damascena",
   "block.stellar_sorcery.potted_nigella_damascena": "Potted Nigella Damascena",
 
+  "block.stellar_sorcery.budding_moonshine": "Budding Moonshine",
+  "block.stellar_sorcery.moonshine_cluster": "Moonshine Cluster",
+
+  "block.stellar_sorcery.moonshine_large_bud": "Moonshine Large Bud",
+  "block.stellar_sorcery.moonshine_medium_bud": "Moonshine Medium Bud",
+
+  "block.stellar_sorcery.moonshine_small_bud": "Moonshine Small Bud",
+
   "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
 
   "emi.category.stellar_sorcery.centrifuge": "Centrifuge",
 
-  "entity.stellar_sorcery.mob": "Mob"
+  "entity.stellar_sorcery.mob": "Mob",
+
+
+  "item.stellar_sorcery.bottle_essence_of": "Essence of",
+  "item.stellar_sorcery.bottle_essence_of_nature": "Essence of Nature",
+  "item.stellar_sorcery.bottle_essence_of_night_bloom": "Essence of Night Bloom",
+
+  "item.stellar_sorcery.bottle_essence_diamond_power": "Essence of Diamond Power",
+  "item.stellar_sorcery.bottle_essence_of_chaos": "Essence of Chaos",
+  "item.stellar_sorcery.bottle_essence_of_decay": "Essence of Decay",
+  "item.stellar_sorcery.bottle_essence_of_depths": "Essence of Depths",
+  "item.stellar_sorcery.bottle_essence_of_ember": "Essence of Ember",
+  "item.stellar_sorcery.bottle_essence_of_frost": "Essence of Frost",
+  "item.stellar_sorcery.bottle_essence_of_knowledge": "Essence of Knowledge",
+  "item.stellar_sorcery.bottle_essence_of_lingering_myst": "Essence of Lingering Myst",
+  "item.stellar_sorcery.bottle_essence_of_nature": "Essence of Nature",
+  "item.stellar_sorcery.bottle_essence_of_radiance": "Essence of Radiance",
+  "item.stellar_sorcery.bottle_essence_of_void": "Essence of Void",
+  "item.stellar_sorcery.bottle_essence_of_wrath": "Essence of Wrath"
 }

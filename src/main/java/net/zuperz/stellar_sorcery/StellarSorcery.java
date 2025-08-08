@@ -1,5 +1,7 @@
 package net.zuperz.stellar_sorcery;
 
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -7,13 +9,17 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.block.entity.renderer.*;
-import net.zuperz.stellar_sorcery.component.EssenceNameLoader;
+import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
+import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
+import net.zuperz.stellar_sorcery.fluid.ModFluids;
+import net.zuperz.stellar_sorcery.item.custom.EssenceNameLoader;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.entity.ModEntities;
 import net.zuperz.stellar_sorcery.entity.client.ModModelLayers;
@@ -54,20 +60,21 @@ public class StellarSorcery
 
     public StellarSorcery(IEventBus modEventBus, ModContainer modContainer)
     {
-
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerNetworking);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
 
-        ModRecipes.register(modEventBus);
+        ModFluids.register(modEventBus);
+        ModFluidTypes.register(modEventBus);
 
         ModCreativeModeTabs.register(modEventBus);
+
         ModDataComponentTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         ModBlockEntities.register(modEventBus);
-
         ModEntities.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
@@ -79,6 +86,8 @@ public class StellarSorcery
             ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.CALENDULA.getId(), ModBlocks.POTTED_CALENDULA);
             ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.NIGELLA_DAMASCENA.getId(), ModBlocks.POTTED_NIGELLA_DAMASCENA);
         });
+
+        ModFluids.registerFluidInteractions();
 
         EssenceNameLoader.load();
     }
@@ -99,6 +108,7 @@ public class StellarSorcery
             event.registerBlockEntityRenderer(ModBlockEntities.STUMP_BE.get(), StumpBlockEntityRenderer::new);
 
             event.registerBlockEntityRenderer(ModBlockEntities.ESSENCE_BOILER_BE.get(), EssenceBoilerBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.LUNAR_INFUSER_BE.get(), LunarInfuserBlockEntityRenderer::new);
 
             event.registerBlockEntityRenderer(ModBlockEntities.ARCFORGE_BE.get(), ArcForgeBlockEntityRenderer::new);
         }
@@ -126,6 +136,16 @@ public class StellarSorcery
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             EntityRenderers.register(ModEntities.SIGIL_ORB.get(), SigilOrbRenderer::new);
+            event.enqueueWork(() -> {
+                ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_NOCTILUME.get(), RenderType.translucent());
+                ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_NOCTILUME.get(), RenderType.translucent());
+            });
+        }
+
+        @SubscribeEvent
+        public static void onClientExtensions(RegisterClientExtensionsEvent event) {
+            event.registerFluidType(((BaseFluidType) ModFluidTypes.NOCTILUME_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    ModFluidTypes.NOCTILUME_FLUID_TYPE.get());
         }
 
         @SubscribeEvent

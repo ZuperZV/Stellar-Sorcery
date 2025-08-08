@@ -1,5 +1,6 @@
 package net.zuperz.stellar_sorcery.datagen;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 public class ModItemModelProvider extends ItemModelProvider {
@@ -25,16 +27,29 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
 
         basicItem(ModItems.ROOT.get());
+        basicItem(ModItems.EMPTY_ESSENCE_BOTTLE.get());
+
+        basicItem(ModItems.MOONSHINE_SHARD.get());
+        basicItem(ModItems.MOONSHINE_CATALYST.get());
 
         flowerItem(ModBlocks.RED_CAMPION);
         flowerItem(ModBlocks.CALENDULA);
         flowerItem(ModBlocks.NIGELLA_DAMASCENA);
+
+        blockItem(ModBlocks.MOONSHINE_SMALL_BUD.get());
+        blockItem(ModBlocks.MOONSHINE_MEDIUM_BUD.get());
+        blockItem(ModBlocks.MOONSHINE_LARGE_BUD.get());
+        blockItem(ModBlocks.MOONSHINE_CLUSTER.get());
+
+        basicItem(ModFluids.NOCTILUME_BUCKET.get());
     }
 
-    public ItemModelBuilder basicModItem(String item) {
-        return getBuilder(item)
+    private void blockItem(Block block) {
+        String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+
+        getBuilder(name)
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "item/" + item));
+                .texture("layer0", modLoc("block/" + name));
     }
 
     public ItemModelBuilder basiclayerItem(String item, String layer2, String _ingot) {

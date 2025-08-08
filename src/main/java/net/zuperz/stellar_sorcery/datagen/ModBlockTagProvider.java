@@ -21,11 +21,23 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider pProvider) {
         this.tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.ASTRAL_ALTAR.get())
-                .add(ModBlocks.ASTRAL_NEXUS.get());
+                .add(ModBlocks.ASTRAL_NEXUS.get())
+
+                .add(ModBlocks.MOONSHINE_SMALL_BUD.get())
+                .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
+                .add(ModBlocks.MOONSHINE_LARGE_BUD.get())
+                .add(ModBlocks.MOONSHINE_CLUSTER.get())
+                .add(ModBlocks.BUDDING_MOONSHINE.get());
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.VITAL_STUMP.get())
-                .add(ModBlocks.STUMP.get());
+                .add(ModBlocks.STUMP.get())
+
+                .add(ModBlocks.MOONSHINE_SMALL_BUD.get())
+                .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
+                .add(ModBlocks.MOONSHINE_LARGE_BUD.get())
+                .add(ModBlocks.MOONSHINE_CLUSTER.get())
+                .add(ModBlocks.BUDDING_MOONSHINE.get());
 
         this.tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(ModBlocks.VITAL_STUMP.get())
@@ -33,7 +45,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.ASTRAL_ALTAR.get())
-                .add(ModBlocks.ASTRAL_NEXUS.get());
+                .add(ModBlocks.ASTRAL_NEXUS.get())
+
+                .add(ModBlocks.MOONSHINE_SMALL_BUD.get())
+                .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
+                .add(ModBlocks.MOONSHINE_LARGE_BUD.get())
+                .add(ModBlocks.MOONSHINE_CLUSTER.get())
+                .add(ModBlocks.BUDDING_MOONSHINE.get());
 
         this.tag(BlockTags.CROPS)
                 .add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get());

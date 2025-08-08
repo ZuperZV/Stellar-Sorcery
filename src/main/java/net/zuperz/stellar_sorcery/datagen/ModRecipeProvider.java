@@ -16,11 +16,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.datagen.custom.AstralAltarRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.StarLightLunarInfuserRecipeBuilder;
 import net.zuperz.stellar_sorcery.datagen.custom.StumpRecipeBuilder;
+import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.recipes.TimeOfDay;
 import net.zuperz.stellar_sorcery.util.ModTags;
@@ -64,7 +68,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.WHEAT),
                         Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
-                .withEssenceType("minecraft:apple,minecraft:stick,minecraft:stone")
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))
                 .needsBlock(false)
@@ -113,6 +116,74 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_wither_rose", has(Blocks.WITHER_ROSE))
                 .save(pWriter);
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.EMPTY_ESSENCE_BOTTLE.get()),
+                        Ingredient.of(Items.GLASS_BOTTLE),
+                        Ingredient.of(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(80)
+                .unlockedBy("has_glass_bottle", has(Items.GLASS_BOTTLE))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.ROOT.get()),
+                        Ingredient.of(Items.STICK),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem())
+                )
+                .withEssenceType("stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula")
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(80)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.MOONSHINE_CATALYST.get()),
+                        Ingredient.of(Items.GUNPOWDER),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE),
+                        Ingredient.of(Items.AMETHYST_SHARD),
+                        Ingredient.of(Items.HEART_OF_THE_SEA),
+                        Ingredient.of(ModItems.ROOT)
+                )
+                .withEssenceType("minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena")
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(180)
+                .unlockedBy("has_heart_of_the_sea", has(Items.HEART_OF_THE_SEA))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.CELESTIAL_BLADE.get()),
+                        Ingredient.of(Items.GUNPOWDER),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE),
+                        Ingredient.of(Items.AMETHYST_SHARD),
+                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(ModItems.ROOT)
+                )
+                .withEssenceType("minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena")
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(180)
+                .unlockedBy("test", has(Items.HEART_OF_THE_SEA))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.WHISPERING_FRAGMENT.get()),
+                        Ingredient.of(ModItems.MOONSHINE_SHARD),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE),
+                        Ingredient.of(Items.ECHO_SHARD),
+                        Ingredient.of(ModBlocks.NIGELLA_DAMASCENA),
+                        Ingredient.of(Items.PHANTOM_MEMBRANE)
+                )
+                .withBlock(ModBlocks.BUDDING_MOONSHINE.get())
+                .needsBlock(true)
+                .blockOutput(Blocks.BUDDING_AMETHYST)
+                .withEssenceType("minecraft:glow_berries,minecraft:phantom_membrane,stellar_sorcery:red_campion")
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(300)
+                .unlockedBy("has_moonshine_shard", has(ModItems.MOONSHINE_SHARD))
+                .save(pWriter);
+
+        StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1),
+                Ingredient.of(ModItems.MOONSHINE_SHARD)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(100)
+                .save(pWriter);
 
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
                         Ingredient.of(Items.DIAMOND),
@@ -120,7 +191,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.EMERALD),
                         Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
-                .withEssenceType("minecraft:apple,minecraft:stick,minecraft:stone")
+                .withEssenceType("stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula")
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))
                 .needsBlock(false)

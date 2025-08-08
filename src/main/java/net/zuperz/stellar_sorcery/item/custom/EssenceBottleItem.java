@@ -1,12 +1,16 @@
 package net.zuperz.stellar_sorcery.item.custom;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
-import net.zuperz.stellar_sorcery.component.EssenceNameLoader;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.custom.decorator.TextureColorHelper;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class EssenceBottleItem extends Item {
 

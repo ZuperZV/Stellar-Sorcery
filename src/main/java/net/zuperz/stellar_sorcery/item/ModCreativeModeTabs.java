@@ -11,6 +11,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.fluid.ModFluids;
 
 import java.util.function.Supplier;
 
@@ -31,6 +32,9 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.VITAL_STUMP.get());
                         pOutput.accept(ModBlocks.STUMP.get());
 
+                        pOutput.accept(ModBlocks.ESSENCE_BOILER.get());
+                        pOutput.accept(ModItems.EMPTY_ESSENCE_BOTTLE.get());
+
                         pOutput.accept(ModItems.ROOT.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
@@ -39,6 +43,13 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.RED_CAMPION.get());
                         pOutput.accept(ModBlocks.CALENDULA.get());
                         pOutput.accept(ModBlocks.NIGELLA_DAMASCENA.get());
+
+                        pOutput.accept(ModBlocks.BUDDING_MOONSHINE.get());
+                        pOutput.accept(ModBlocks.MOONSHINE_CLUSTER.get());
+                        pOutput.accept(ModItems.MOONSHINE_SHARD.get());
+                        pOutput.accept(ModItems.MOONSHINE_CATALYST.get());
+
+                        pOutput.accept(ModFluids.NOCTILUME_BUCKET.get());
                     }).build());
 
     public static void register(IEventBus eventBus) {

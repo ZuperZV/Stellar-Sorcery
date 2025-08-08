@@ -38,6 +38,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("arcforge_be", () -> BlockEntityType.Builder.of(
                     ArcForgeBlockEntity::new, ModBlocks.ARCFORGE.get()).build(null));
 
+    public static final Supplier<BlockEntityType<LunarInfuserBlockEntity>> LUNAR_INFUSER_BE =
+            BLOCK_ENTITIES.register("lunar_infuser_be", () -> BlockEntityType.Builder.of(
+                    LunarInfuserBlockEntity::new, ModBlocks.LUNAR_INFUSER.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

@@ -2,7 +2,6 @@ package net.zuperz.stellar_sorcery.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -11,13 +10,13 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.custom.*;
-import net.zuperz.stellar_sorcery.block.entity.custom.StumpBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.VitalStumpBlockEntity;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 import java.util.function.Supplier;
@@ -47,7 +46,6 @@ public class ModBlocks {
             () -> new EssenceBoilerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAMPFIRE).requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.DEEPSLATE_TILES).noOcclusion().lightLevel(litBlockEmission(15)).ignitedByLava()));
 
-
     public static final DeferredBlock<Block> ARCFORGE = registerBlock("arcforge",
             () -> new ArcForgeBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
@@ -74,7 +72,50 @@ public class ModBlocks {
     public static final DeferredBlock<Block> POTTED_NIGELLA_DAMASCENA = BLOCKS.register("potted_nigella_damascena",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), NIGELLA_DAMASCENA, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
 
+    public static final DeferredBlock<Block> BUDDING_MOONSHINE = registerBlock("budding_moonshine",
+            () -> new MoonshineBuddingBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_PURPLE)
+                            .randomTicks()
+                            .strength(1.5F)
+                            .sound(SoundType.AMETHYST)
+                            .requiresCorrectToolForDrops()
+                            .pushReaction(PushReaction.DESTROY)
+            )
+    );
+    public static final DeferredBlock<Block> MOONSHINE_CLUSTER = registerBlock("moonshine_cluster",
+            () -> new AmethystClusterBlock(
+                    7.0F,
+                    3.0F,
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_PURPLE)
+                            .forceSolidOn()
+                            .noOcclusion()
+                            .sound(SoundType.AMETHYST_CLUSTER)
+                            .strength(1.5F)
+                            .lightLevel(p_152632_ -> 5)
+                            .pushReaction(PushReaction.DESTROY)
+            )
+    );
+    public static final DeferredBlock<Block> MOONSHINE_LARGE_BUD = registerBlock("moonshine_large_bud",
+            () -> new AmethystClusterBlock(
+                    5.0F, 3.0F, BlockBehaviour.Properties.ofLegacyCopy(Blocks.AMETHYST_CLUSTER).sound(SoundType.MEDIUM_AMETHYST_BUD).lightLevel(p_152629_ -> 4)
+            )
+    );
+    public static final DeferredBlock<Block> MOONSHINE_MEDIUM_BUD = registerBlock("moonshine_medium_bud",
+            () -> new AmethystClusterBlock(
+                    4.0F, 3.0F, BlockBehaviour.Properties.ofLegacyCopy(Blocks.AMETHYST_CLUSTER).sound(SoundType.LARGE_AMETHYST_BUD).lightLevel(p_152617_ -> 2)
+            )
+    );
+    public static final DeferredBlock<Block> MOONSHINE_SMALL_BUD = registerBlock("moonshine_small_bud",
+            () -> new AmethystClusterBlock(
+                    3.0F, 4.0F, BlockBehaviour.Properties.ofLegacyCopy(Blocks.AMETHYST_CLUSTER).sound(SoundType.SMALL_AMETHYST_BUD).lightLevel(p_187409_ -> 1)
+            )
+    );
 
+    public static final DeferredBlock<Block> LUNAR_INFUSER = registerBlock("lunar_infuser",
+            () -> new LunarInfuserBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
     private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
         return true;

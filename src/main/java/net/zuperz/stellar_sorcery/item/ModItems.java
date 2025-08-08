@@ -9,6 +9,7 @@ import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.custom.AuroraSkullItem;
 import net.zuperz.stellar_sorcery.item.custom.CelestialSwordItem;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
+import net.zuperz.stellar_sorcery.item.custom.MoonshineCatalystItem;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -29,11 +30,23 @@ public class ModItems {
     public static final DeferredItem<Item> ESSENCE_BOTTLE = ITEMS.register("essence_bottle",
             () -> new EssenceBottleItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> EMPTY_ESSENCE_BOTTLE = ITEMS.register("empty_essence_bottle",
+            () -> new Item(new Item.Properties().stacksTo(16)));
+
     public static final DeferredItem<Item> FRITILLARIA_MELEAGRIS_SEEDS = ITEMS.register("fritillaria_meleagris_seeds",
             () -> new ItemNameBlockItem(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get(), new Item.Properties()));
 
     public static final DeferredItem<Item> FRITILLARIA_MELEAGRIS = ITEMS.registerItem("fritillaria_meleagris",
             Item::new, new Item.Properties().food(ModFoodProperties.FRITILLARIA_MELEAGRIS));
+
+    public static final DeferredItem<Item> MOONSHINE_CATALYST = ITEMS.register("moonshine_catalyst",
+            () -> new MoonshineCatalystItem(new Item.Properties()));
+
+    public static final DeferredItem<Item> MOONSHINE_SHARD = ITEMS.register("moonshine_shard",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> WHISPERING_FRAGMENT = ITEMS.register("whispering_fragment",
+            () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
