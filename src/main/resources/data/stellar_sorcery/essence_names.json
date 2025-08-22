@@ -1,8 +1,8 @@
 {
   "minecraft:stick,stellar_sorcery:calendula,stellar_sorcery:fritillaria_meleagris": "item.stellar_sorcery.bottle_essence_of_nature",
   "minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena": "item.stellar_sorcery.bottle_essence_of_night_bloom",
-
   "minecraft:gunpowder,minecraft:redstone,minecraft:tnt": "item.stellar_sorcery.bottle_essence_of_chaos",
+
   "minecraft:lapis_lazuli,minecraft:book,minecraft:experience_bottle": "item.stellar_sorcery.bottle_essence_of_knowledge",
   "minecraft:blaze_rod,minecraft:diamond,minecraft:ender_pearl": "item.stellar_sorcery.bottle_essence_diamond_power",
   "minecraft:amethyst_shard,minecraft:phantom_membrane,minecraft:potion": "item.stellar_sorcery.bottle_essence_of_lingering_myst",

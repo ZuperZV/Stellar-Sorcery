@@ -160,7 +160,7 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 1.2f, 0.5f);
         pPoseStack.scale(0.35f, 0.35f, 0.35f);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() + 75));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() + 135));
 
         if(pBlockEntity.entityLastSacrificed != null) {
             entity = pBlockEntity.entityLastSacrificed.create(Minecraft.getInstance().level);

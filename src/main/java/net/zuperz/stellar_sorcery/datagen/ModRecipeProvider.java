@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -41,7 +42,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput pWriter) {
-        System.out.println("pWriter: " + pWriter);
+        // Crafting Shaped
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SOFT_CLAY_JAR.get())
+                .pattern(" A ")
+                .pattern("AAA")
+                .pattern("AAA")
+                .define('A', Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL)).save(pWriter);
+
+        // Crafting Shapeless
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.STUMP)
                 .requires(Items.OAK_LOG)
@@ -61,6 +71,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .group("stellar_sorcery_stumps")
                 .unlockedBy("has_red_campion", has(ModBlocks.RED_CAMPION.asItem()))
                 .save(pWriter);
+
+        // Furnaces
+
+        SimpleCookingRecipeBuilder.blasting (Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC , ModItems.CLAY_JAR.get(), 0.20f , 100)
+                .unlockedBy("has_soft_clay_jar",inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "clay_jar_from_blasting"));
+
+        SimpleCookingRecipeBuilder.smelting (Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC , ModItems.CLAY_JAR.get(), 0.15f , 200)
+                .unlockedBy("has_soft_clay_jar",inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()));
+
+        // Stump
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get()),
                         Ingredient.of(Items.WHEAT_SEEDS),
@@ -178,14 +199,73 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_moonshine_shard", has(ModItems.MOONSHINE_SHARD))
                 .save(pWriter);
 
-        StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1),
-                Ingredient.of(ModItems.MOONSHINE_SHARD)
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FIRE_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.FLINT_AND_STEEL),
+                        Ingredient.of(Items.GUNPOWDER)
                 )
-                .timeOfDay(TimeOfDay.NIGHT)
-                .recipeTime(100)
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
                 .save(pWriter);
 
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.TWIG_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(ModItems.ROOT),
+                        Ingredient.of(Items.STICK)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.MAGIC_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(ModItems.MOONSHINE_SHARD),
+                        Ingredient.of(Items.LAPIS_LAZULI)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.EXTRACTER_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(ModItems.FIRE_CLAY_JAR),
+                        Ingredient.of(ModItems.TWIG_CLAY_JAR),
+                        Ingredient.of(ModItems.MAGIC_CLAY_JAR),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
+                )
+                .withEssenceType("minecraft:gunpowder,minecraft:redstone,minecraft:tnt")
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+        // Astral Altar
+
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
+                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(Items.GOLD_INGOT),
+                        Ingredient.of(Items.EMERALD),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
+                )
+                .withEssenceType("stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula")
+                .withEntityType(EntityType.ARMADILLO)
+                .withBlock(Blocks.WHEAT)
+                .withBlockState(Map.of("age", "7"))
+                .needsBlock(false)
+                .blockOutput(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(120)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(pWriter);
+
+        AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.DIRT),
                         Ingredient.of(Items.DIAMOND),
                         Ingredient.of(Items.GOLD_INGOT),
                         Ingredient.of(Items.EMERALD),
@@ -201,13 +281,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_diamond", has(Items.DIAMOND))
                 .save(pWriter);
 
+        //Starlight Lunar
+
+        StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1),
+                        Ingredient.of(ModItems.MOONSHINE_SHARD)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(100)
+                .save(pWriter);
+
 
         /*fourBlockStorageRecipes(pWriter, RecipeCategory.BUILDING_BLOCKS, ModItems.CHROMIUM_INGOT.get(), RecipeCategory.MISC,
                 ModBlocks.CHROMIUM_BLOCK.get());
-
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModBlocks.TERRAMIX.get()), RecipeCategory.MISC, ModBlocks.HARDENED_BRICKS.get(), 5, 60)
-                .unlockedBy("has_" + getItemName(ModBlocks.TERRAMIX.get()), inventoryTrigger(ItemPredicate.Builder.item().of(ModBlocks.TERRAMIX.get()).build()))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, getItemName(ModBlocks.HARDENED_BRICKS.get()) + "_from_smelting"));
 
         rawToIngot(ModItems.RAW_COBALT.get(), RecipeCategory.MISC, "cobalt_ingot", 0.2f, 300, pWriter);
          */

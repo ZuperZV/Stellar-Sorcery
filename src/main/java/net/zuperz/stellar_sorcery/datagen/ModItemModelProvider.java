@@ -32,6 +32,13 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.MOONSHINE_SHARD.get());
         basicItem(ModItems.MOONSHINE_CATALYST.get());
 
+        basicItem(ModItems.SOFT_CLAY_JAR.get());
+        basicItem(ModItems.CLAY_JAR.get());
+        basicItem(ModItems.FIRE_CLAY_JAR.get());
+        basicItem(ModItems.TWIG_CLAY_JAR.get());
+        basicItem(ModItems.MAGIC_CLAY_JAR.get());
+        basicItem(ModItems.EXTRACTER_CLAY_JAR.get());
+
         flowerItem(ModBlocks.RED_CAMPION);
         flowerItem(ModBlocks.CALENDULA);
         flowerItem(ModBlocks.NIGELLA_DAMASCENA);

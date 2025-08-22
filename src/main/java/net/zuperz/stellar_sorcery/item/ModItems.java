@@ -27,6 +27,25 @@ public class ModItems {
     public static final DeferredItem<Item> ROOT = ITEMS.register("root",
             () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> SOFT_CLAY_JAR = ITEMS.register("soft_clay_jar",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> CLAY_JAR = ITEMS.register("clay_jar",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> FIRE_CLAY_JAR = ITEMS.register("fire_clay_jar",
+            () -> new Item(new Item.Properties().fireResistant()));
+
+    public static final DeferredItem<Item> TWIG_CLAY_JAR = ITEMS.register("twig_clay_jar",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> MAGIC_CLAY_JAR = ITEMS.register("magic_clay_jar",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> EXTRACTER_CLAY_JAR = ITEMS.register("extracter_clay_jar",
+            () -> new Item(new Item.Properties()));
+
+
     public static final DeferredItem<Item> ESSENCE_BOTTLE = ITEMS.register("essence_bottle",
             () -> new EssenceBottleItem(new Item.Properties().stacksTo(1)));
 

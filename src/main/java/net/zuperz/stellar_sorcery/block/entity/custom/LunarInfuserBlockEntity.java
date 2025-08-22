@@ -399,10 +399,15 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        inventory.deserializeNBT(registries, tag.getCompound("inventory"));
-        progress = tag.getInt("progress");
-        prevProgress = tag.getInt("prevProgress");
-
+        if (tag.contains("inventory", Tag.TAG_COMPOUND)) {
+            inventory.deserializeNBT(registries, tag.getCompound("inventory"));
+        }
+        if (tag.contains("progress", Tag.TAG_INT)) {
+            progress = tag.getInt("progress");
+        }
+        if (tag.contains("prevProgress", Tag.TAG_INT)) {
+            prevProgress = tag.getInt("prevProgress");
+        }
         if (tag.contains("FluidTank", Tag.TAG_COMPOUND)) {
             this.fluidTank.readFromNBT(registries, tag.getCompound("FluidTank"));
         }
@@ -410,15 +415,26 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         beamSections.clear();
         if (tag.contains("beamSections", Tag.TAG_COMPOUND)) {
             CompoundTag beamsTag = tag.getCompound("beamSections");
-            int size = beamsTag.getInt("size");
+            int size = beamsTag.contains("size", Tag.TAG_INT) ? beamsTag.getInt("size") : 0;
+
             for (int i = 0; i < size; i++) {
-                CompoundTag sectionTag = beamsTag.getCompound("section" + i);
-                BeaconBeamSection section = new BeaconBeamSection(sectionTag.getInt("color"));
-                int height = sectionTag.getInt("height");
-                for (int h = 1; h < height; h++) {
-                    section.increaseHeight();
+                String sectionKey = "section" + i;
+                if (beamsTag.contains(sectionKey, Tag.TAG_COMPOUND)) {
+                    CompoundTag sectionTag = beamsTag.getCompound(sectionKey);
+
+                    if (sectionTag.contains("color", Tag.TAG_INT)) {
+                        int color = sectionTag.getInt("color");
+
+                        BeaconBeamSection section = new BeaconBeamSection(color);
+                        if (sectionTag.contains("height", Tag.TAG_INT)) {
+                            int height = sectionTag.getInt("height");
+                            for (int h = 1; h < height; h++) {
+                                section.increaseHeight();
+                            }
+                        }
+                        beamSections.add(section);
+                    }
                 }
-                beamSections.add(section);
             }
         }
     }

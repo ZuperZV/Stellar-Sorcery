@@ -5,10 +5,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -78,8 +80,6 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
         BlockState oldState = level.getBlockState(pos);
 
         oldState = oldState.setValue(DONE, false);
-
-        System.out.println(altar.entityLastSacrificed);
 
         altar.prevProgress = altar.progress;
         if (altar.hasRecipe()) {
@@ -258,6 +258,13 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
 
         if (allMatched) {
+            if (altarRecipe.entityType.isPresent()) {
+                if (entityLastSacrificed.equals(altarRecipe.entityType.get())) {
+                    setSacrificedEntity(null);
+                    System.out.println("Text: " + entityLastSacrificed);
+                }
+            }
+
             inventory.extractItem(0, 1, false);
             for (AstralAltarBlockEntity.MatchedItem matched : matchedIngredientSources.values()) {
                 matched.nexus.inventory.extractItem(matched.slot, 1, false);
@@ -549,6 +556,11 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
         tag.put("inventory", inventory.serializeNBT(registries));
         tag.putInt("progress", progress);
         tag.putInt("prevProgress", prevProgress);
+
+        if (entityLastSacrificed != null) {
+            ResourceLocation id = EntityType.getKey(entityLastSacrificed);
+            tag.putString("entityLastSacrificed", id.toString());
+        }
     }
 
     @Override
@@ -557,6 +569,16 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
         progress = tag.getInt("progress");
         prevProgress = tag.getInt("prevProgress");
+
+
+        if (tag.contains("entityLastSacrificed")) {
+            String id = tag.getString("entityLastSacrificed");
+            ResourceLocation rl = ResourceLocation.parse(id);
+
+            entityLastSacrificed = BuiltInRegistries.ENTITY_TYPE.get(rl);
+        } else {
+            entityLastSacrificed = null;
+        }
     }
 
     public float getRenderingRotation() {

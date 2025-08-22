@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,6 +27,7 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
     private final ItemStack output;
     private final Ingredient moldIngredient;
     private final List<Optional<Ingredient>> additionalIngredients;
+    private Optional<EntityType<?>> entityType = Optional.empty();
     private Optional<String> essenceType = Optional.empty();
     private Optional<Block> block = Optional.empty();
     private Optional<Map<String, String>> blockState = Optional.empty();
@@ -56,6 +58,12 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
         }
         return new AstralAltarRecipeBuilder(category, output, moldIngredient, ingredientList);
     }
+
+    public AstralAltarRecipeBuilder withEntityType(EntityType<?> entityType) {
+        this.entityType = Optional.of(entityType);
+        return this;
+    }
+
 
     public AstralAltarRecipeBuilder withEssenceType(String essenceType) {
         this.essenceType = Optional.of(essenceType);
@@ -126,6 +134,7 @@ public class AstralAltarRecipeBuilder implements RecipeBuilder {
                 output,
                 moldIngredient,
                 additionalIngredients,
+                entityType,
                 essenceType,
                 block,
                 blockState,
