@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -24,6 +25,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +49,8 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
 
     private Item lastRenderedItem = Items.AIR;
     private int fadeTicks = 0;
+
+    public Entity entity = null;
 
     public AstralAltarBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.magicPlane = context.bakeLayer(MAGIC_AURA_LAYER).getChild("plane");
@@ -148,6 +152,34 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
                     OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
             pPoseStack.popPose();
         }
+
+        // Entity //
+
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+
+        pPoseStack.pushPose();
+        pPoseStack.translate(0.5f, 1.2f, 0.5f);
+        pPoseStack.scale(0.35f, 0.35f, 0.35f);
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() + 75));
+
+        if(pBlockEntity.entityLastSacrificed != null) {
+            entity = pBlockEntity.entityLastSacrificed.create(Minecraft.getInstance().level);
+        } else {
+            entity = null;
+        }
+
+        if(entity != null) {
+            entityRenderDispatcher.render(
+                    entity,
+                    0,
+                    1.25,
+                    0,
+                    0, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+        }
+
+        pPoseStack.popPose();
+
+        // <Entity> //
 
 
         Block[] blockOptions = new Block[] {

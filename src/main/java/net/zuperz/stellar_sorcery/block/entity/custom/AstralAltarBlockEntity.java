@@ -15,6 +15,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.custom.AstralAltarBlock;
@@ -47,6 +51,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
     public int progress = 0;
     public int maxProgress = 80;
     private int prevProgress = 0;
+    public EntityType<?> entityLastSacrificed = null;
 
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
@@ -73,6 +78,8 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
         BlockState oldState = level.getBlockState(pos);
 
         oldState = oldState.setValue(DONE, false);
+
+        System.out.println(altar.entityLastSacrificed);
 
         altar.prevProgress = altar.progress;
         if (altar.hasRecipe()) {
@@ -255,9 +262,13 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
             for (AstralAltarBlockEntity.MatchedItem matched : matchedIngredientSources.values()) {
                 matched.nexus.inventory.extractItem(matched.slot, 1, false);
             }
+
             inventory.setStackInSlot(0, altarRecipe.output.copy());
 
             if (level instanceof ServerLevel serverLevel) {
+
+                spawnVisualLightningBolt(serverLevel, worldPosition);
+
                 serverLevel.sendParticles(ParticleTypes.ASH,
                         worldPosition.getX() + 0.5,
                         worldPosition.getY() + 1.3,
@@ -356,6 +367,16 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
                 }
             }
         }
+    }
+
+    // Sacrificed //
+
+    public void setSacrificedEntity(EntityType<?> entityType) {
+        this.entityLastSacrificed = entityType;
+    }
+
+    private void spawnVisualLightningBolt(ServerLevel level, BlockPos blockPos) {
+        EntityType.LIGHTNING_BOLT.spawn(level, blockPos, MobSpawnType.TRIGGERED).setVisualOnly(true);
     }
 
     public ItemStackHandler getInputItems() {
