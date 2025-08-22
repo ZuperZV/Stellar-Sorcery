@@ -222,7 +222,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(pWriter);
 
 
-        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.MAGIC_CLAY_JAR.get()),
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.WIND_CLAY_JAR.get()),
                         Ingredient.of(ModItems.CLAY_JAR),
                         Ingredient.of(ModItems.MOONSHINE_SHARD),
                         Ingredient.of(Items.LAPIS_LAZULI)
@@ -237,7 +237,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(ModItems.CLAY_JAR),
                         Ingredient.of(ModItems.FIRE_CLAY_JAR),
                         Ingredient.of(ModItems.TWIG_CLAY_JAR),
-                        Ingredient.of(ModItems.MAGIC_CLAY_JAR),
+                        Ingredient.of(ModItems.WIND_CLAY_JAR),
                         Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
                 .withEssenceType("minecraft:gunpowder,minecraft:redstone,minecraft:tnt")

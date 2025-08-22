@@ -1,15 +1,14 @@
 package net.zuperz.stellar_sorcery.item;
 
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
-import net.zuperz.stellar_sorcery.item.custom.AuroraSkullItem;
-import net.zuperz.stellar_sorcery.item.custom.CelestialSwordItem;
-import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
-import net.zuperz.stellar_sorcery.item.custom.MoonshineCatalystItem;
+import net.zuperz.stellar_sorcery.item.custom.*;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -34,16 +33,16 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> FIRE_CLAY_JAR = ITEMS.register("fire_clay_jar",
-            () -> new Item(new Item.Properties().fireResistant()));
+            () -> new JarPotionsItem(ModPotions.JAR_FIRE_RESISTANCE));
 
     public static final DeferredItem<Item> TWIG_CLAY_JAR = ITEMS.register("twig_clay_jar",
-            () -> new Item(new Item.Properties()));
+            () -> new JarPotionsItem(ModPotions.JAR_TWIG));
 
-    public static final DeferredItem<Item> MAGIC_CLAY_JAR = ITEMS.register("magic_clay_jar",
-            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> WIND_CLAY_JAR = ITEMS.register("wind_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_WIND));
 
     public static final DeferredItem<Item> EXTRACTER_CLAY_JAR = ITEMS.register("extracter_clay_jar",
-            () -> new Item(new Item.Properties()));
+            () -> new JarPotionsItem(ModPotions.JAR_EXTRACTER));
 
 
     public static final DeferredItem<Item> ESSENCE_BOTTLE = ITEMS.register("essence_bottle",

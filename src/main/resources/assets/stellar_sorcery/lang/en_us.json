@@ -25,9 +25,15 @@
   "item.stellar_sorcery.moonshine_shard": "Moonshine Shard",
   "item.stellar_sorcery.moonshine_catalyst": "Moonshine Catalyst",
 
+  "item.stellar_sorcery.noctilume_bucket": "Noctilume Bucket",
   "item.stellar_sorcery.root": "Root",
 
-  "item.stellar_sorcery.noctilume_bucket": "Noctilume Bucket",
+  "item.stellar_sorcery.soft_clay_jar": "Soft Clay Jar",
+  "item.stellar_sorcery.clay_jar": "Clay Jar",
+  "item.stellar_sorcery.fire_clay_jar": "Fire Clay Jar",
+  "item.stellar_sorcery.twig_clay_jar": "Twig Clay Jar",
+  "item.stellar_sorcery.wind_clay_jar": "Wind Clay Jar",
+  "item.stellar_sorcery.extracter_clay_jar": "Extracter Clay Jar",
 
 
   "block.stellar_sorcery.fritillaria_meleagris_crop": "Fritillaria Meleagris Crop",

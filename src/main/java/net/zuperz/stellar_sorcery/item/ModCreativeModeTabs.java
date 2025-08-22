@@ -1,5 +1,6 @@
 package net.zuperz.stellar_sorcery.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -16,6 +18,7 @@ import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
+import net.zuperz.stellar_sorcery.potion.ModPotions;
 
 import java.util.function.Supplier;
 
@@ -43,10 +46,22 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModItems.SOFT_CLAY_JAR.get());
                         pOutput.accept(ModItems.CLAY_JAR.get());
-                        pOutput.accept(ModItems.FIRE_CLAY_JAR.get());
-                        pOutput.accept(ModItems.TWIG_CLAY_JAR.get());
-                        pOutput.accept(ModItems.MAGIC_CLAY_JAR.get());
-                        pOutput.accept(ModItems.EXTRACTER_CLAY_JAR.get());
+
+                        ItemStack fireJar = new ItemStack(ModItems.FIRE_CLAY_JAR.get());
+                        fireJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_FIRE_RESISTANCE));
+                        pOutput.accept(fireJar);
+
+                        ItemStack twigJar = new ItemStack(ModItems.TWIG_CLAY_JAR.get());
+                        twigJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_TWIG));
+                        pOutput.accept(twigJar);
+
+                        ItemStack windJar = new ItemStack(ModItems.WIND_CLAY_JAR.get());
+                        windJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_WIND));
+                        pOutput.accept(windJar);
+
+                        ItemStack extracterJar = new ItemStack(ModItems.EXTRACTER_CLAY_JAR.get());
+                        extracterJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_EXTRACTER));
+                        pOutput.accept(extracterJar);
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());

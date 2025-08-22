@@ -36,7 +36,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.CLAY_JAR.get());
         basicItem(ModItems.FIRE_CLAY_JAR.get());
         basicItem(ModItems.TWIG_CLAY_JAR.get());
-        basicItem(ModItems.MAGIC_CLAY_JAR.get());
+        basicItem(ModItems.WIND_CLAY_JAR.get());
         basicItem(ModItems.EXTRACTER_CLAY_JAR.get());
 
         flowerItem(ModBlocks.RED_CAMPION);

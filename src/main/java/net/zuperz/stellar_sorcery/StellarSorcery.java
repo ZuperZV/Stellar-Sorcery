@@ -30,6 +30,7 @@ import net.zuperz.stellar_sorcery.item.ModCreativeModeTabs;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
 import net.zuperz.stellar_sorcery.item.custom.decorator.NumberBarDecorator;
+import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import org.slf4j.Logger;import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -70,6 +71,7 @@ public class StellarSorcery
         ModFluidTypes.register(modEventBus);
 
         ModCreativeModeTabs.register(modEventBus);
+        ModPotions.register(modEventBus);
 
         ModDataComponentTypes.register(modEventBus);
         ModRecipes.register(modEventBus);
