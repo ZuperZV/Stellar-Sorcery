@@ -42,11 +42,12 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
     public final Optional<Boolean> needsBlock;
     public final Optional<Block> blockOutput;
     public final Optional<TimeOfDay> timeOfDay;
+    public final Optional<TimeOfDay> fakeTimeOfDay;
     public final int recipeTime;
 
     public AstralAltarRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients, Optional<EntityType<?>> entityType, Optional<String> requiredEssenceType,
                              Optional<Block> additionalBlock, Optional<Map<String, String>> blockState, Optional<Boolean> needsBlock, Optional<Block> blockOutput,
-                             Optional<TimeOfDay> timeOfDay, int recipeTime) {
+                             Optional<TimeOfDay> timeOfDay, Optional<TimeOfDay> fakeTimeOfDay, int recipeTime) {
         this.entityType = entityType;
         this.requiredEssenceType = requiredEssenceType;
         this.additionalBlock = additionalBlock;
@@ -54,6 +55,7 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
         this.needsBlock = needsBlock;
         this.blockOutput = blockOutput;
         this.timeOfDay = timeOfDay;
+        this.fakeTimeOfDay = fakeTimeOfDay;
         this.recipeTime = recipeTime;
 
         while (additionalIngredients.size() < 8) {
@@ -93,10 +95,6 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
             if (!(be instanceof AstralAltarBlockEntity altar)) return false;
 
             if (altar.entityLastSacrificed == null) return false;
-
-            System.out.println("entityLastSacrificed: " + altar.entityLastSacrificed);
-            System.out.println("entityType: " + entityType);
-            System.out.println("equals: " + (!altar.entityLastSacrificed.equals(entityType)));
 
             if (!altar.entityLastSacrificed.equals(entityType.get())) return false;
         }
@@ -142,9 +140,9 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
             }
         }
 
-        if (timeOfDay.isPresent()) {
+        if (fakeTimeOfDay.isPresent()) {
             boolean isDay = level.isDay();
-            switch (timeOfDay.get()) {
+            switch (fakeTimeOfDay.get()) {
                 case DAY -> {
                     if (!isDay) return false;
                 }
@@ -307,14 +305,16 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
                     BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block_output").forGetter(recipe -> recipe.blockOutput),
 
                     TimeOfDay.CODEC.optionalFieldOf("time_of_day").forGetter(recipe -> recipe.timeOfDay),
+                    TimeOfDay.CODEC.optionalFieldOf("fake_time_of_day").forGetter(recipe -> recipe.fakeTimeOfDay),
+
                     Codec.INT.fieldOf("time").forGetter(recipe -> recipe.recipeTime)
 
-            ).apply(instance, (output, mold, ingredients, entityType, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime) -> {
+            ).apply(instance, (output, mold, ingredients, entityType, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, recipeTime) -> {
                 List<Optional<Ingredient>> optionalIngredients = ingredients.stream()
                         .map(Optional::ofNullable)
                         .collect(Collectors.toList());
 
-                return new AstralAltarRecipe(output, mold, optionalIngredients, entityType, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, recipeTime);
+                return new AstralAltarRecipe(output, mold, optionalIngredients, entityType, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, recipeTime);
             });
         });
 
@@ -381,6 +381,9 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
             buffer.writeBoolean(recipe.timeOfDay.isPresent());
             recipe.timeOfDay.ifPresent(t -> buffer.writeUtf("BOTH")); // <--- do not lock at it. it is stil is datagenet
 
+            buffer.writeBoolean(recipe.fakeTimeOfDay.isPresent());
+            recipe.fakeTimeOfDay.ifPresent(t -> buffer.writeUtf(recipe.fakeTimeOfDay.get().toString()));
+
             buffer.writeVarInt(recipe.recipeTime);
 
             ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, recipe.output);
@@ -444,13 +447,20 @@ public class AstralAltarRecipe implements Recipe<RecipeInput> {
             Optional<TimeOfDay> timeOfDay = Optional.empty();
             if (buffer.readBoolean()) {
                 timeOfDay = Optional.of(TimeOfDay.valueOf(buffer.readUtf().toUpperCase()));
+                System.out.println("timeOfDay: " + timeOfDay);
+            }
+
+            Optional<TimeOfDay> fakeTimeOfDay = Optional.empty();
+            if (buffer.readBoolean()) {
+                fakeTimeOfDay = Optional.of(TimeOfDay.valueOf(buffer.readUtf().toUpperCase()));
+                System.out.println("fakeTimeOfDay: " + fakeTimeOfDay);
             }
 
             int recipeTime = buffer.readVarInt();
 
             ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
 
-            return new AstralAltarRecipe(output, mold, ingredients, entityType, requiredEssenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, recipeTime);
+            return new AstralAltarRecipe(output, mold, ingredients, entityType, requiredEssenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), fakeTimeOfDay, timeOfDay, recipeTime);
         }
 
         private final StreamCodec<RegistryFriendlyByteBuf, AstralAltarRecipe> STREAM_CODEC = StreamCodec.of(

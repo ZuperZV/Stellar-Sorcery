@@ -53,18 +53,26 @@ public class JarPotionsItem extends ThrowablePotionItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         defaultEffect(player.getMainHandItem());
 
-        level.playSound(
-                null,
-                player.getX(),
-                player.getY(),
-                player.getZ(),
-                SoundEvents.SPLASH_POTION_THROW,
-                SoundSource.PLAYERS,
-                0.5F,
-                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
-        );
+        if (player.isShiftKeyDown()) {
+            defaultEffect(player.getMainHandItem());
+            player.startUsingItem(hand);
 
-        return super.use(level, player, hand);
+            return InteractionResultHolder.success(player.getMainHandItem());
+        } else {
+
+            level.playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    SoundEvents.SPLASH_POTION_THROW,
+                    SoundSource.PLAYERS,
+                    0.5F,
+                    0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+            );
+
+            return super.use(level, player, hand);
+        }
     }
 
     private void defaultEffect(ItemStack stack) {

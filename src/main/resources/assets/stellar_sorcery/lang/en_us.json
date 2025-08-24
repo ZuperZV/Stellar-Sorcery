@@ -29,6 +29,12 @@
   "item.stellar_sorcery.root": "Root",
 
   "item.stellar_sorcery.soft_clay_jar": "Soft Clay Jar",
+  "item.stellar_sorcery.water_clay_jar": "Water Clay Jar",
+  "item.stellar_sorcery.shadow_clay_jar": "Shadow Clay Jar",
+  "item.stellar_sorcery.stone_clay_jar": "Stone Clay Jar",
+  "item.stellar_sorcery.sun_clay_jar": "Sun Clay Jar",
+  "item.stellar_sorcery.frost_clay_jar": "Frost Clay Jar",
+  "item.stellar_sorcery.storm_clay_jar": "Storm Clay Jar",
   "item.stellar_sorcery.clay_jar": "Clay Jar",
   "item.stellar_sorcery.fire_clay_jar": "Fire Clay Jar",
   "item.stellar_sorcery.twig_clay_jar": "Twig Clay Jar",

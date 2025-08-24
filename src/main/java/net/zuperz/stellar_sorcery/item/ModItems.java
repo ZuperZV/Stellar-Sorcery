@@ -41,6 +41,24 @@ public class ModItems {
     public static final DeferredItem<Item> WIND_CLAY_JAR = ITEMS.register("wind_clay_jar",
             () -> new JarPotionsItem(ModPotions.JAR_WIND));
 
+    public static final DeferredItem<Item> WATER_CLAY_JAR = ITEMS.register("water_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_WATER));
+
+    public static final DeferredItem<Item> SHADOW_CLAY_JAR = ITEMS.register("shadow_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_SHADOW));
+
+    public static final DeferredItem<Item> STONE_CLAY_JAR = ITEMS.register("stone_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_STONE));
+
+    public static final DeferredItem<Item> SUN_CLAY_JAR = ITEMS.register("sun_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_SUN));
+
+    public static final DeferredItem<Item> FROST_CLAY_JAR = ITEMS.register("frost_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_FROST));
+
+    public static final DeferredItem<Item> STORM_CLAY_JAR = ITEMS.register("storm_clay_jar",
+            () -> new JarPotionsItem(ModPotions.JAR_STORM));
+
     public static final DeferredItem<Item> EXTRACTER_CLAY_JAR = ITEMS.register("extracter_clay_jar",
             () -> new JarPotionsItem(ModPotions.JAR_EXTRACTER));
 

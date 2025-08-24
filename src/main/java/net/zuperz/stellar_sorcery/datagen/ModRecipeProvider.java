@@ -233,6 +233,72 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(pWriter);
 
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.WATER_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.WATER_BUCKET),
+                        Ingredient.of(Items.PRISMARINE_CRYSTALS)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SHADOW_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.ENDER_PEARL),
+                        Ingredient.of(Items.BLACK_DYE)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.STONE_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.COBBLESTONE),
+                        Ingredient.of(Items.IRON_NUGGET)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SUN_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.GLOWSTONE_DUST),
+                        Ingredient.of(Items.BLAZE_POWDER)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FROST_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.SNOWBALL),
+                        Ingredient.of(Items.PACKED_ICE)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.STORM_CLAY_JAR.get()),
+                        Ingredient.of(ModItems.CLAY_JAR),
+                        Ingredient.of(Items.PRISMARINE_SHARD),
+                        Ingredient.of(Items.GUNPOWDER)
+                )
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(300)
+                .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.EXTRACTER_CLAY_JAR.get()),
                         Ingredient.of(ModItems.CLAY_JAR),
                         Ingredient.of(ModItems.FIRE_CLAY_JAR),
@@ -268,15 +334,30 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.DIRT),
                         Ingredient.of(Items.DIAMOND),
                         Ingredient.of(Items.GOLD_INGOT),
+                        Ingredient.of(Items.EMERALD)
+                )
+                .withBlock(Blocks.DIAMOND_BLOCK)
+                .withBlockState(Map.of("age", "7"))
+                .needsBlock(true)
+                .blockOutput(ModBlocks.ASTRAL_NEXUS.get())
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(120)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(pWriter);
+
+        AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.RAW_COPPER),
+                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(Items.GOLD_INGOT),
                         Ingredient.of(Items.EMERALD),
+                        Ingredient.of(Items.HEART_OF_THE_SEA),
+                        Ingredient.of(Items.STICK),
+                        Ingredient.of(Items.ACACIA_SAPLING),
+                        Ingredient.of(Items.ACACIA_SLAB),
+                        Ingredient.of(Items.CHERRY_WOOD),
                         Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
                 .withEssenceType("stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula")
-                .withBlock(Blocks.WHEAT)
-                .withBlockState(Map.of("age", "7"))
-                .needsBlock(false)
-                .blockOutput(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
-                .timeOfDay(TimeOfDay.BOTH)
+                .timeOfDay(TimeOfDay.DAY)
                 .recipeTime(120)
                 .unlockedBy("has_diamond", has(Items.DIAMOND))
                 .save(pWriter);

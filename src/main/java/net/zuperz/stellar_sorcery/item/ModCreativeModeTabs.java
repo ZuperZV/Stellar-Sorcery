@@ -59,6 +59,30 @@ public class ModCreativeModeTabs {
                         windJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_WIND));
                         pOutput.accept(windJar);
 
+                        ItemStack waterJar = new ItemStack(ModItems.WATER_CLAY_JAR.get());
+                        waterJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_WATER));
+                        pOutput.accept(waterJar);
+
+                        ItemStack shadowJar = new ItemStack(ModItems.SHADOW_CLAY_JAR.get());
+                        shadowJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_SHADOW));
+                        pOutput.accept(shadowJar);
+
+                        ItemStack stoneJar = new ItemStack(ModItems.STONE_CLAY_JAR.get());
+                        stoneJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_STONE));
+                        pOutput.accept(stoneJar);
+
+                        ItemStack sunJar = new ItemStack(ModItems.SUN_CLAY_JAR.get());
+                        sunJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_SUN));
+                        pOutput.accept(sunJar);
+
+                        ItemStack frostJar = new ItemStack(ModItems.FROST_CLAY_JAR.get());
+                        frostJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_FROST));
+                        pOutput.accept(frostJar);
+
+                        ItemStack stormJar = new ItemStack(ModItems.STORM_CLAY_JAR.get());
+                        stormJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_STORM));
+                        pOutput.accept(stormJar);
+
                         ItemStack extracterJar = new ItemStack(ModItems.EXTRACTER_CLAY_JAR.get());
                         extracterJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_EXTRACTER));
                         pOutput.accept(extracterJar);
