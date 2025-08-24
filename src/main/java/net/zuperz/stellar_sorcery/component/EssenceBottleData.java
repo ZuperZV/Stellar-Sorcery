@@ -3,6 +3,8 @@ package net.zuperz.stellar_sorcery.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
@@ -42,6 +44,26 @@ public class EssenceBottleData {
             test = false;
         }
         return test;
+    }
+
+    public static EssenceBottleData fromIds(String[] ids) {
+        if (ids.length != 3) {
+            throw new IllegalArgumentException("EssenceBottleData requires exactly 3 ids, got " + ids.length);
+        }
+
+        var id0 = ResourceLocation.tryParse(ids[0]);
+        var id1 = ResourceLocation.tryParse(ids[1]);
+        var id2 = ResourceLocation.tryParse(ids[2]);
+
+        if (id0 == null || id1 == null || id2 == null) {
+            throw new IllegalArgumentException("One of the EssenceBottleData ids could not be parsed: " + String.join(",", ids));
+        }
+
+        ItemStack stack0 = new ItemStack(BuiltInRegistries.ITEM.get(id0));
+        ItemStack stack1 = new ItemStack(BuiltInRegistries.ITEM.get(id1));
+        ItemStack stack2 = new ItemStack(BuiltInRegistries.ITEM.get(id2));
+
+        return new EssenceBottleData(stack0, stack1, stack2);
     }
 
     @Override

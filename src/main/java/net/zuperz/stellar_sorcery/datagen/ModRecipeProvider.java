@@ -23,6 +23,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.datagen.custom.AstralAltarRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.EssenceRecipeBuilder;
 import net.zuperz.stellar_sorcery.datagen.custom.StarLightLunarInfuserRecipeBuilder;
 import net.zuperz.stellar_sorcery.datagen.custom.StumpRecipeBuilder;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
@@ -363,7 +364,65 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_diamond", has(Items.DIAMOND))
                 .save(pWriter);
 
-        //Starlight Lunar
+        // Essence
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS.get()),
+                        Ingredient.of(Items.STICK),
+                        Ingredient.of(ModBlocks.CALENDULA.get()))
+                .unlockedBy("has_fritillaria_meleagris", has(ModItems.FRITILLARIA_MELEAGRIS.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_nature"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.FERMENTED_SPIDER_EYE),
+                        Ingredient.of(Items.GLOW_BERRIES),
+                        Ingredient.of(ModBlocks.NIGELLA_DAMASCENA.get()))
+                .unlockedBy("has_fermented_spider_eye", has(Items.FERMENTED_SPIDER_EYE))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_night_bloom"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.GUNPOWDER),
+                        Ingredient.of(Items.REDSTONE),
+                        Ingredient.of(Items.TNT))
+                .unlockedBy("has_tnt", has(Items.TNT))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_chaos"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.LAPIS_LAZULI),
+                        Ingredient.of(Items.BOOK),
+                        Ingredient.of(Items.EXPERIENCE_BOTTLE))
+                .unlockedBy("has_experience_bottle", has(Items.EXPERIENCE_BOTTLE))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_knowledge"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.BLAZE_ROD),
+                        Ingredient.of(Items.DIAMOND),
+                        Ingredient.of(Items.ENDER_PEARL))
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_diamond_power"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.AMETHYST_SHARD),
+                        Ingredient.of(Items.PHANTOM_MEMBRANE),
+                        Ingredient.of(Items.POTION))
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_lingering_myst"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.BLAZE_POWDER),
+                        Ingredient.of(Items.GHAST_TEAR),
+                        Ingredient.of(Items.NETHER_STAR))
+                .unlockedBy("has_nether_star", has(Items.NETHER_STAR))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_wrath"));
+
+        EssenceRecipeBuilder.essence(RecipeCategory.MISC,
+                        Ingredient.of(Items.DRAGON_BREATH),
+                        Ingredient.of(Items.GLASS_BOTTLE),
+                        Ingredient.of(Items.GLOWSTONE_DUST))
+                .unlockedBy("has_dragon_breath", has(Items.DRAGON_BREATH))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_radiance"));
+
+        // Starlight Lunar
 
         StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1),
                         Ingredient.of(ModItems.MOONSHINE_SHARD)

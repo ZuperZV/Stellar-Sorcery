@@ -9,7 +9,6 @@
   "minecraft:blaze_powder,minecraft:ghast_tear,minecraft:nether_star": "item.stellar_sorcery.bottle_essence_of_wrath",
   "minecraft:dragon_breath,minecraft:glass_bottle,minecraft:glowstone_dust": "item.stellar_sorcery.bottle_essence_of_radiance",
 
-  //TO DO
   "minecraft:chorus_fruit,minecraft:end_crystal,stellar_sorcery:astral_flower": "item.stellar_sorcery.bottle_essence_of_void",
   "minecraft:fermented_spider_eye,minecraft:rotten_flesh,stellar_sorcery:nightshade": "item.stellar_sorcery.bottle_essence_of_decay",
   "minecraft:glow_ink_sac,minecraft:sea_pickle,stellar_sorcery:kelp_petal": "item.stellar_sorcery.bottle_essence_of_depths",

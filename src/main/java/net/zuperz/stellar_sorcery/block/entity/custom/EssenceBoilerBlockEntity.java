@@ -136,6 +136,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         boiler.setChanged();
         level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
     }
+
     private RecipeInput getRecipeInput(SimpleContainer inventory) {
         return new RecipeInput() {
             @Override

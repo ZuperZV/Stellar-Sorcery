@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.api.jei.custom.EntityDrawable;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;

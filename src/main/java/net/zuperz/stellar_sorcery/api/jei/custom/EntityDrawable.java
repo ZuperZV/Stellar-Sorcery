@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.api.jei;
+package net.zuperz.stellar_sorcery.api.jei.custom;
 
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import net.minecraft.client.Minecraft;
@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.item.Item;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;

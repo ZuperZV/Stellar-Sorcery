@@ -2,8 +2,6 @@ package net.zuperz.stellar_sorcery.api.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -44,6 +42,8 @@ public class JEIPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new AstralAltarRecipeCategory(jeiHelpers.getGuiHelper()));
         registration.addRecipeCategories(new StumpRecipeCategory(jeiHelpers.getGuiHelper()));
+
+        registration.addRecipeCategories(new EssenceBoilerRecipeCategory(jeiHelpers.getGuiHelper()));
     }
 
 
@@ -59,6 +59,10 @@ public class JEIPlugin implements IModPlugin {
             var vitalStump = world.getRecipeManager();
             registration.addRecipes(StumpRecipeCategory.RECIPE_TYPE,
                     getRecipe(vitalStump, ModRecipes.STUMP_RECIPE_TYPE.get()));
+
+            var essenceBoiler = world.getRecipeManager();
+            registration.addRecipes(EssenceBoilerRecipeCategory.RECIPE_TYPE,
+                    getRecipe(essenceBoiler, ModRecipes.ESSENCE_RECIPE_TYPE.get()));
         }
     }
 
@@ -85,6 +89,8 @@ public class JEIPlugin implements IModPlugin {
         var stump = new ItemStack(ModBlocks.STUMP.get());
         registration.addRecipeCatalyst(stump, StumpRecipeCategory.RECIPE_TYPE);
 
+        var essenceBoiler = new ItemStack(ModBlocks.ESSENCE_BOILER.get());
+        registration.addRecipeCatalyst(essenceBoiler, EssenceBoilerRecipeCategory.RECIPE_TYPE);
     }
 
     /*
