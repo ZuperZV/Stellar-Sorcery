@@ -337,7 +337,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.EMERALD)
                 )
                 .withBlock(Blocks.DIAMOND_BLOCK)
-                .withBlockState(Map.of("age", "7"))
                 .needsBlock(true)
                 .blockOutput(ModBlocks.ASTRAL_NEXUS.get())
                 .timeOfDay(TimeOfDay.NIGHT)

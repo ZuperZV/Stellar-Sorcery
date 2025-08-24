@@ -33,6 +33,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
     private Optional<Boolean> needsBlock = Optional.of(false);
     private Optional<Block> blockOutput = Optional.empty();
     private Optional<TimeOfDay> timeOfDay = Optional.empty();
+    private Optional<TimeOfDay> fakeTimeOfDay = Optional.empty();
     private int time = 100;
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
@@ -84,6 +85,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
 
     public StumpRecipeBuilder timeOfDay(TimeOfDay timeOfDay) {
         this.timeOfDay = Optional.of(timeOfDay);
+        this.fakeTimeOfDay = Optional.of(timeOfDay);
         return this;
     }
 
@@ -132,6 +134,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
                 needsBlock,
                 blockOutput,
                 timeOfDay,
+                fakeTimeOfDay,
                 time
         );
 

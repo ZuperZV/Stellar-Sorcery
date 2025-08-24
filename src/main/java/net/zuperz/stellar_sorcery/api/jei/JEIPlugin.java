@@ -18,6 +18,7 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
+import net.zuperz.stellar_sorcery.recipes.StumpRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public class JEIPlugin implements IModPlugin {
     public static mezz.jei.api.recipe.RecipeType<AstralAltarRecipe> ASTRAL_ALTAR_TYPE =
             new mezz.jei.api.recipe.RecipeType<>(AstralAltarRecipeCategory.UID, AstralAltarRecipe.class);
 
+    public static mezz.jei.api.recipe.RecipeType<StumpRecipe> STUMP_TYPE =
+            new mezz.jei.api.recipe.RecipeType<>(StumpRecipeCategory.UID, StumpRecipe.class);
+
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "jei_plugin");
@@ -39,6 +43,7 @@ public class JEIPlugin implements IModPlugin {
         var jeiHelpers = registration.getJeiHelpers();
 
         registration.addRecipeCategories(new AstralAltarRecipeCategory(jeiHelpers.getGuiHelper()));
+        registration.addRecipeCategories(new StumpRecipeCategory(jeiHelpers.getGuiHelper()));
     }
 
 
@@ -50,6 +55,10 @@ public class JEIPlugin implements IModPlugin {
             var astralAltar = world.getRecipeManager();
             registration.addRecipes(AstralAltarRecipeCategory.RECIPE_TYPE,
                     getRecipe(astralAltar, ModRecipes.ASTRAL_ALTAR_RECIPE_TYPE.get()));
+
+            var vitalStump = world.getRecipeManager();
+            registration.addRecipes(StumpRecipeCategory.RECIPE_TYPE,
+                    getRecipe(vitalStump, ModRecipes.STUMP_RECIPE_TYPE.get()));
         }
     }
 
@@ -69,6 +78,12 @@ public class JEIPlugin implements IModPlugin {
 
         var astralNexus = new ItemStack(ModBlocks.ASTRAL_NEXUS.get());
         registration.addRecipeCatalyst(astralNexus, AstralAltarRecipeCategory.RECIPE_TYPE);
+
+        var vitalStump = new ItemStack(ModBlocks.VITAL_STUMP.get());
+        registration.addRecipeCatalyst(vitalStump, StumpRecipeCategory.RECIPE_TYPE);
+
+        var stump = new ItemStack(ModBlocks.STUMP.get());
+        registration.addRecipeCatalyst(stump, StumpRecipeCategory.RECIPE_TYPE);
 
     }
 
