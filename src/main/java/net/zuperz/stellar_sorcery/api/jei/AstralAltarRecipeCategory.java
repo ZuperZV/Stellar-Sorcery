@@ -16,6 +16,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
@@ -174,12 +177,27 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
                 if (mouseX >= iconX && mouseX <= iconX + 16 && mouseY >= iconY && mouseY <= iconY + 16) {
                     guiGraphics.renderTooltip(
                             Minecraft.getInstance().font,
-                            Component.literal("Needs Block"),
+                            Component.translatable("tooltip.stellar_sorcery.needs_block"),
                             (int) mouseX, (int) mouseY
                     );
                 }
             }
         });
+
+        // Entity Type
+        recipe.entityType.ifPresent(needs -> {
+            int iconX = 76 - 2;
+            int iconY = centerY - 20;
+
+            if (mouseX >= iconX && mouseX <= iconX + 16 && mouseY >= iconY && mouseY <= iconY + 16) {
+                guiGraphics.renderTooltip(
+                        Minecraft.getInstance().font,
+                        Component.translatable(recipe.entityType.get().toString()),
+                        (int) mouseX, (int) mouseY
+                );
+            }
+        });
+
 
         // Arrow Block
         recipe.additionalBlock.ifPresent(needs -> {
@@ -266,6 +284,27 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
         recipe.blockOutput.ifPresent(block -> {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 97, centerY + 20)
                     .addItemStack(new ItemStack(block));
+        });
+
+        recipe.entityType.ifPresent(entityType -> {
+            Entity entity = entityType.create(Minecraft.getInstance().level);
+            if (entity instanceof LivingEntity living) {
+
+                float width = living.getBbWidth();
+                float height = living.getBbHeight();
+
+                float maxSize = Math.max(width, height);
+
+                int slotSize = 16;
+                float scaleFloat = slotSize / maxSize;
+
+                builder.addSlot(RecipeIngredientRole.INPUT, 76 - 2, centerY - 20)
+                        .setOverlay(
+                                new EntityDrawable(slotSize, slotSize,
+                                        (EntityType<? extends LivingEntity>) entityType,
+                                        (int) scaleFloat),
+                                slotSize / 2, slotSize);
+            }
         });
     }
 }

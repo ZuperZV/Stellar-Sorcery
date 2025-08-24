@@ -4,6 +4,8 @@
   "stellar_sorcery.tooltip.liquid.amount.with.capacity": "%s / %s mB",
   "stellar_sorcery.tooltip.liquid.amount": "%s mB",
 
+  "tooltip.stellar_sorcery.needs_block": "Needs Block",
+
   "tooltip.stellar_sorcery.star_dust": "Star Dust",
   "tooltip.stellar_sorcery.collected_star_dust": "Collected Star Dust",
 

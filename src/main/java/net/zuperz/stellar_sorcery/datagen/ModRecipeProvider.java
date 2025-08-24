@@ -336,6 +336,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.GOLD_INGOT),
                         Ingredient.of(Items.EMERALD)
                 )
+                .withEntityType(EntityType.ENDERMAN)
                 .withBlock(Blocks.DIAMOND_BLOCK)
                 .needsBlock(true)
                 .blockOutput(ModBlocks.ASTRAL_NEXUS.get())
@@ -355,6 +356,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.CHERRY_WOOD),
                         Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
+                .withEntityType(EntityType.WARDEN)
                 .withEssenceType("stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula")
                 .timeOfDay(TimeOfDay.DAY)
                 .recipeTime(120)
