@@ -1,0 +1,23 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "minecraft:wither_rose",
+  "block_output": "stellar_sorcery:nigella_damascena",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:wither_rose"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:nigella_damascena"
+    },
+    {
+      "item": "stellar_sorcery:fritillaria_meleagris"
+    }
+  ],
+  "needs_block": true,
+  "output": {
+    "item": "stellar_sorcery:nigella_damascena"
+  },
+  "time": 100,
+  "time_of_day": "DAY"
+}

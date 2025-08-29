@@ -1,0 +1,41 @@
+{
+  "type": "stellar_sorcery:astral_altar",
+  "entityType": "minecraft:warden",
+  "essence_type": "stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:diamond"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:emerald"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:acacia_sapling"
+    },
+    {
+      "item": "minecraft:acacia_slab"
+    },
+    {
+      "item": "minecraft:cherry_wood"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:raw_copper"
+  },
+  "time": 120,
+  "time_of_day": "DAY"
+}

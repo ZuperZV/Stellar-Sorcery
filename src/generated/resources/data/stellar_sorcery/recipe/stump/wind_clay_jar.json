@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "BOTH",
+  "ingredient": {
+    "item": "stellar_sorcery:clay_jar"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:moonshine_shard"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:wind_clay_jar"
+  },
+  "time": 300,
+  "time_of_day": "BOTH"
+}

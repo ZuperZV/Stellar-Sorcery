@@ -1,0 +1,30 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "stellar_sorcery:budding_moonshine",
+  "block_output": "minecraft:budding_amethyst",
+  "essence_type": "minecraft:glow_berries,minecraft:phantom_membrane,stellar_sorcery:red_campion",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "stellar_sorcery:moonshine_shard"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "stellar_sorcery:nigella_damascena"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ],
+  "needs_block": true,
+  "output": {
+    "item": "stellar_sorcery:whispering_fragment"
+  },
+  "time": 300,
+  "time_of_day": "NIGHT"
+}

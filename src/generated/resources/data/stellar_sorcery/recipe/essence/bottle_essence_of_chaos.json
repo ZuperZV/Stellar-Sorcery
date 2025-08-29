@@ -1,0 +1,32 @@
+{
+  "type": "stellar_sorcery:essence_recipe",
+  "input1": {
+    "item": "minecraft:gunpowder"
+  },
+  "input2": {
+    "item": "minecraft:redstone"
+  },
+  "input3": {
+    "item": "minecraft:tnt"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:gunpowder"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:redstone"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:tnt"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  }
+}

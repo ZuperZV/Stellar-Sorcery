@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.2,
+  "ingredient": {
+    "item": "stellar_sorcery:soft_clay_jar"
+  },
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:clay_jar"
+  }
+}

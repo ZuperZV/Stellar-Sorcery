@@ -1,0 +1,31 @@
+{
+  "type": "stellar_sorcery:astral_altar",
+  "block": "minecraft:wheat",
+  "block_output": "stellar_sorcery:fritillaria_meleagris_crop",
+  "block_state": {
+    "age": "7"
+  },
+  "entityType": "minecraft:armadillo",
+  "essence_type": "stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula",
+  "fake_time_of_day": "BOTH",
+  "ingredient": {
+    "item": "minecraft:diamond"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:emerald"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "time": 120,
+  "time_of_day": "BOTH"
+}

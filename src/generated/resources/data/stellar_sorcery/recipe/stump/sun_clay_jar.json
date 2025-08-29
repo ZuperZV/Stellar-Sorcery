@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "stellar_sorcery:clay_jar"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:sun_clay_jar"
+  },
+  "time": 300,
+  "time_of_day": "DAY"
+}

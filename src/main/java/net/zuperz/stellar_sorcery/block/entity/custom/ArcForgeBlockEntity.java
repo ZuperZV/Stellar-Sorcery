@@ -61,19 +61,32 @@ public class ArcForgeBlockEntity extends BlockEntity {
             Containers.dropContents(this.level, this.worldPosition, inv);
         }
 
-        @Override
-        protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-            super.saveAdditional(pTag, pRegistries);
-            pTag.put("inventory", inventory.serializeNBT(pRegistries));
-        }
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
 
-        @Override
-        protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-            super.loadAdditional(pTag, pRegistries);
-            inventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        try {
+            tag.put("inventory", inventory.serializeNBT(registries));
+        } catch (Exception e) {
+            System.err.println("Failed to save ArcForge inventory: " + e.getMessage());
         }
+    }
 
-        public float getRenderingRotation() {
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+
+        if (tag.contains("inventory")) {
+            try {
+                inventory.deserializeNBT(registries, tag.getCompound("inventory"));
+            } catch (Exception e) {
+                System.err.println("Failed to load ArcForge inventory: " + e.getMessage());
+            }
+        }
+    }
+
+
+    public float getRenderingRotation() {
             rotation += 0.5f;
             if(rotation >= 360) {
                 rotation = 0;

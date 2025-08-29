@@ -84,7 +84,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
         altar.prevProgress = altar.progress;
         if (altar.hasRecipe()) {
             altar.progress++;
-            setCRAFTING(pos, level, true);
+            setCrafting(pos, level, true);
             if (altar.progress >= altar.maxProgress) {
                 altar.craftItem();
                 oldState = oldState.setValue(DONE, true);
@@ -99,47 +99,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
         level.setBlockAndUpdate(pos, oldState);
 
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                if (dx == 0 && dz == 0) continue;
-
-                BlockPos checkPos = pos.offset(dx, 0, dz);
-                BlockEntity be = level.getBlockEntity(checkPos);
-                if (be instanceof AstralNexusBlockEntity nexus) {
-                    nexus.setSavedPos(pos);
-
-                    nexus.progress = altar.progress;
-                    nexus.maxProgress = altar.maxProgress;
-                    nexus.setChanged();
-
-                    level.sendBlockUpdated(nexus.getBlockPos(), nexus.getBlockState(), nexus.getBlockState(), 3);
-                }
-            }
-        }
-    }
-
-    public static void setCRAFTING(BlockPos altarPos, Level level, boolean boo) {
-        for (int dx = -2; dx <= 2; dx++) {
-            for (int dz = -2; dz <= 2; dz++) {
-                if (dx == 0 && dz == 0) continue;
-
-                BlockPos checkPos = altarPos.offset(dx, 0, dz);
-                BlockState state = level.getBlockState(checkPos);
-                BlockEntity be = level.getBlockEntity(checkPos);
-
-                if (be instanceof AstralNexusBlockEntity nexus) {
-                    if (boo) {
-                        if (nexus.craftingStartTime == -1) {
-                            nexus.craftingStartTime = level.getGameTime();
-                            nexus.setChanged();
-                        }
-                    } else {
-                        nexus.craftingStartTime = -1;
-                        nexus.setChanged();
-                    }
-                }
-            }
-        }
+        giveNexusInfoAboutAstralAltar(level, pos, altar);
     }
 
     public boolean hasRecipe() {
@@ -162,34 +122,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
         boolean allMatched = true;
 
-        for (Ingredient ingredient : ingredientsToMatch) {
-            boolean matched = false;
-
-            outer:
-            for (int dx = -2; dx <= 2; dx++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    if (dx == 0 && dz == 0) continue;
-
-                    BlockPos checkPos = worldPosition.offset(dx, 0, dz);
-                    BlockEntity be = level.getBlockEntity(checkPos);
-
-                    if (!(be instanceof AstralNexusBlockEntity nexus)) continue;
-
-                    for (int slot = 0; slot < nexus.inventory.getSlots(); slot++) {
-                        ItemStack stack = nexus.inventory.getStackInSlot(slot);
-                        if (!stack.isEmpty() && ingredient.test(stack)) {
-                            matched = true;
-                            break outer;
-                        }
-                    }
-                }
-            }
-
-            if (!matched) {
-                allMatched = false;
-                break;
-            }
-        }
+        allMatched = hasAllIngredientsToMatch(ingredientsToMatch, allMatched);
 
         if (allMatched) {
             maxProgress = altarRecipe.recipeTime;
@@ -226,6 +159,82 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
         boolean allMatched = true;
 
+        allMatched = isAllMatched(ingredientsToMatch, level, matchedIngredientSources, allMatched);
+
+
+        if (allMatched) {
+            if (altarRecipe.entityType.isPresent()) {
+                if (entityLastSacrificed.equals(altarRecipe.entityType.get())) {
+                    setSacrificedEntity(null);
+                    System.out.println("Text: " + entityLastSacrificed);
+                }
+            }
+
+            inventory.extractItem(0, 1, false);
+            for (AstralAltarBlockEntity.MatchedItem matched : matchedIngredientSources.values()) {
+                matched.nexus.inventory.extractItem(matched.slot, 1, false);
+            }
+            inventory.setStackInSlot(0, altarRecipe.output.copy());
+
+            itemCraftingParticles(level);
+
+            blockCraftingParticles(altarRecipe, level);
+        }
+    }
+
+    private static void giveNexusInfoAboutAstralAltar(Level level, BlockPos pos, AstralAltarBlockEntity altar) {
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (dx == 0 && dz == 0) continue;
+
+                BlockPos checkPos = pos.offset(dx, 0, dz);
+                BlockEntity be = level.getBlockEntity(checkPos);
+                if (be instanceof AstralNexusBlockEntity nexus) {
+                    nexus.setSavedPos(pos);
+
+                    nexus.progress = altar.progress;
+                    nexus.maxProgress = altar.maxProgress;
+                    nexus.setChanged();
+
+                    level.sendBlockUpdated(nexus.getBlockPos(), nexus.getBlockState(), nexus.getBlockState(), 3);
+                }
+            }
+        }
+    }
+
+    private boolean hasAllIngredientsToMatch(List<Ingredient> ingredientsToMatch, boolean allMatched) {
+        for (Ingredient ingredient : ingredientsToMatch) {
+            boolean matched = false;
+
+            outer:
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+
+                    BlockPos checkPos = worldPosition.offset(dx, 0, dz);
+                    BlockEntity be = level.getBlockEntity(checkPos);
+
+                    if (!(be instanceof AstralNexusBlockEntity nexus)) continue;
+
+                    for (int slot = 0; slot < nexus.inventory.getSlots(); slot++) {
+                        ItemStack stack = nexus.inventory.getStackInSlot(slot);
+                        if (!stack.isEmpty() && ingredient.test(stack)) {
+                            matched = true;
+                            break outer;
+                        }
+                    }
+                }
+            }
+
+            if (!matched) {
+                allMatched = false;
+                break;
+            }
+        }
+        return allMatched;
+    }
+
+    private boolean isAllMatched(List<Ingredient> ingredientsToMatch, Level level, Map<Ingredient, MatchedItem> matchedIngredientSources, boolean allMatched) {
         for (Ingredient ingredient : ingredientsToMatch) {
             boolean matched = false;
 
@@ -255,121 +264,134 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
                 break;
             }
         }
+        return allMatched;
+    }
 
 
-        if (allMatched) {
-            if (altarRecipe.entityType.isPresent()) {
-                if (entityLastSacrificed.equals(altarRecipe.entityType.get())) {
-                    setSacrificedEntity(null);
-                    System.out.println("Text: " + entityLastSacrificed);
-                }
-            }
+    private void itemCraftingParticles(Level level) {
+        if (level instanceof ServerLevel serverLevel) {
 
-            inventory.extractItem(0, 1, false);
-            for (AstralAltarBlockEntity.MatchedItem matched : matchedIngredientSources.values()) {
-                matched.nexus.inventory.extractItem(matched.slot, 1, false);
-            }
+            spawnVisualLightningBolt(serverLevel, worldPosition);
 
-            inventory.setStackInSlot(0, altarRecipe.output.copy());
+            serverLevel.sendParticles(ParticleTypes.ASH,
+                    worldPosition.getX() + 0.5,
+                    worldPosition.getY() + 1.3,
+                    worldPosition.getZ() + 0.5,
+                    20, // antal partikler
+                    0.1, 0.1, 0.1, // spread
+                    0.01 // fart
+            );
 
-            if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.CRIT,
+                    worldPosition.getX() + 0.5,
+                    worldPosition.getY() + 1.3,
+                    worldPosition.getZ() + 0.5,
+                    10, // antal partikler
+                    0.1, 0.1, 0.1, // spread
+                    0.01 // fart
+            );
+        }
 
-                spawnVisualLightningBolt(serverLevel, worldPosition);
+        level.playSound(null, worldPosition, SoundEvents.ALLAY_HURT,
+                SoundSource.BLOCKS, 0.12f, 0.17f);
+        level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
+                SoundSource.BLOCKS, 0.3f, 0.2f);
+    }
 
-                serverLevel.sendParticles(ParticleTypes.ASH,
-                        worldPosition.getX() + 0.5,
-                        worldPosition.getY() + 1.3,
-                        worldPosition.getZ() + 0.5,
-                        20, // antal partikler
-                        0.1, 0.1, 0.1, // spread
-                        0.01 // fart
-                );
+    private void blockCraftingParticles(AstralAltarRecipe altarRecipe, Level level) {
+        if (altarRecipe.additionalBlock.isPresent() && altarRecipe.blockOutput.isPresent()) {
+            Block requiredBlock = altarRecipe.additionalBlock.get();
+            Block newBlock = altarRecipe.blockOutput.get();
 
-                serverLevel.sendParticles(ParticleTypes.CRIT,
-                        worldPosition.getX() + 0.5,
-                        worldPosition.getY() + 1.3,
-                        worldPosition.getZ() + 0.5,
-                        10, // antal partikler
-                        0.1, 0.1, 0.1, // spread
-                        0.01 // fart
-                );
-            }
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (dx == 0 && dz == 0) continue;
 
-            level.playSound(null, worldPosition, SoundEvents.ALLAY_HURT,
-                    SoundSource.BLOCKS, 0.12f, 0.17f);
-            level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
-                    SoundSource.BLOCKS, 0.3f, 0.2f);
+                    BlockPos checkPos = worldPosition.offset(dx, 0, dz);
+                    Block blockAt = level.getBlockState(checkPos).getBlock();
 
-            if (altarRecipe.additionalBlock.isPresent() && altarRecipe.blockOutput.isPresent()) {
-                Block requiredBlock = altarRecipe.additionalBlock.get();
-                Block newBlock = altarRecipe.blockOutput.get();
+                    BlockState stateAt = level.getBlockState(checkPos);
+                    if (stateAt.getBlock().equals(requiredBlock)) {
+                        boolean matchesState = true;
 
-                for (int dx = -2; dx <= 2; dx++) {
-                    for (int dz = -2; dz <= 2; dz++) {
-                        if (dx == 0 && dz == 0) continue;
+                        if (altarRecipe.blockState.isPresent()) {
+                            Map<String, String> requiredStates = altarRecipe.blockState.get();
 
-                        BlockPos checkPos = worldPosition.offset(dx, 0, dz);
-                        Block blockAt = level.getBlockState(checkPos).getBlock();
+                            for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
+                                Property<?> property = stateAt.getBlock().getStateDefinition().getProperty(entry.getKey());
 
-                        BlockState stateAt = level.getBlockState(checkPos);
-                        if (stateAt.getBlock().equals(requiredBlock)) {
-                            boolean matchesState = true;
-
-                            if (altarRecipe.blockState.isPresent()) {
-                                Map<String, String> requiredStates = altarRecipe.blockState.get();
-
-                                for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
-                                    Property<?> property = stateAt.getBlock().getStateDefinition().getProperty(entry.getKey());
-
-                                    if (property == null) {
-                                        matchesState = false;
-                                        break;
-                                    }
-
-                                    Optional<? extends Comparable<?>> parsed = property.getValue(entry.getValue());
-                                    if (parsed.isEmpty() || !stateAt.getValue(property).equals(parsed.get())) {
-                                        matchesState = false;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (matchesState) {
-                                level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
-
-                                if (level instanceof ServerLevel serverLevel) {
-                                    serverLevel.sendParticles(ParticleTypes.END_ROD,
-                                            checkPos.getX() + 0.5,
-                                            checkPos.getY() + 0.5,
-                                            checkPos.getZ() + 0.5,
-                                            20,
-                                            0.3, 0.3, 0.3,
-                                            0.01
-                                    );
+                                if (property == null) {
+                                    matchesState = false;
+                                    break;
                                 }
 
-                                level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
-                                        SoundSource.BLOCKS, 1.0f, 1.2f);
-                            }
-
-                            if (matchesState) {
-                                level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
-
-                                if (level instanceof ServerLevel serverLevel) {
-                                    serverLevel.sendParticles(ParticleTypes.END_ROD,
-                                            checkPos.getX() + 0.5,
-                                            checkPos.getY() + 0.5,
-                                            checkPos.getZ() + 0.5,
-                                            20,
-                                            0.3, 0.3, 0.3,
-                                            0.01
-                                    );
+                                Optional<? extends Comparable<?>> parsed = property.getValue(entry.getValue());
+                                if (parsed.isEmpty() || !stateAt.getValue(property).equals(parsed.get())) {
+                                    matchesState = false;
+                                    break;
                                 }
-
-                                level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
-                                        SoundSource.BLOCKS, 1.0f, 1.2f);
                             }
                         }
+
+                        if (matchesState) {
+                            level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
+
+                            if (level instanceof ServerLevel serverLevel) {
+                                serverLevel.sendParticles(ParticleTypes.END_ROD,
+                                        checkPos.getX() + 0.5,
+                                        checkPos.getY() + 0.5,
+                                        checkPos.getZ() + 0.5,
+                                        20,
+                                        0.3, 0.3, 0.3,
+                                        0.01
+                                );
+                            }
+
+                            level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
+                                    SoundSource.BLOCKS, 1.0f, 1.2f);
+                        }
+
+                        if (matchesState) {
+                            level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
+
+                            if (level instanceof ServerLevel serverLevel) {
+                                serverLevel.sendParticles(ParticleTypes.END_ROD,
+                                        checkPos.getX() + 0.5,
+                                        checkPos.getY() + 0.5,
+                                        checkPos.getZ() + 0.5,
+                                        20,
+                                        0.3, 0.3, 0.3,
+                                        0.01
+                                );
+                            }
+
+                            level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
+                                    SoundSource.BLOCKS, 1.0f, 1.2f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void setCrafting(BlockPos altarPos, Level level, boolean boo) {
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (dx == 0 && dz == 0) continue;
+
+                BlockPos checkPos = altarPos.offset(dx, 0, dz);
+                BlockState state = level.getBlockState(checkPos);
+                BlockEntity be = level.getBlockEntity(checkPos);
+
+                if (be instanceof AstralNexusBlockEntity nexus) {
+                    if (boo) {
+                        if (nexus.craftingStartTime == -1) {
+                            nexus.craftingStartTime = level.getGameTime();
+                            nexus.setChanged();
+                        }
+                    } else {
+                        nexus.craftingStartTime = -1;
+                        nexus.setChanged();
                     }
                 }
             }
@@ -599,4 +621,13 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
+
+
+
+
+/*
+    private void spawnVisualLightningBolt(ServerLevel level, BlockPos blockPos) {
+        EntityType.LIGHTNING_BOLT.spawn(level, blockPos, MobSpawnType.TRIGGERED).setVisualOnly(true);
+    }
+ */
 }

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:forest",
+  "features": "stellar_sorcery:red_campion_placed",
+  "step": "vegetal_decoration"
+}

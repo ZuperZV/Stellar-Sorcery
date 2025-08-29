@@ -42,8 +42,6 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<LunarInfuserBlockEntity> {
-    public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
-    public static final int MAX_RENDER_Y = 1024;
 
     private static final int SEGMENTS = 8;
     private static final int UPDATE_INTERVAL = 20;
@@ -101,11 +99,6 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
 
         long gameTime = pBlockEntity.getLevel().getGameTime();
-        int startY = pBlockEntity.getBlockPos().getY();
-        int height = 10;
-        int color = FastColor.ARGB32.color(255, 255, 255, 255); // white
-
-        renderLightningStyleBeam(pPoseStack, pBufferSource, gameTime, pPartialTick, startY, height, color);
 
         ItemStack input = pBlockEntity.inventory.getStackInSlot(0);
         ResourceLocation texture = null;
@@ -156,19 +149,6 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         pPoseStack.scale(0.5f, 0.5f, 0.5f);
         pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation()));
 
-        float progress = pBlockEntity.maxProgress == 0 ? 0f : Mth.clamp((float) pBlockEntity.progress / pBlockEntity.maxProgress, 0f, 1f);
-
-        if (progress < 0) {
-            renderFlyingItem(pPoseStack, pBufferSource, itemRenderer, centerStack, pBlockEntity.getLevel(),
-                    pBlockEntity.getBlockPos(), pBlockEntity.getBlockPos(), progress, pBlockEntity.getRenderingRotation());
-        } else {
-            itemRenderer.renderStatic(centerStack, ItemDisplayContext.FIXED,
-                    getLightLevel(pBlockEntity.getLevel(), pBlockEntity.getBlockPos()),
-                    OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
-            pPoseStack.popPose();
-        }
-
-
         Block[] blockOptions = new Block[] {
                 Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.ROOTED_DIRT
         };
@@ -206,116 +186,6 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
                     OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
             pPoseStack.popPose();
         }
-    }
-
-    private void renderFlyingItem(PoseStack poseStack, MultiBufferSource bufferSource, ItemRenderer itemRenderer,
-                                  ItemStack stack, Level level, BlockPos start, BlockPos end,
-                                  float progress, float rotation) {
-        float smoothProgress = easeInOut(progress);
-
-        double startX = start.getX() + 0.5;
-        double startY = start.getY() + 1.15;
-        double startZ = start.getZ() + 0.5;
-
-        double endX = end.getX() + 0.5;
-        double endY = end.getY() + 1.15 + 0.2;
-        double endZ = end.getZ() + 0.5;
-
-        double x = Mth.lerp(smoothProgress, startX, endX);
-        double y = Mth.lerp(smoothProgress, startY, endY);
-        double z = Mth.lerp(smoothProgress, startZ, endZ);
-
-        poseStack.pushPose();
-        poseStack.translate(x - start.getX(), y - start.getY(), z - start.getZ());
-        poseStack.scale(0.5f, 0.5f, 0.5f);
-
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-
-        itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED,
-                getLightLevel(level, start), OverlayTexture.NO_OVERLAY,
-                poseStack, bufferSource, level, 1);
-
-        poseStack.popPose();
-    }
-
-    private void renderLightningStyleBeam(
-            PoseStack poseStack,
-            MultiBufferSource bufferSource,
-            long gameTime,
-            float partialTick,
-            int startY,
-            int height,
-            int color
-    ) {
-        // Opdater kun hvert UPDATE_INTERVAL ticks
-        if (lastUpdateTick < 0 || gameTime - lastUpdateTick >= UPDATE_INTERVAL) {
-            lastUpdateTick = gameTime;
-            RandomSource random = RandomSource.create(gameTime); // seed så den er stabil indtil næste update
-
-            float offX = 0;
-            float offZ = 0;
-            for (int i = SEGMENTS - 1; i >= 0; i--) {
-                offsetsX[i] = offX;
-                offsetsZ[i] = offZ;
-                offX += (float) (random.nextInt(11) - 5);
-                offZ += (float) (random.nextInt(11) - 5);
-            }
-        }
-
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lightning());
-        Matrix4f mat = poseStack.last().pose();
-
-        for (int layer = 0; layer < 2; layer++) {
-            RandomSource random = RandomSource.create(gameTime);
-            for (int branch = 0; branch < 1; branch++) {
-                int segEnd = SEGMENTS - 1;
-                int segStart = 0;
-
-                float prevX = offsetsX[segEnd];
-                float prevZ = offsetsZ[segEnd];
-
-                for (int seg = segEnd; seg >= segStart; seg--) {
-                    float currX = offsetsX[seg];
-                    float currZ = offsetsZ[seg];
-
-                    float thickness1 = 0.2F;
-                    float thickness2 = 0.2F;
-
-                    // Tegn segment – fire sider som i LightningBoltRenderer.quad()
-                    quad(mat, vertexConsumer, currX, currZ, seg, prevX, prevZ,
-                            0.45F, 0.45F, 0.5F,
-                            thickness1, thickness2,
-                            false, false, true, false);
-
-                    prevX = currX;
-                    prevZ = currZ;
-                }
-            }
-        }
-    }
-
-    private static void quad(
-            Matrix4f mat,
-            VertexConsumer buf,
-            float x1, float z1, int segIndex,
-            float x2, float z2,
-            float r, float g, float b,
-            float size1, float size2,
-            boolean b1, boolean b2, boolean b3, boolean b4
-    ) {
-        buf.addVertex(mat, x1 + (b1 ? size2 : -size2), segIndex * 16, z1 + (b2 ? size2 : -size2))
-                .setColor(r, g, b, 0.3F);
-        buf.addVertex(mat, x2 + (b1 ? size1 : -size1), (segIndex + 1) * 16, z2 + (b2 ? size1 : -size1))
-                .setColor(r, g, b, 0.3F);
-        buf.addVertex(mat, x2 + (b3 ? size1 : -size1), (segIndex + 1) * 16, z2 + (b4 ? size1 : -size1))
-                .setColor(r, g, b, 0.3F);
-        buf.addVertex(mat, x1 + (b3 ? size2 : -size2), segIndex * 16, z1 + (b4 ? size2 : -size2))
-                .setColor(r, g, b, 0.3F);
-    }
-
-    private float easeInOut(float tp) {
-        tp = Mth.clamp(tp, 0f, 1f);
-        return tp * tp * (3f - 2f * tp);
     }
 
     private int getLightLevel(Level level, BlockPos pos) {

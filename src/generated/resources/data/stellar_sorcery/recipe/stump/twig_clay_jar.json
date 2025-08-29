@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "BOTH",
+  "ingredient": {
+    "item": "stellar_sorcery:clay_jar"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:root"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:twig_clay_jar"
+  },
+  "time": 300,
+  "time_of_day": "BOTH"
+}

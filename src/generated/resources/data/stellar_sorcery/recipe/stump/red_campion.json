@@ -1,0 +1,23 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "minecraft:poppy",
+  "block_output": "stellar_sorcery:red_campion",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:poppy"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:red_campion"
+    },
+    {
+      "item": "stellar_sorcery:fritillaria_meleagris"
+    }
+  ],
+  "needs_block": true,
+  "output": {
+    "item": "stellar_sorcery:red_campion"
+  },
+  "time": 80,
+  "time_of_day": "DAY"
+}

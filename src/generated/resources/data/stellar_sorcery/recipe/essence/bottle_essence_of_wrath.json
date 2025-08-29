@@ -1,0 +1,32 @@
+{
+  "type": "stellar_sorcery:essence_recipe",
+  "input1": {
+    "item": "minecraft:blaze_powder"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "input3": {
+    "item": "minecraft:nether_star"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:blaze_powder"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:ghast_tear"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:nether_star"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  }
+}

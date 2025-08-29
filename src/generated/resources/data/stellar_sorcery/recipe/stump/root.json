@@ -1,0 +1,22 @@
+{
+  "type": "stellar_sorcery:stump",
+  "essence_type": "stellar_sorcery:fritillaria_meleagris,minecraft:stick,stellar_sorcery:calendula",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:stick"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    },
+    {
+      "item": "stellar_sorcery:red_campion"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:root"
+  },
+  "time": 80,
+  "time_of_day": "DAY"
+}

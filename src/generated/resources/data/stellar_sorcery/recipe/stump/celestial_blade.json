@@ -1,0 +1,28 @@
+{
+  "type": "stellar_sorcery:stump",
+  "essence_type": "minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "minecraft:gunpowder"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "stellar_sorcery:root"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:celestial_blade"
+  },
+  "time": 180,
+  "time_of_day": "NIGHT"
+}

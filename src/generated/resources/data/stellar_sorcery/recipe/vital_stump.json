@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "stellar_sorcery_stumps",
+  "key": {
+    "A": {
+      "item": "stellar_sorcery:stump"
+    },
+    "B": {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    },
+    "C": {
+      "item": "stellar_sorcery:red_campion"
+    },
+    "D": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "BAB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:vital_stump"
+  }
+}

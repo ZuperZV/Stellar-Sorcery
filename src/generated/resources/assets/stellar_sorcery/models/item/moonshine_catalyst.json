@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/moonshine_catalyst"
+  }
+}

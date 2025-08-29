@@ -1,0 +1,28 @@
+{
+  "type": "stellar_sorcery:stump",
+  "essence_type": "minecraft:gunpowder,minecraft:redstone,minecraft:tnt",
+  "fake_time_of_day": "BOTH",
+  "ingredient": {
+    "item": "stellar_sorcery:clay_jar"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:fire_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:twig_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:wind_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:extracter_clay_jar"
+  },
+  "time": 300,
+  "time_of_day": "BOTH"
+}

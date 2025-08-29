@@ -1,0 +1,19 @@
+{
+  "values": {
+    "stellar_sorcery:calendula": {
+      "chance": 0.65
+    },
+    "stellar_sorcery:fritillaria_meleagris": {
+      "chance": 0.3
+    },
+    "stellar_sorcery:fritillaria_meleagris_seeds": {
+      "chance": 0.5
+    },
+    "stellar_sorcery:nigella_damascena": {
+      "chance": 0.65
+    },
+    "stellar_sorcery:red_campion": {
+      "chance": 0.65
+    }
+  }
+}

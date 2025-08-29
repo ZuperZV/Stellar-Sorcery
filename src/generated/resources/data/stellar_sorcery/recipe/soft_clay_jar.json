@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "pattern": [
+    " A ",
+    "AAA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:soft_clay_jar"
+  }
+}

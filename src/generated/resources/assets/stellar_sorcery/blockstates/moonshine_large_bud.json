@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 180
+    },
+    "facing=down,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 180
+    },
+    "facing=east,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90
+    },
+    "facing=north,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90
+    },
+    "facing=south,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud"
+    },
+    "facing=up,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud"
+    },
+    "facing=west,waterlogged=false": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,waterlogged=true": {
+      "model": "stellar_sorcery:block/moonshine_large_bud",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "BOTH",
+  "ingredient": {
+    "item": "minecraft:glass_bottle"
+  },
+  "ingredients": [
+    {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:empty_essence_bottle"
+  },
+  "time": 80,
+  "time_of_day": "BOTH"
+}

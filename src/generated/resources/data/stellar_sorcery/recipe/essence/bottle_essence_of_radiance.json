@@ -1,0 +1,32 @@
+{
+  "type": "stellar_sorcery:essence_recipe",
+  "input1": {
+    "item": "minecraft:dragon_breath"
+  },
+  "input2": {
+    "item": "minecraft:glass_bottle"
+  },
+  "input3": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:dragon_breath"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:glass_bottle"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:glowstone_dust"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "minecraft:oxeye_daisy",
+  "block_output": "stellar_sorcery:calendula",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:oxeye_daisy"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:calendula"
+    },
+    {
+      "item": "stellar_sorcery:fritillaria_meleagris"
+    }
+  ],
+  "needs_block": true,
+  "output": {
+    "item": "stellar_sorcery:calendula"
+  },
+  "time": 90,
+  "time_of_day": "DAY"
+}

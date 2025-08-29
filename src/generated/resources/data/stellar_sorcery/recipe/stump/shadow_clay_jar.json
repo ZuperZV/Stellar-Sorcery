@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "stellar_sorcery:clay_jar"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:black_dye"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:shadow_clay_jar"
+  },
+  "time": 300,
+  "time_of_day": "NIGHT"
+}

@@ -1,0 +1,32 @@
+{
+  "type": "stellar_sorcery:essence_recipe",
+  "input1": {
+    "item": "minecraft:fermented_spider_eye"
+  },
+  "input2": {
+    "item": "minecraft:glow_berries"
+  },
+  "input3": {
+    "item": "stellar_sorcery:nigella_damascena"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:fermented_spider_eye"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:glow_berries"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "stellar_sorcery:nigella_damascena"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  }
+}

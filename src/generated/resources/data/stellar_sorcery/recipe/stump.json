@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "stellar_sorcery_stumps",
+  "ingredients": [
+    {
+      "item": "minecraft:oak_log"
+    },
+    {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    },
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:stump"
+  }
+}
