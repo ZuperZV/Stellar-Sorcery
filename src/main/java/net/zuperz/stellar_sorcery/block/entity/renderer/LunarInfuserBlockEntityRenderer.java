@@ -45,8 +45,8 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
     public static final int MAX_RENDER_Y = 1024;
 
-    private static final int SEGMENTS = 8; // antal knæk – kan ændres nemt
-    private static final int UPDATE_INTERVAL = 20; // antal ticks mellem opdatering af formen
+    private static final int SEGMENTS = 8;
+    private static final int UPDATE_INTERVAL = 20;
     private final float[] offsetsX = new float[SEGMENTS];
     private final float[] offsetsZ = new float[SEGMENTS];
     private long lastUpdateTick = -1;

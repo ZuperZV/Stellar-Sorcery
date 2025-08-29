@@ -55,20 +55,21 @@ public class SigilOrbEntity extends Mob {
                         arcForge.inventory.getStackInSlot(0).set(ModDataComponentTypes.CELESTIAL.get(), new CelestialData(heldItem));
                         player.getMainHandItem().shrink(1);
                         ItemStack stackOnPedestal = arcForge.inventory.extractItem(0, 1, false);
-                        arcForge.inventory.insertItem(0, stackOnPedestal.copy(), false);
+                        arcForge.inventory.insertItem(0, stackOnPedestal, false);
                         level().playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
+                        level().sendBlockUpdated(arcForge.getBlockPos(), arcForge.getBlockState(), arcForge.getBlockState(), 3);
 
                         return InteractionResult.SUCCESS;
 
-                    } else if (heldItem.isEmpty() && arcForge.inventory.getStackInSlot(0).isEmpty()) {
+                    } else if (heldItem.isEmpty() && !arcForge.inventory.getStackInSlot(0).isEmpty()) {
                         CelestialData data = arcForge.inventory.getStackInSlot(0).get(ModDataComponentTypes.CELESTIAL.get());
+
                         if (data != null) {
 
                             player.setItemInHand(hand, data.getEmbeddedItem());
-
                             arcForge.inventory.getStackInSlot(0).remove(ModDataComponentTypes.CELESTIAL.get());
-
                             level().playSound(null, pos, net.minecraft.sounds.SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                            level().sendBlockUpdated(arcForge.getBlockPos(), arcForge.getBlockState(), arcForge.getBlockState(), 3);
 
                             return InteractionResult.SUCCESS;
                         }

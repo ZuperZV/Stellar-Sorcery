@@ -13,6 +13,7 @@ public class CelestialData {
         this.embeddedItem = embeddedItem;
     }
 
+
     public ItemStack getEmbeddedItem() {
         return embeddedItem;
     }
