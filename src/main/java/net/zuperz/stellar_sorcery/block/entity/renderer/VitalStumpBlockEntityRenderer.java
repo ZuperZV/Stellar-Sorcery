@@ -70,20 +70,6 @@ public class VitalStumpBlockEntityRenderer implements BlockEntityRenderer<VitalS
             return new AABB(min, max);
         }
 
-        public static LayerDefinition createMagicAuraLayer() {
-            MeshDefinition mesh = new MeshDefinition();
-            PartDefinition root = mesh.getRoot();
-
-            root.addOrReplaceChild("plane",
-                    CubeListBuilder.create()
-                            .texOffs(0, 0)
-                            .addBox(-24.0F, 0.0F, -24.0F, 48.0F, 0.1F, 48.0F),
-                    PartPose.offset(0.0F, -16.0F, 0.0F)
-            );
-
-            return LayerDefinition.create(mesh, 48, 48);
-        }
-
         @Override
         public void render(VitalStumpBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                            MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {

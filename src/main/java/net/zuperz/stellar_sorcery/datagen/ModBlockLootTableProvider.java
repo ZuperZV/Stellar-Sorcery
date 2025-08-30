@@ -48,6 +48,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ESSENCE_BOILER.get());
         dropSelf(ModBlocks.ARCFORGE.get());
         dropSelf(ModBlocks.LUNAR_INFUSER.get());
+        dropSelf(ModBlocks.LUNAR_JAR.get());
 
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(FritillariaMeleagrisCropBlock.AGE, 5));

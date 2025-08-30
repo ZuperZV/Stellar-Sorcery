@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -23,6 +24,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -43,12 +46,6 @@ import java.util.List;
 
 public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<LunarInfuserBlockEntity> {
 
-    private static final int SEGMENTS = 8;
-    private static final int UPDATE_INTERVAL = 20;
-    private final float[] offsetsX = new float[SEGMENTS];
-    private final float[] offsetsZ = new float[SEGMENTS];
-    private long lastUpdateTick = -1;
-
     public static final ModelLayerLocation MAGIC_AURA_LAYER =
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "magic_aura"), "main");
 
@@ -59,39 +56,6 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
 
     public LunarInfuserBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.magicPlane = context.bakeLayer(MAGIC_AURA_LAYER).getChild("plane");
-    }
-
-    @Override
-    public AABB getRenderBoundingBox(LunarInfuserBlockEntity blockEntity) {
-        BlockPos pos = blockEntity.getBlockPos();
-
-        Vec3 min = new Vec3(
-                pos.getX() - 2,
-                pos.getY() - 2,
-                pos.getZ() - 2
-        );
-
-        Vec3 max = new Vec3(
-                pos.getX() + 2,
-                pos.getY() + 2,
-                pos.getZ() + 2
-        );
-
-        return new AABB(min, max);
-    }
-
-    public static LayerDefinition createMagicAuraLayer() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition root = mesh.getRoot();
-
-        root.addOrReplaceChild("plane",
-                CubeListBuilder.create()
-                        .texOffs(0, 0)
-                        .addBox(-24.0F, 0.0F, -24.0F, 48.0F, 0.1F, 48.0F),
-                PartPose.offset(0.0F, -16.0F, 0.0F)
-        );
-
-        return LayerDefinition.create(mesh, 48, 48);
     }
 
     @Override
@@ -119,6 +83,7 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         }
 
         if (texture != null && fadeAlpha > 0.01f) {
+            // magicPlane render
             pPoseStack.pushPose();
 
             pPoseStack.translate(0.5, 1.01, 0.5);
@@ -128,22 +93,19 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
             VertexConsumer buffer = pBufferSource.getBuffer(renderType);
 
             magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+            pPoseStack.popPose();
 
-            /*RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
+            // lightningBolt render
+            pPoseStack.pushPose();
 
-            RenderSystem.setShaderColor(1f, 1f, 1f, fadeAlpha);
-
-            RenderSystem.disableBlend();
-             */
+            pPoseStack.translate(0.5D, 1.0D, 0.5D);
+            renderLightningBolt(pPoseStack, pBufferSource, pBlockEntity.getBlockPos().asLong() + (gameTime / 5));
 
             pPoseStack.popPose();
         }
 
-
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
-        ItemStack centerStack = pBlockEntity.inventory.getStackInSlot(0);
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 1.15f, 0.5f);
         pPoseStack.scale(0.5f, 0.5f, 0.5f);
@@ -186,6 +148,103 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
                     OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
             pPoseStack.popPose();
         }
+
+        pPoseStack.popPose();
+    }
+
+    private void renderLightningBolt(PoseStack poseStack, MultiBufferSource buffer, long seed) {
+        RandomSource random = RandomSource.create(seed);
+
+        float[] xOffsets = new float[8];
+        float[] zOffsets = new float[8];
+
+        float x = 0.0F;
+        float z = 0.0F;
+
+        for (int i = 7; i >= 0; i--) {
+            xOffsets[i] = x;
+            zOffsets[i] = z;
+            x += (float)(random.nextInt(11) - 5);
+            z += (float)(random.nextInt(11) - 5);
+        }
+
+        VertexConsumer consumer = buffer.getBuffer(RenderType.lightning());
+        Matrix4f matrix = poseStack.last().pose();
+
+        for (int j = 0; j < 4; j++) {
+            RandomSource randomLayer = RandomSource.create(seed);
+
+            for (int k = 0; k < 3; k++) {
+                int start = 7;
+                int end = 0;
+
+                if (k > 0) {
+                    start = 7 - k;
+                    end = start - 2;
+                }
+
+                float dx = xOffsets[start] - x;
+                float dz = zOffsets[start] - z;
+
+                for (int index = start; index >= end; index--) {
+                    float prevDx = dx;
+                    float prevDz = dz;
+
+                    if (k == 0) {
+                        dx += (float)(randomLayer.nextInt(11) - 5);
+                        dz += (float)(randomLayer.nextInt(11) - 5);
+                    } else {
+                        dx += (float)(randomLayer.nextInt(31) - 15);
+                        dz += (float)(randomLayer.nextInt(31) - 15);
+                    }
+
+                    float r = 0.45F;
+                    float g = 0.45F;
+                    float b = 0.5F;
+
+                    float f10 = 0.1F + (float)j * 0.2F;
+                    if (k == 0) {
+                        f10 *= (float)index * 0.1F + 1.0F;
+                    }
+
+                    float f11 = 0.1F + (float)j * 0.2F;
+                    if (k == 0) {
+                        f11 *= ((float)index - 1.0F) * 0.1F + 1.0F;
+                    }
+
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, false, true, false);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, false, true, true);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, true, false, true);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, true, false, false);
+                }
+            }
+        }
+    }
+
+    private static void quad(Matrix4f matrix, VertexConsumer consumer,
+                             float x1, float z1, int segment,
+                             float x2, float z2,
+                             float r, float g, float b,
+                             float f10, float f11,
+                             boolean b1, boolean b2, boolean b3, boolean b4) {
+        consumer.addVertex(matrix, x1 + (b1 ? f11 : -f11), (float)(segment * 16), z1 + (b2 ? f11 : -f11))
+                .setColor(r, g, b, 0.3F);
+        consumer.addVertex(matrix, x2 + (b1 ? f10 : -f10), (float)((segment + 1) * 16), z2 + (b2 ? f10 : -f10))
+                .setColor(r, g, b, 0.3F);
+        consumer.addVertex(matrix, x2 + (b3 ? f10 : -f10), (float)((segment + 1) * 16), z2 + (b4 ? f10 : -f10))
+                .setColor(r, g, b, 0.3F);
+        consumer.addVertex(matrix, x1 + (b3 ? f11 : -f11), (float)(segment * 16), z1 + (b4 ? f11 : -f11))
+                .setColor(r, g, b, 0.3F);
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(LunarInfuserBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(LunarInfuserBlockEntity blockEntity) {
+        return AABB.INFINITE;
     }
 
     private int getLightLevel(Level level, BlockPos pos) {

@@ -621,13 +621,4 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
-
-
-
-
-/*
-    private void spawnVisualLightningBolt(ServerLevel level, BlockPos blockPos) {
-        EntityType.LIGHTNING_BOLT.spawn(level, blockPos, MobSpawnType.TRIGGERED).setVisualOnly(true);
-    }
- */
 }

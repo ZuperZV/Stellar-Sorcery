@@ -13,7 +13,9 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.api.jei.subtypeInterpreter.EssenceBottleSubtypeInterpreter;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.recipes.StumpRecipe;
@@ -100,4 +102,13 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeClickArea(TestScreen.class, 80, 37, 24, 17, JEIPlugin.TEST_TYPE);
     }
      */
+
+    @Override
+    public void registerItemSubtypes(mezz.jei.api.registration.ISubtypeRegistration registration) {
+        registration.registerSubtypeInterpreter(
+                ModItems.ESSENCE_BOTTLE.get(),
+                new EssenceBottleSubtypeInterpreter()
+        );
+    }
+
 }

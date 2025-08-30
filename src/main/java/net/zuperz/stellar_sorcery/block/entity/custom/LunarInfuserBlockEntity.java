@@ -207,7 +207,7 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
                     worldPosition.getX() + 0.5,
                     worldPosition.getY() + 1.3,
                     worldPosition.getZ() + 0.5,
-                    20, // antal partikler
+                    1, // antal partikler
                     0.1, 0.1, 0.1, // spread
                     0.01 // fart
             );
@@ -216,15 +216,17 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
                     worldPosition.getX() + 0.5,
                     worldPosition.getY() + 1.3,
                     worldPosition.getZ() + 0.5,
-                    10, // antal partikler
+                    1, // antal partikler
                     0.1, 0.1, 0.1, // spread
                     0.01 // fart
             );
 
-        level.playSound(null, worldPosition, SoundEvents.ALLAY_HURT,
-                SoundSource.BLOCKS, 0.12f, 0.17f);
-        level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
-                SoundSource.BLOCKS, 0.3f, 0.2f);
+            /*
+            level.playSound(null, worldPosition, SoundEvents.ALLAY_HURT,
+                    SoundSource.BLOCKS, 0.12f, 0.17f);
+            level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
+                    SoundSource.BLOCKS, 0.3f, 0.2f);
+             */
         }
     }
 

@@ -42,6 +42,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("lunar_infuser_be", () -> BlockEntityType.Builder.of(
                     LunarInfuserBlockEntity::new, ModBlocks.LUNAR_INFUSER.get()).build(null));
 
+    public static final Supplier<BlockEntityType<LunarJarBlockEntity>> LUNAR_JAR_BE =
+            BLOCK_ENTITIES.register("lunar_jar_be", () -> BlockEntityType.Builder.of(
+                    LunarJarBlockEntity::new, ModBlocks.LUNAR_JAR.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
