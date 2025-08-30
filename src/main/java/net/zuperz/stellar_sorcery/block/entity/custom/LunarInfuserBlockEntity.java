@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.InfestedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -32,26 +33,22 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
+import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.recipes.FluidRecipeInput;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.recipes.StarLightLunarInfuserRecipe;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.DrbgParameters;
 import java.util.List;
 import java.util.Optional;
 
 import static net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock.DONE;
 
-public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyContainer {
+public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyContainer, IHasFluidTank {
     public int progress = 0;
     public int maxProgress = 80;
     private int prevProgress = 0;
-
-    private List<BeaconBeamSection> beamSections = new java.util.ArrayList<BeaconBeamSection>();
-
-    public List<BeaconBeamSection> getBeamSections() {
-        return beamSections;
-    }
 
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
@@ -84,8 +81,6 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, LunarInfuserBlockEntity altar) {
-        altar.beamSections.add(new BeaconBeamSection(0xFF0000));
-
         BlockState oldState = level.getBlockState(pos);
 
         oldState = oldState.setValue(DONE, false);
@@ -386,16 +381,6 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         CompoundTag fluidTankTag = new CompoundTag();
         this.fluidTank.writeToNBT(registries, fluidTankTag);
         tag.put("FluidTank", fluidTankTag);
-
-        CompoundTag beamsTag = new CompoundTag();
-        beamsTag.putInt("size", beamSections.size());
-        for (int i = 0; i < beamSections.size(); i++) {
-            CompoundTag sectionTag = new CompoundTag();
-            sectionTag.putInt("color", beamSections.get(i).getColor());
-            sectionTag.putInt("height", beamSections.get(i).getHeight());
-            beamsTag.put("section" + i, sectionTag);
-        }
-        tag.put("beamSections", beamsTag);
     }
 
     @Override
@@ -412,32 +397,6 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         }
         if (tag.contains("FluidTank", Tag.TAG_COMPOUND)) {
             this.fluidTank.readFromNBT(registries, tag.getCompound("FluidTank"));
-        }
-
-        beamSections.clear();
-        if (tag.contains("beamSections", Tag.TAG_COMPOUND)) {
-            CompoundTag beamsTag = tag.getCompound("beamSections");
-            int size = beamsTag.contains("size", Tag.TAG_INT) ? beamsTag.getInt("size") : 0;
-
-            for (int i = 0; i < size; i++) {
-                String sectionKey = "section" + i;
-                if (beamsTag.contains(sectionKey, Tag.TAG_COMPOUND)) {
-                    CompoundTag sectionTag = beamsTag.getCompound(sectionKey);
-
-                    if (sectionTag.contains("color", Tag.TAG_INT)) {
-                        int color = sectionTag.getInt("color");
-
-                        BeaconBeamSection section = new BeaconBeamSection(color);
-                        if (sectionTag.contains("height", Tag.TAG_INT)) {
-                            int height = sectionTag.getInt("height");
-                            for (int h = 1; h < height; h++) {
-                                section.increaseHeight();
-                            }
-                        }
-                        beamSections.add(section);
-                    }
-                }
-            }
         }
     }
 
@@ -480,25 +439,8 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         return saveWithoutMetadata(pRegistries);
     }
 
-    public static class BeaconBeamSection {
-        private final int color;
-        private int height;
-
-        public BeaconBeamSection(int color) {
-            this.color = color;
-            this.height = 1;
-        }
-
-        public void increaseHeight() {
-            this.height++;
-        }
-
-        public int getColor() {
-            return this.color;
-        }
-
-        public int getHeight() {
-            return this.height;
-        }
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return fluidTank;
     }
 }

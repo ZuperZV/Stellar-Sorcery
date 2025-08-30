@@ -112,6 +112,7 @@ public class StellarSorcery
             event.registerBlockEntityRenderer(ModBlockEntities.ESSENCE_BOILER_BE.get(), EssenceBoilerBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.LUNAR_INFUSER_BE.get(), LunarInfuserBlockEntityRenderer::new);
 
+            event.registerBlockEntityRenderer(ModBlockEntities.LIGHT_BEAM_EMITTER_BE.get(), lightBeamBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.ARCFORGE_BE.get(), ArcForgeBlockEntityRenderer::new);
         }
 

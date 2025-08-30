@@ -121,6 +121,10 @@ public class ModBlocks {
             () -> new LunarJarBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+    public static final DeferredBlock<Block> LIGHT_BEAM_EMITTER = registerBlock("light_beam_emitter",
+            () -> new LightBeamEmitterBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
+
     private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
         return true;
     }

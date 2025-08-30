@@ -46,6 +46,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("lunar_jar_be", () -> BlockEntityType.Builder.of(
                     LunarJarBlockEntity::new, ModBlocks.LUNAR_JAR.get()).build(null));
 
+    public static final Supplier<BlockEntityType<LightBeamEmitterBlockEntity>> LIGHT_BEAM_EMITTER_BE =
+            BLOCK_ENTITIES.register("light_beam_emitter_be", () -> BlockEntityType.Builder.of(
+                    LightBeamEmitterBlockEntity::new, ModBlocks.LIGHT_BEAM_EMITTER.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
