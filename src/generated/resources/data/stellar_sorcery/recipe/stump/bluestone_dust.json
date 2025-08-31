@@ -1,0 +1,28 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "fluid_input": {
+    "amount": 5000,
+    "fluid": "stellar_sorcery:source_noctilume"
+  },
+  "ingredient": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "stellar_sorcery:frost_clay_jar"
+    },
+    {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:bluestone_dust"
+  },
+  "time": 100,
+  "time_of_day": "NIGHT"
+}

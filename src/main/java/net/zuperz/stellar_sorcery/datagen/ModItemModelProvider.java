@@ -55,6 +55,8 @@ public class ModItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.MOONSHINE_CLUSTER.get());
 
         basicItem(ModFluids.NOCTILUME_BUCKET.get());
+
+        basicItem(ModItems.BLUESTONE_DUST.get());
     }
 
     private void blockItem(Block block) {

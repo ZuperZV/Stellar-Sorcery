@@ -323,6 +323,19 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(pWriter);
 
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.BLUESTONE_DUST.get()),
+                        Ingredient.of(Items.GLOWSTONE_DUST),
+                        Ingredient.of(Items.LAPIS_LAZULI),
+                        Ingredient.of(ModItems.FROST_CLAY_JAR),
+                        Ingredient.of(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                )
+                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 5000))
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(100)
+                .unlockedBy("has_glowstone_dust", has(Items.GLOWSTONE_DUST))
+                .save(pWriter);
+
         // Astral Altar
 
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
