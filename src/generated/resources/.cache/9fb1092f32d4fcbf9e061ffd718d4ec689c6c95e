@@ -1,4 +1,4 @@
-// 1.21	2025-08-24T17:12:44.9642493	Recipes
+// 1.21	2025-08-31T13:21:38.0398971	Recipes
 d3747469a9e4d2883c7d240b64560b806091fb68 data/stellar_sorcery/advancement/recipes/misc/astral_altar/dirt.json
 594a28100a0d611a4a7637988643f9d0a9a14025 data/stellar_sorcery/advancement/recipes/misc/astral_altar/netherite_ingot.json
 a247b72dd8e7d5fae67f9ef2ba5796a02d7cfb8b data/stellar_sorcery/advancement/recipes/misc/astral_altar/raw_copper.json
@@ -19,6 +19,7 @@ ff9238b8f0ea7944bca7bb320a29428a9c51b52f data/stellar_sorcery/advancement/recipe
 e46f347fea9ca63d5a1ed9e64eb95c47cec221dd data/stellar_sorcery/advancement/recipes/misc/stump/empty_essence_bottle.json
 75676ee61ccb5b69b38a9a5ba9580b09ba21cb64 data/stellar_sorcery/advancement/recipes/misc/stump/extracter_clay_jar.json
 85fb101cf31620c505e62428e0bbc45dcef439c0 data/stellar_sorcery/advancement/recipes/misc/stump/fire_clay_jar.json
+c9d4e424b65f2edd87278e90f1a67cc7b7cf363b data/stellar_sorcery/advancement/recipes/misc/stump/fritillaria_meleagris.json
 edd524a747438877b96e1bbbe78277d805c1eb36 data/stellar_sorcery/advancement/recipes/misc/stump/fritillaria_meleagris_seeds.json
 9d6b09ce442ab359245b52bb90e183fcc1af563d data/stellar_sorcery/advancement/recipes/misc/stump/frost_clay_jar.json
 25a12f66df05a93f4c4b1c73ee483632dc0c10d8 data/stellar_sorcery/advancement/recipes/misc/stump/moonshine_catalyst.json
@@ -54,6 +55,7 @@ ee70f38a375a08a32ee89f25f7067903dbc53d42 data/stellar_sorcery/recipe/lunar_infus
 5b02868cac01e726dbb09b7ea9d333131b70992a data/stellar_sorcery/recipe/stump/empty_essence_bottle.json
 c6db5e73f1b8b478e79dcab2b6c6528c379b9dec data/stellar_sorcery/recipe/stump/extracter_clay_jar.json
 ebec3706c04e511e50fe4eca0d7389d0469662f8 data/stellar_sorcery/recipe/stump/fire_clay_jar.json
+c810d5fe639bb902c8d0157bbec8512a06f50832 data/stellar_sorcery/recipe/stump/fritillaria_meleagris.json
 e355880023f439c9d61927804ce20c8a2e079a53 data/stellar_sorcery/recipe/stump/fritillaria_meleagris_seeds.json
 de36da757027c30dad4e3187ed34212eaed3447c data/stellar_sorcery/recipe/stump/frost_clay_jar.json
 5a880b356e2d0a58b21bad586705a87dfb99a133 data/stellar_sorcery/recipe/stump/moonshine_catalyst.json

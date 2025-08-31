@@ -17,9 +17,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.VitalStumpBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.StumpBlockEntity;
+import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;
@@ -39,15 +42,17 @@ public class StumpRecipe implements Recipe<RecipeInput> {
     public final Optional<Block> blockOutput;
     public final Optional<TimeOfDay> timeOfDay;
     public final Optional<TimeOfDay> fakeTimeOfDay;
+    public final Optional<FluidStack> fluidInput;
     public final int recipeTime;
 
     public StumpRecipe(ItemStack output, Ingredient moldIngredient, List<Optional<Ingredient>> additionalIngredients, Optional<String> requiredEssenceType,
                        Optional<Block> additionalBlock, Optional<Map<String, String>> blockState, Optional<Boolean> needsBlock,
-                       Optional<Block> blockOutput, Optional<TimeOfDay> timeOfDay, Optional<TimeOfDay> fakeTimeOfDay, int recipeTime) {
+                       Optional<Block> blockOutput, Optional<TimeOfDay> timeOfDay, Optional<TimeOfDay> fakeTimeOfDay, Optional<FluidStack> fluidInput, int recipeTime) {
         this.output = output;
         this.moldIngredient = moldIngredient;
         this.additionalIngredients = new ArrayList<>(additionalIngredients);
         this.fakeTimeOfDay = fakeTimeOfDay;
+        this.fluidInput = fluidInput;
         while (this.additionalIngredients.size() < 4) this.additionalIngredients.add(Optional.empty());
         this.requiredEssenceType = requiredEssenceType;
         this.additionalBlock = additionalBlock;
@@ -134,6 +139,36 @@ public class StumpRecipe implements Recipe<RecipeInput> {
                 }
                 case BOTH -> {
                 }
+            }
+        }
+
+        if (fluidInput.isPresent()) {
+            FluidStack required = fluidInput.get();
+            boolean foundFluid = false;
+
+            for (int dx = -2; dx <= 2 && !foundFluid; dx++) {
+                for (int dz = -2; dz <= 2 && !foundFluid; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+
+                    BlockPos checkPos = center.offset(dx, 0, dz);
+                    BlockEntity be = level.getBlockEntity(checkPos);
+
+                    if (be instanceof IHasFluidTank hasTank) {
+                        IFluidHandler handler = hasTank.getFluidHandler();
+
+                        FluidStack simulated = handler.drain(required, IFluidHandler.FluidAction.SIMULATE);
+
+                        if (!simulated.isEmpty()
+                                && FluidStack.isSameFluidSameComponents(simulated, required)
+                                && simulated.getAmount() >= required.getAmount()) {
+                            foundFluid = true;
+                        }
+                    }
+                }
+            }
+
+            if (!foundFluid) {
+                return false;
             }
         }
 
@@ -286,16 +321,18 @@ public class StumpRecipe implements Recipe<RecipeInput> {
                     TimeOfDay.CODEC.optionalFieldOf("time_of_day").forGetter(r -> r.timeOfDay),
                     TimeOfDay.CODEC.optionalFieldOf("fake_time_of_day").forGetter(recipe -> recipe.fakeTimeOfDay),
 
+                    CodecFix.OPTIONAL_FLUID_STACK_CODEC.optionalFieldOf("fluid_input").forGetter(recipe -> recipe.fluidInput),
+
                     Codec.INT.fieldOf("time").forGetter(recipe -> recipe.recipeTime)
 
 
-            ).apply(instance, (output, mold, ingredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, recipeTime) -> {
+            ).apply(instance, (output, mold, ingredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, fluidInput, recipeTime) -> {
                 List<Optional<Ingredient>> optionalIngredients = ingredients.stream()
                         .map(Optional::ofNullable)
                         .collect(Collectors.toList());
 
 
-                return new StumpRecipe(output, mold, optionalIngredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, recipeTime);
+                return new StumpRecipe(output, mold, optionalIngredients, essenceType, block, blockState, needsBlock, blockOutput, timeOfDay, fakeTimeOfDay, fluidInput, recipeTime);
             });
         });
 
@@ -353,6 +390,8 @@ public class StumpRecipe implements Recipe<RecipeInput> {
 
             buffer.writeBoolean(recipe.fakeTimeOfDay.isPresent());
             recipe.fakeTimeOfDay.ifPresent(t -> buffer.writeUtf(recipe.fakeTimeOfDay.get().toString()));
+
+            FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, recipe.fluidInput.orElse(FluidStack.EMPTY));
 
             buffer.writeVarInt(recipe.recipeTime);
 
@@ -420,11 +459,13 @@ public class StumpRecipe implements Recipe<RecipeInput> {
                 System.out.println("fakeTimeOfDay: " + fakeTimeOfDay);
             }
 
+            FluidStack decoded = FluidStack.OPTIONAL_STREAM_CODEC.decode(buffer);
+            Optional<FluidStack> fluidInput = decoded.isEmpty() ? Optional.empty() : Optional.of(decoded);
+
             int recipeTime = buffer.readVarInt();
             ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
 
-            return new StumpRecipe(output, mold, ingredients, essenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, fakeTimeOfDay, recipeTime
-            );
+            return new StumpRecipe(output, mold, ingredients, essenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), timeOfDay, fakeTimeOfDay, fluidInput, recipeTime);
         }
 
         private final StreamCodec<RegistryFriendlyByteBuf, StumpRecipe> STREAM_CODEC = StreamCodec.of(

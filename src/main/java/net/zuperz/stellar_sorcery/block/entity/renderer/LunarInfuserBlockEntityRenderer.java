@@ -64,8 +64,10 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
 
         long gameTime = pBlockEntity.getLevel().getGameTime();
 
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack input = pBlockEntity.inventory.getStackInSlot(0);
         ResourceLocation texture = null;
+        Level level = pBlockEntity.getLevel();
 
         Item currentItem = input.getItem();
 
@@ -83,6 +85,9 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         }
 
         if (texture != null && fadeAlpha > 0.01f) {
+            // Idle item render
+            renderIdleItem(pPoseStack, pBufferSource, itemRenderer, input, level, pBlockEntity.getBlockPos(), pBlockEntity.getRenderingRotation());
+
             // magicPlane render
             pPoseStack.pushPose();
 
@@ -93,18 +98,17 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
             VertexConsumer buffer = pBufferSource.getBuffer(renderType);
 
             magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+
             pPoseStack.popPose();
 
             // lightningBolt render
             pPoseStack.pushPose();
 
-            pPoseStack.translate(0.5D, 1.0D, 0.5D);
+            pPoseStack.translate(0.5f, 1.0f, 0.5f);
             renderLightningBolt(pPoseStack, pBufferSource, pBlockEntity.getBlockPos().asLong() + (gameTime / 5));
 
             pPoseStack.popPose();
         }
-
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 1.15f, 0.5f);
@@ -150,6 +154,21 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         }
 
         pPoseStack.popPose();
+    }
+
+    private void renderIdleItem(PoseStack poseStack, MultiBufferSource bufferSource, ItemRenderer itemRenderer,
+                                ItemStack stack, Level level, BlockPos pos, float rotation) {
+
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 1.15f, 0.5f);
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+
+        itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED,
+                getLightLevel(level, pos),
+                OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, 1);
+
+        poseStack.popPose();
     }
 
     private void renderLightningBolt(PoseStack poseStack, MultiBufferSource buffer, long seed) {

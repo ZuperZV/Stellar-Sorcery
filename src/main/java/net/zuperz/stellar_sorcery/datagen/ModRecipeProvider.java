@@ -313,6 +313,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
                 .save(pWriter);
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS.get()),
+                        Ingredient.of(Items.STICK),
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS_SEEDS),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem())
+                )
+                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1000))
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(80)
+                .unlockedBy("has_stick", has(Items.STICK))
+                .save(pWriter);
+
         // Astral Altar
 
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),

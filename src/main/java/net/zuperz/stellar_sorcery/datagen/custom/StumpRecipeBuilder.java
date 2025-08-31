@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import net.zuperz.stellar_sorcery.recipes.StumpRecipe;
@@ -34,6 +35,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
     private Optional<Block> blockOutput = Optional.empty();
     private Optional<TimeOfDay> timeOfDay = Optional.empty();
     private Optional<TimeOfDay> fakeTimeOfDay = Optional.empty();
+    private Optional<FluidStack> fluidInput = Optional.empty();
     private int time = 100;
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
@@ -89,6 +91,11 @@ public class StumpRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
+    public StumpRecipeBuilder fluidInput(FluidStack fluidInput) {
+        this.fluidInput = Optional.of(fluidInput);
+        return this;
+    }
+
     public StumpRecipeBuilder recipeTime(int time) {
         this.time = time;
         return this;
@@ -135,6 +142,7 @@ public class StumpRecipeBuilder implements RecipeBuilder {
                 blockOutput,
                 timeOfDay,
                 fakeTimeOfDay,
+                fluidInput,
                 time
         );
 
