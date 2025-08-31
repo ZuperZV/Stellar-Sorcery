@@ -84,6 +84,9 @@ public class ModItems {
     public static final DeferredItem<Item> WHISPERING_FRAGMENT = ITEMS.register("whispering_fragment",
             () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> BLUESTONE_DUST = ITEMS.register("bluestone_dust",
+            () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

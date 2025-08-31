@@ -287,6 +287,7 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
                     .addItemStack(new ItemStack(block));
         });
 
+        // Entity
         recipe.entityType.ifPresent(entityType -> {
             Entity entity = entityType.create(Minecraft.getInstance().level);
             if (entity instanceof LivingEntity living) {

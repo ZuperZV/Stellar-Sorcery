@@ -314,7 +314,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(pWriter);
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS.get()),
-                        Ingredient.of(Items.STICK),
                         Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS_SEEDS),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem())
                 )

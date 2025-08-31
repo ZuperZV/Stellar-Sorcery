@@ -12,23 +12,25 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.api.jei.custom.FluidTankRenderer;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.recipes.StumpRecipe;
+import net.zuperz.stellar_sorcery.util.MouseUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class StumpRecipeCategory implements IRecipeCategory<StumpRecipe> {
     public final static ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "stump");
@@ -125,7 +127,7 @@ public class StumpRecipeCategory implements IRecipeCategory<StumpRecipe> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("block.stellar_sorcery.astral_altar");
+        return Component.translatable("block.stellar_sorcery.vital_stump");
     }
 
     @Override
@@ -266,6 +268,16 @@ public class StumpRecipeCategory implements IRecipeCategory<StumpRecipe> {
         recipe.blockOutput.ifPresent(block -> {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 97, centerY + 20)
                     .addItemStack(new ItemStack(block));
+        });
+
+        // InputFluid
+        recipe.fluidInput.ifPresent(fluid -> {
+            int iconX = 76 - 2;
+            int iconY = centerY - 20;
+            builder.addSlot(RecipeIngredientRole.INPUT, iconX, iconY)
+                    .addFluidStack(fluid.getFluid(), fluid.getAmount())
+                    .setFluidRenderer(fluid.getAmount(), true, 16, 16)
+                    .setOverlay(slotDrawable, -1, -1);
         });
     }
 }
