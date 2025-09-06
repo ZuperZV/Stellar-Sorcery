@@ -22,14 +22,14 @@ public class EssenceBottleClientTooltip implements ClientTooltipComponent {
 
     @Override
     public int getWidth(Font font) {
-        return items.size() * 20;
+        return items.size() * 18;
     }
 
     @Override
     public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
-            int drawX = x + i * 20;
+            int drawX = x + i * 18;
             graphics.renderItem(stack, drawX, y);
             graphics.renderItemDecorations(Minecraft.getInstance().font, stack, drawX, y);
         }

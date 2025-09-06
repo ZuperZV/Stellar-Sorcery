@@ -47,50 +47,55 @@ public class LunarJarBlockEntityRenderer implements BlockEntityRenderer<LunarJar
         Level level = pBlockEntity.getLevel();
         if (level == null) return;
 
-        IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-        ResourceLocation stillTexture = fluidTypeExtensions.getStillTexture(fluidStack);
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(stillTexture);
+        if (!fluidStack.isEmpty()) {
+            IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+            ResourceLocation stillTexture = fluidTypeExtensions.getStillTexture(fluidStack);
+            if (stillTexture != null) {
+                FluidState state = fluidStack.getFluid().defaultFluidState();
+                TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(stillTexture);
+                int tintColor = fluidTypeExtensions.getTintColor(state, level, pBlockEntity.getBlockPos());
 
-        int tintColor = fluidTypeExtensions.getTintColor(fluidStack.getFluid().defaultFluidState(), level, pBlockEntity.getBlockPos());
-        VertexConsumer builder = pBuffer.getBuffer(ItemBlockRenderTypes.getRenderLayer(fluidStack.getFluid().defaultFluidState()));
+                VertexConsumer builder = pBuffer.getBuffer(RenderType.translucent());
 
-        float height = (((float) pBlockEntity.getTank(null).getFluidInTank(0).getAmount() / pBlockEntity.getTank(null).getTankCapacity(0)) * 0.625f) + 0.25f;
+                float height = (((float) pBlockEntity.getTank(null).getFluidInTank(0).getAmount() / pBlockEntity.getTank(null).getTankCapacity(0)) * 0.625f) + 0.25f;
 
-        float min = 3f / 16f + 0.02f;
-        float max = 13f / 16f - 0.02f;
-        float zFront = 3.01f / 16f + 0.02f;
+                float min = 3f / 16f + 0.02f;
+                float max = 13f / 16f - 0.02f;
+                float zFront = 3.01f / 16f + 0.02f;
 
-        // Top
-        drawQuad(builder, pPoseStack, min, height, min, max, height, max, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                // Top
+                drawQuad(builder, pPoseStack, min, height, min, max, height, max, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
 
-        // Bottom
-        drawQuad(builder, pPoseStack, min, 0, min, max, 0, max, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                // Bottom
+                drawQuad(builder, pPoseStack, min, 0, min, max, 0, max, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
 
-        // (north)
-        pPoseStack.pushPose();
-        drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
-        pPoseStack.popPose();
+                // (north)
+                pPoseStack.pushPose();
+                drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                pPoseStack.popPose();
 
-        // (south)
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(180));
-        pPoseStack.translate(-1f, 0, -1f);
-        drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
-        pPoseStack.popPose();
+                // (south)
+                pPoseStack.pushPose();
+                pPoseStack.mulPose(Axis.YP.rotationDegrees(180));
+                pPoseStack.translate(-1f, 0, -1f);
+                drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                pPoseStack.popPose();
 
-        // (west)
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(90));
-        pPoseStack.translate(-1f, 0, 0);
-        drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
-        pPoseStack.popPose();
+                // (west)
+                pPoseStack.pushPose();
+                pPoseStack.mulPose(Axis.YP.rotationDegrees(90));
+                pPoseStack.translate(-1f, 0, 0);
+                drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                pPoseStack.popPose();
 
-        // (east)
-        pPoseStack.pushPose();
-        pPoseStack.mulPose(Axis.YN.rotationDegrees(90));
-        pPoseStack.translate(0, 0, -1f);
-        drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
-        pPoseStack.popPose();
+                // (east)
+                pPoseStack.pushPose();
+                pPoseStack.mulPose(Axis.YN.rotationDegrees(90));
+                pPoseStack.translate(0, 0, -1f);
+                drawQuad(builder, pPoseStack, min, 0, zFront, max, height, zFront, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), pPackedLight, tintColor);
+                pPoseStack.popPose();
+            }
+        }
     }
 
     private static void drawVertex(VertexConsumer builder, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color) {
