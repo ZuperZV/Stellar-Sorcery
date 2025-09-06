@@ -34,19 +34,22 @@ public class LunarJarBlock extends BaseEntityBlock {
     public static final MapCodec<LunarJarBlock> CODEC = simpleCodec(LunarJarBlock::new);
 
     private static final VoxelShape SHAPE = Shapes.or(
-            box(1, 0, 1, 15, 2, 15),
-            box(1, 11, 1, 15, 14, 15),
-            box(3, 2, 3, 13, 11, 13),
-            box(1, 7, 1, 1, 11, 15),
-            box(15, 7, 1, 15, 11, 15),
-            box(1, 7, 15, 15, 11, 15),
-            box(1, 7, 1, 15, 11, 1),
-            box(13, 14, 1, 15, 15, 3),
-            box(1, 14, 1, 3, 15, 3),
-            box(1, 14, 13, 3, 15, 15),
-            box(13, 14, 13, 15, 15, 15)
+            box(13, 3, 4, 14, 6, 12),
+            box(2, 3, 4, 3, 6, 12),
+            box(4, 3, 2, 12, 6, 3),
+            box(4, 3, 13, 12, 6, 14),
+            box(2, 0, 2, 14, 3, 14),
+            box(2, 13, 2, 14, 16, 14),
+            box(3.01, 3, 3, 13.01, 13, 13),
+            box(3.01, 3, 3, 3.01, 13, 13),
+            box(3, 3, 3.01, 13, 13, 3.01),
+            box(12.99, 3, 3, 12.99, 13, 13),
+            box(3, 3, 12.99, 13, 13, 12.99),
+            box(2, 16, 12, 4, 17, 14),
+            box(2, 16, 2, 4, 17, 4),
+            box(12, 16, 2, 14, 17, 4),
+            box(12, 16, 12, 14, 17, 14)
     );
-
 
     public LunarJarBlock(Properties properties) {
         super(properties);

@@ -14,6 +14,8 @@ import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 
+import javax.annotation.Nullable;
+
 public class LightBeamEmitterBlockEntity extends BlockEntity {
     public int beamLength = 0;
 

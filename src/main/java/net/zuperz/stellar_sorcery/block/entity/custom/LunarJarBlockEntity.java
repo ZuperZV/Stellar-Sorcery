@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.block.entity.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -87,6 +88,14 @@ public class LunarJarBlockEntity extends BlockEntity implements IHasFluidTank {
             rotation = 0;
         }
         return rotation;
+    }
+
+    public FluidStack getFluid() {
+        return fluidTank.getFluid();
+    }
+
+    public IFluidHandler getTank(@Nullable Direction direction) {
+        return fluidTank;
     }
 
     @Nullable

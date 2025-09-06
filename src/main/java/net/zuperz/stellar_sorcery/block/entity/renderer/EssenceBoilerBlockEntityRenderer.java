@@ -35,6 +35,12 @@ import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
 import net.zuperz.stellar_sorcery.component.CelestialData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 
+// Credits to TurtyWurty
+// Under MIT-License: https://github.com/DaRealTurtyWurty/1.20-Tutorial-Mod?tab=MIT-1-ov-file#readme
+//
+// And credits to Kaupenjoe
+// Under MIT-License: https://github.com/Tutorials-By-Kaupenjoe/NeoForge-Course-121-Module-7/blob/main/src/main/java/net/kaupenjoe/mccourse/block/entity/renderer/TankBlockEntityRenderer.java
+
 public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<EssenceBoilerBlockEntity> {
     private final ItemRenderer itemRenderer;
 

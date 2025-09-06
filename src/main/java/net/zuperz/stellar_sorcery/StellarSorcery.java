@@ -114,6 +114,8 @@ public class StellarSorcery
 
             event.registerBlockEntityRenderer(ModBlockEntities.LIGHT_BEAM_EMITTER_BE.get(), lightBeamBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.ARCFORGE_BE.get(), ArcForgeBlockEntityRenderer::new);
+
+            event.registerBlockEntityRenderer(ModBlockEntities.LUNAR_JAR_BE.get(), LunarJarBlockEntityRenderer::new);
         }
 
         @SubscribeEvent

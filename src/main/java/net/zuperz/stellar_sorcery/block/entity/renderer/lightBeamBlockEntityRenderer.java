@@ -90,10 +90,66 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         double dy = endPos.y - startPos.y;
         double dz = endPos.z - startPos.z;
 
+        float baseThickness = 0.1F;
+
+        float r = 0.45F;
+        float g = 0.45F;
+        float b = 0.5F;
+
+        // Beam
         drawBeamSegment(matrix, consumer, dx, dy, dz,
-                0.1F, 0.2F, 0.6F, 1.0F, 0.4F);
+                baseThickness, r, g, b, 0.4F);
         drawBeamSegment(matrix, consumer, dx, dy, dz,
-                0.04F, 0.8F, 0.9F, 1.0F, 0.9F);
+                0.04F, r + 0.05f, g + 0.05f, b + 0.05f, 0.9F);
+
+        float pixel = 1.0F / 16.0F;
+
+        // Start
+        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + 0.01F, r, g, b, 0.3F);    // Small
+        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + pixel + 0.01f, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F);    // Big
+
+        // End
+        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + 0.01F, r, g, b, 0.3F);     // lille
+        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + pixel + 0.01F, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F);   // stor
+    }
+
+    private void drawCube(Matrix4f matrix, VertexConsumer consumer,
+                          Vec3 center, float halfSize,
+                          float r, float g, float b, float a) {
+        Vec3[] corners = new Vec3[8];
+        int i = 0;
+        for (int x = -1; x <= 1; x += 2) {
+            for (int y = -1; y <= 1; y += 2) {
+                for (int z = -1; z <= 1; z += 2) {
+                    corners[i++] = center.add(
+                            x * halfSize,
+                            y * halfSize,
+                            z * halfSize
+                    );
+                }
+            }
+        }
+
+        int[][] faces = {
+                {0,1,3,2}, // b
+                {4,5,7,6}, // t
+                {0,1,5,4}, // f
+                {2,3,7,6}, // b
+                {0,2,6,4}, // l
+                {1,3,7,5}  // r
+        };
+
+        for (int[] face : faces) {
+            addVertex(consumer, matrix, corners[face[0]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[1]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[2]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[3]], r, g, b, a);
+
+            addVertex(consumer, matrix, corners[face[3]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[2]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[1]], r, g, b, a);
+            addVertex(consumer, matrix, corners[face[0]], r, g, b, a);
+        }
     }
 
     private void drawBeamSegment(Matrix4f matrix, VertexConsumer consumer, double dx, double dy, double dz, float thickness, float r, float g, float b, float a) {
