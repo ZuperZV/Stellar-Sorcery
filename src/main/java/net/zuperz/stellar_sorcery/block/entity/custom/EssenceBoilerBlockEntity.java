@@ -31,13 +31,14 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
+import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import org.jetbrains.annotations.Nullable;
 
 
-public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyContainer {
+public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyContainer, IHasFluidTank {
     public int progress = 0;
     public int maxProgress = 60;
     public static final int EVENT_WOBBLE = 1;
@@ -400,5 +401,10 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
             return true;
         }
         return super.triggerEvent(id, type);
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return fluidTank;
     }
 }

@@ -1,0 +1,93 @@
+{
+  "minecraft:stick,stellar_sorcery:calendula,stellar_sorcery:fritillaria_meleagris": {
+    "name": "item.stellar_sorcery.bottle_essence_of_nature",
+    "effects": [
+      { "id": "minecraft:regeneration", "duration": 400, "amplifier": 1 },
+      { "id": "minecraft:absorption", "duration": 600, "amplifier": 0 }
+    ]
+  },
+  "minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena": {
+    "name": "item.stellar_sorcery.bottle_essence_of_night_bloom",
+    "effects": [
+      { "id": "minecraft:night_vision", "duration": 600, "amplifier": 0 },
+      { "id": "minecraft:invisibility", "duration": 300, "amplifier": 0 }
+    ]
+  },
+  "minecraft:gunpowder,minecraft:redstone,minecraft:tnt": {
+    "name": "item.stellar_sorcery.bottle_essence_of_chaos",
+    "effects": [
+      { "id": "minecraft:nausea", "duration": 200, "amplifier": 0 },
+      { "id": "minecraft:wither", "duration": 100, "amplifier": 1 }
+    ]
+  },
+  "minecraft:lapis_lazuli,minecraft:book,minecraft:experience_bottle": {
+    "name": "item.stellar_sorcery.bottle_essence_of_knowledge",
+    "effects": [
+      { "id": "minecraft:hero_of_the_village", "duration": 400, "amplifier": 0 },
+      { "id": "minecraft:luck", "duration": 600, "amplifier": 1 }
+    ]
+  },
+  "minecraft:blaze_rod,minecraft:diamond,minecraft:ender_pearl": {
+    "name": "item.stellar_sorcery.bottle_essence_diamond_power",
+    "effects": [
+      { "id": "minecraft:strength", "duration": 500, "amplifier": 2 },
+      { "id": "minecraft:resistance", "duration": 400, "amplifier": 1 }
+    ]
+  },
+  "minecraft:amethyst_shard,minecraft:phantom_membrane,minecraft:potion": {
+    "name": "item.stellar_sorcery.bottle_essence_of_lingering_myst",
+    "effects": [
+      { "id": "minecraft:levitation", "duration": 100, "amplifier": 0 },
+      { "id": "minecraft:slow_falling", "duration": 400, "amplifier": 0 }
+    ]
+  },
+  "minecraft:blaze_powder,minecraft:ghast_tear,minecraft:nether_star": {
+    "name": "item.stellar_sorcery.bottle_essence_of_wrath",
+    "effects": [
+      { "id": "minecraft:strength", "duration": 300, "amplifier": 3 },
+      { "id": "minecraft:fire_resistance", "duration": 400, "amplifier": 1 }
+    ]
+  },
+  "minecraft:dragon_breath,minecraft:glass_bottle,minecraft:glowstone_dust": {
+    "name": "item.stellar_sorcery.bottle_essence_of_radiance",
+    "effects": [
+      { "id": "minecraft:glowing", "duration": 600, "amplifier": 0 },
+      { "id": "minecraft:regeneration", "duration": 300, "amplifier": 1 }
+    ]
+  },
+  "minecraft:chorus_fruit,minecraft:end_crystal,stellar_sorcery:astral_flower": {
+    "name": "item.stellar_sorcery.bottle_essence_of_void",
+    "effects": [
+      { "id": "minecraft:resistance", "duration": 400, "amplifier": 2 },
+      { "id": "minecraft:slow_falling", "duration": 600, "amplifier": 1 }
+    ]
+  },
+  "minecraft:fermented_spider_eye,minecraft:rotten_flesh,stellar_sorcery:nightshade": {
+    "name": "item.stellar_sorcery.bottle_essence_of_decay",
+    "effects": [
+      { "id": "minecraft:poison", "duration": 200, "amplifier": 1 },
+      { "id": "minecraft:hunger", "duration": 300, "amplifier": 1 }
+    ]
+  },
+  "minecraft:glow_ink_sac,minecraft:sea_pickle,stellar_sorcery:kelp_petal": {
+    "name": "item.stellar_sorcery.bottle_essence_of_depths",
+    "effects": [
+      { "id": "minecraft:water_breathing", "duration": 600, "amplifier": 0 },
+      { "id": "minecraft:dolphins_grace", "duration": 300, "amplifier": 0 }
+    ]
+  },
+  "minecraft:nether_wart,minecraft:magma_cream,stellar_sorcery:ember_blossom": {
+    "name": "item.stellar_sorcery.bottle_essence_of_ember",
+    "effects": [
+      { "id": "minecraft:fire_resistance", "duration": 600, "amplifier": 0 },
+      { "id": "minecraft:strength", "duration": 300, "amplifier": 1 }
+    ]
+  },
+  "minecraft:snowball,minecraft:blue_ice,stellar_sorcery:ice_iris": {
+    "name": "item.stellar_sorcery.bottle_essence_of_frost",
+    "effects": [
+      { "id": "minecraft:slowness", "duration": 300, "amplifier": 1 },
+      { "id": "minecraft:jump_boost", "duration": 400, "amplifier": 0 }
+    ]
+  }
+}

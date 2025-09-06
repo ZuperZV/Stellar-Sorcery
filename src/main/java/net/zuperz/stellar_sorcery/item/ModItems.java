@@ -1,7 +1,9 @@
 package net.zuperz.stellar_sorcery.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.BundleContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -65,6 +67,7 @@ public class ModItems {
 
     public static final DeferredItem<Item> ESSENCE_BOTTLE = ITEMS.register("essence_bottle",
             () -> new EssenceBottleItem(new Item.Properties().stacksTo(1)));
+
 
     public static final DeferredItem<Item> EMPTY_ESSENCE_BOTTLE = ITEMS.register("empty_essence_bottle",
             () -> new Item(new Item.Properties().stacksTo(16)));

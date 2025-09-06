@@ -1,12 +1,9 @@
 package net.zuperz.stellar_sorcery;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -19,16 +16,17 @@ import net.zuperz.stellar_sorcery.block.entity.renderer.*;
 import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
 import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
-import net.zuperz.stellar_sorcery.item.custom.EssenceNameLoader;
+import net.zuperz.stellar_sorcery.item.custom.EssenceDataLoader;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.entity.ModEntities;
 import net.zuperz.stellar_sorcery.entity.client.ModModelLayers;
 import net.zuperz.stellar_sorcery.entity.client.SigilOrbModel;
-import net.zuperz.stellar_sorcery.entity.client.SigilOrbRenderer;
 import net.zuperz.stellar_sorcery.entity.custom.SigilOrbEntity;
 import net.zuperz.stellar_sorcery.item.ModCreativeModeTabs;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
+import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleClientTooltip;
+import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.NumberBarDecorator;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
@@ -91,7 +89,7 @@ public class StellarSorcery
 
         ModFluids.registerFluidInteractions();
 
-        EssenceNameLoader.load();
+        EssenceDataLoader.load();
     }
 
     @SubscribeEvent
@@ -124,6 +122,11 @@ public class StellarSorcery
         }
 
         @SubscribeEvent
+        public static void registerTooltipFactories(RegisterClientTooltipComponentFactoriesEvent event) {
+            event.register(EssenceBottleTooltip.class, EssenceBottleClientTooltip::new);
+        }
+
+        @SubscribeEvent
         public static void registerAttributes(EntityAttributeCreationEvent event) {
             event.put(ModEntities.SIGIL_ORB.get(), SigilOrbEntity.createAttributes().build());
         }
@@ -136,15 +139,6 @@ public class StellarSorcery
                     AstralAltarBlockEntityRenderer.MAGIC_AURA_LAYER,
                     AstralAltarBlockEntityRenderer::createMagicAuraLayer
             );
-        }
-
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            EntityRenderers.register(ModEntities.SIGIL_ORB.get(), SigilOrbRenderer::new);
-            event.enqueueWork(() -> {
-                ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_NOCTILUME.get(), RenderType.translucent());
-                ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_NOCTILUME.get(), RenderType.translucent());
-            });
         }
 
         @SubscribeEvent

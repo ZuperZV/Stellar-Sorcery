@@ -14,10 +14,9 @@ import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 
-import javax.annotation.Nullable;
-
 public class LightBeamEmitterBlockEntity extends BlockEntity {
     public int beamLength = 0;
+    public boolean needsToBeNoctilume = false;
 
     public LightBeamEmitterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.LIGHT_BEAM_EMITTER_BE.get(), pos, state);
@@ -36,26 +35,23 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
 
         IFluidHandler inputHandler = inputTank.getFluidHandler();
 
-        FluidStack simulatedDrain = inputHandler.drain(
-                new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 100),
-                IFluidHandler.FluidAction.SIMULATE
-        );
+        FluidStack requiredFluid = be.needsToBeNoctilume
+                ? new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 100)
+                : inputHandler.drain(100, IFluidHandler.FluidAction.SIMULATE);
 
-        if (simulatedDrain.isEmpty()) {
+        if (requiredFluid.isEmpty()) {
             return;
         }
 
-        be.shootBeam(level, pos, facing, inputHandler, inputBE, pos, state);
+        be.shootBeam(level, pos, facing, inputHandler, inputBE, pos, state, requiredFluid);
     }
 
     private void shootBeam(Level level, BlockPos start, Direction dir,
-                           IFluidHandler inputHandler, BlockEntity inputBE, BlockPos pos, BlockState state) {
+                           IFluidHandler inputHandler, BlockEntity inputBE, BlockPos pos,
+                           BlockState state, FluidStack requiredFluid) {
         BlockPos.MutableBlockPos current = start.mutable();
 
-        FluidStack drainedSim = inputHandler.drain(
-                new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 100),
-                IFluidHandler.FluidAction.SIMULATE
-        );
+        FluidStack drainedSim = inputHandler.drain(requiredFluid, IFluidHandler.FluidAction.SIMULATE);
 
         if (drainedSim.isEmpty()) {
             this.beamLength = 0;
@@ -86,8 +82,7 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
 
             int filled = outputHandler.fill(drainedSim, IFluidHandler.FluidAction.EXECUTE);
             if (filled > 0) {
-                inputHandler.drain(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), filled),
-                        IFluidHandler.FluidAction.EXECUTE);
+                inputHandler.drain(new FluidStack(drainedSim.getFluid(), filled), IFluidHandler.FluidAction.EXECUTE);
 
                 updateBlock(level, inputBE.getBlockPos(), inputBE.getBlockState(), inputBE);
                 updateBlock(level, targetBE.getBlockPos(), targetBE.getBlockState(), targetBE);
@@ -106,10 +101,12 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
+        tag.putBoolean("NeedsNoctilume", this.needsToBeNoctilume);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
+        this.needsToBeNoctilume = tag.getBoolean("NeedsNoctilume");
     }
 }

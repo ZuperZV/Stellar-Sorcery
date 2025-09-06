@@ -23,7 +23,7 @@ public class ModFluidTypes {
             DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, StellarSorcery.MOD_ID);
 
     public static final Supplier<FluidType> NOCTILUME_FLUID_TYPE = registerFluidType("noctilume",
-            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0xE99E9BA9,
+            new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL, 0xE9ded5ff,
                     new Vector3f(108f / 255f, 168f / 255f, 212f / 255f),
                     FluidType.Properties.create()
                             .temperature(600)
