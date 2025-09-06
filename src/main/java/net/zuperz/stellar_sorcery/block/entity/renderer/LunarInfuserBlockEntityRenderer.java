@@ -69,6 +69,8 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         ResourceLocation texture = null;
         Level level = pBlockEntity.getLevel();
 
+        renderIdleItem(pPoseStack, pBufferSource, itemRenderer, input, level, pBlockEntity.getBlockPos(), pBlockEntity.getRenderingRotation());
+
         Item currentItem = input.getItem();
 
         if (currentItem != lastRenderedItem) {
@@ -85,8 +87,6 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         }
 
         if (texture != null && fadeAlpha > 0.01f) {
-            // Idle item render
-            renderIdleItem(pPoseStack, pBufferSource, itemRenderer, input, level, pBlockEntity.getBlockPos(), pBlockEntity.getRenderingRotation());
 
             // magicPlane render
             pPoseStack.pushPose();

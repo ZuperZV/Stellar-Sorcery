@@ -19,6 +19,7 @@ public class ModItemBlockRenderTypes {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ESSENCE_BOILER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAR_LIGHT.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LUNAR_JAR.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.LUNAR_INFUSER.get(), RenderType.cutout());
         });
     }
 }
