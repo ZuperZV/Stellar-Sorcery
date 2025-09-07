@@ -4,14 +4,22 @@
     "effects": [
       { "id": "minecraft:regeneration", "duration": 400, "amplifier": 1 },
       { "id": "minecraft:absorption", "duration": 600, "amplifier": 0 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/nature.json",
+      "duration": 200
+    }
   },
   "minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena": {
     "name": "item.stellar_sorcery.bottle_essence_of_night_bloom",
     "effects": [
       { "id": "minecraft:night_vision", "duration": 600, "amplifier": 0 },
       { "id": "minecraft:invisibility", "duration": 300, "amplifier": 0 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/dark.json",
+      "duration": 200
+    }
   },
   "minecraft:gunpowder,minecraft:redstone,minecraft:tnt": {
     "name": "item.stellar_sorcery.bottle_essence_of_chaos",
@@ -30,9 +38,13 @@
   "minecraft:blaze_rod,minecraft:diamond,minecraft:ender_pearl": {
     "name": "item.stellar_sorcery.bottle_essence_diamond_power",
     "effects": [
-      { "id": "minecraft:strength", "duration": 500, "amplifier": 2 },
+      { "id": "minecraft:strength", "duration": 800, "amplifier": 2 },
       { "id": "minecraft:resistance", "duration": 400, "amplifier": 1 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/diamond_time.json",
+      "duration": 400
+    }
   },
   "minecraft:amethyst_shard,minecraft:phantom_membrane,minecraft:potion": {
     "name": "item.stellar_sorcery.bottle_essence_of_lingering_myst",

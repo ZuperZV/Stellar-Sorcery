@@ -15,6 +15,8 @@ import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.TextureColorHelper;
+import net.zuperz.stellar_sorcery.shaders.post.DarkShaderRenderer;
+import net.zuperz.stellar_sorcery.shaders.post.EssenceBottleItemShaderRenderer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -62,6 +64,20 @@ public class EssenceBottleItem extends Item {
                 List<MobEffectInstance> effects = EssenceDataLoader.getEffects(key);
                 for (MobEffectInstance effect : effects) {
                     entity.addEffect(new MobEffectInstance(effect));
+                }
+            }
+        } else {
+            EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
+            if (data != null) {
+                String key = makeKey(
+                        data.getEmbeddedItem().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem1().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem2().getItem().builtInRegistryHolder().key().location().toString()
+                );
+
+                EssenceDataLoader.ShaderData shader = EssenceDataLoader.getShader(key);
+                if (shader != null) {
+                    EssenceBottleItemShaderRenderer.enableShader(shader.shaderId, shader.durationTicks);
                 }
             }
         }

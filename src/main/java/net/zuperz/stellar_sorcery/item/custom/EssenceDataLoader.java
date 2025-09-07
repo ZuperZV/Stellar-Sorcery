@@ -18,6 +18,7 @@ public class EssenceDataLoader {
 
     private static final Map<String, String> nameMap = new HashMap<>();
     private static final Map<String, List<MobEffectInstance>> effectMap = new HashMap<>();
+    private static final Map<String, ShaderData> shaderMap = new HashMap<>();
 
     public static void load() {
         System.out.println("[EssenceDataLoader] Loader essence_data.json...");
@@ -67,6 +68,17 @@ public class EssenceDataLoader {
                     }
                 }
                 effectMap.put(key, effects);
+
+                if (obj.has("shader")) {
+                    JsonObject shaderObj = obj.getAsJsonObject("shader");
+                    String shaderId = shaderObj.get("id").getAsString();
+                    int duration = shaderObj.get("duration").getAsInt();
+
+                    ResourceLocation rl = ResourceLocation.tryParse(shaderId);
+                    if (rl != null) {
+                        shaderMap.put(key, new ShaderData(rl, duration));
+                    }
+                }
             }
 
             System.out.println("[EssenceDataLoader] Færdig med at loade. Keys: " + nameMap.size());
@@ -77,11 +89,25 @@ public class EssenceDataLoader {
         }
     }
 
+    public static class ShaderData {
+        public final ResourceLocation shaderId;
+        public final int durationTicks;
+
+        public ShaderData(ResourceLocation shaderId, int durationTicks) {
+            this.shaderId = shaderId;
+            this.durationTicks = durationTicks;
+        }
+    }
+
     public static String getName(String key) {
         return nameMap.get(key);
     }
 
     public static List<MobEffectInstance> getEffects(String key) {
         return effectMap.getOrDefault(key, List.of());
+    }
+
+    public static ShaderData getShader(String key) {
+        return shaderMap.get(key);
     }
 }

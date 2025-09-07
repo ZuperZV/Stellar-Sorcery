@@ -1,0 +1,16 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "vertex": "stellar_sorcery:shaders/program/post",
+  "fragment": "stellar_sorcery:shaders/program/blur",
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ],
+  "uniforms": [
+    { "name": "InSize", "type": "float", "count": 2, "values": [1.0, 1.0] },
+    { "name": "Radius", "type": "float", "count": 1, "values": [2.0] }
+  ]
+}

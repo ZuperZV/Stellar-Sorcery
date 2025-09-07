@@ -15,7 +15,11 @@ import java.io.IOException;
 public class DarkShaderRenderer {
 
     private static PostChain darkShaderChain;
-    private static boolean enabled = true;
+    private static boolean enabled = false;
+
+    // Timing fields
+    private static long enableStartTime = 0;
+    private static long durationMs = 0;
 
     private static void initShader() {
         if (darkShaderChain == null) {
@@ -25,7 +29,7 @@ public class DarkShaderRenderer {
                         mc.getTextureManager(),
                         mc.getResourceManager(),
                         mc.getMainRenderTarget(),
-                        ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "shaders/post/dark_filter.json")
+                        ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "shaders/post/dark.json")
                 );
                 darkShaderChain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
             } catch (IOException e) {
@@ -37,6 +41,14 @@ public class DarkShaderRenderer {
     @SubscribeEvent
     public static void onRenderStage(RenderLevelStageEvent event) {
         if (!enabled) return;
+
+        if (durationMs > 0) {
+            long elapsed = System.currentTimeMillis() - enableStartTime;
+            if (elapsed >= durationMs) {
+                enabled = false;
+                return;
+            }
+        }
 
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             initShader();
@@ -50,8 +62,10 @@ public class DarkShaderRenderer {
         }
     }
 
-    public static void toggle(boolean setEnabled) {
-        enabled = setEnabled;
+    public static void enableForTicks(int ticks) {
+        enabled = true;
+        enableStartTime = System.currentTimeMillis();
+        durationMs = ticks * 50L;
     }
 }
 
