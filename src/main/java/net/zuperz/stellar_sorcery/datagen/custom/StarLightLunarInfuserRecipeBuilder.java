@@ -66,7 +66,7 @@ public class StarLightLunarInfuserRecipeBuilder implements RecipeBuilder {
 
     @Override
     public RecipeBuilder unlockedBy(String p_176496_, Criterion<?> p_301065_) {
-        this.criteria.put("has_lunar_infuser", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LUNAR_INFUSER.get()));
+        this.criteria.put("has_lunar_infuser", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LIGHT_INFUSER.get()));
         return this;
     }
 
@@ -77,7 +77,7 @@ public class StarLightLunarInfuserRecipeBuilder implements RecipeBuilder {
 
     @Override
     public void save(RecipeOutput recipeOutput, ResourceLocation id) {
-        this.criteria.put("has_lunar_infuser", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LUNAR_INFUSER.get()));
+        this.criteria.put("has_lunar_infuser", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LIGHT_INFUSER.get()));
 
         ensureValid(id);
 

@@ -42,13 +42,26 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("lunar_infuser_be", () -> BlockEntityType.Builder.of(
                     LunarInfuserBlockEntity::new, ModBlocks.LUNAR_INFUSER.get()).build(null));
 
+    public static final Supplier<BlockEntityType<LunarInfuserBlockEntity>> LIGHT_INFUSER_BE =
+            BLOCK_ENTITIES.register("light_infuser_be", () -> BlockEntityType.Builder.of(
+                    LunarInfuserBlockEntity::new, ModBlocks.LIGHT_INFUSER.get()).build(null));
+
     public static final Supplier<BlockEntityType<LunarJarBlockEntity>> LUNAR_JAR_BE =
             BLOCK_ENTITIES.register("lunar_jar_be", () -> BlockEntityType.Builder.of(
                     LunarJarBlockEntity::new, ModBlocks.LUNAR_JAR.get()).build(null));
 
+    public static final Supplier<BlockEntityType<LunarJarBlockEntity>> LIGHT_JAR_BE =
+            BLOCK_ENTITIES.register("light_jar_be", () -> BlockEntityType.Builder.of(
+                    LunarJarBlockEntity::new, ModBlocks.LIGHT_JAR.get()).build(null));
+
     public static final Supplier<BlockEntityType<LightBeamEmitterBlockEntity>> LIGHT_BEAM_EMITTER_BE =
             BLOCK_ENTITIES.register("light_beam_emitter_be", () -> BlockEntityType.Builder.of(
                     LightBeamEmitterBlockEntity::new, ModBlocks.LIGHT_BEAM_EMITTER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<LightBeamEmitterBlockEntity>> LUNAR_LIGHT_BEAM_EMITTER_BE =
+            BLOCK_ENTITIES.register("lunar_light_beam_emitter_be", () -> BlockEntityType.Builder.of(
+                    LightBeamEmitterBlockEntity::new, ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get()).build(null));
+
 
 
     public static void register(IEventBus eventBus) {

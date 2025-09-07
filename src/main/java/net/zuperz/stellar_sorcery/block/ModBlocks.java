@@ -121,6 +121,18 @@ public class ModBlocks {
             () -> new LunarJarBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+    public static final DeferredBlock<Block> LUNAR_LIGHT_BEAM_EMITTER = registerBlock("lunar_light_beam_emitter",
+            () -> new LightBeamEmitterBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
+
+    public static final DeferredBlock<Block> LIGHT_INFUSER = registerBlock("light_infuser",
+            () -> new LunarInfuserBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
+
+    public static final DeferredBlock<Block> LIGHT_JAR = registerBlock("light_jar",
+            () -> new LunarJarBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
+
     public static final DeferredBlock<Block> LIGHT_BEAM_EMITTER = registerBlock("light_beam_emitter",
             () -> new LightBeamEmitterBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));

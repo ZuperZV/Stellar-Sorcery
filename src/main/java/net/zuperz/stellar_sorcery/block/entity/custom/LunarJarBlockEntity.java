@@ -18,6 +18,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +39,9 @@ public class LunarJarBlockEntity extends BlockEntity implements IHasFluidTank {
     private float rotation;
 
     public LunarJarBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.LUNAR_JAR_BE.get(), pos, state);
+        super(state.getBlock() == ModBlocks.LUNAR_JAR.get()
+                ? ModBlockEntities.LUNAR_JAR_BE.get()
+                : ModBlockEntities.LIGHT_JAR_BE.get(), pos, state);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, LunarJarBlockEntity altar) {

@@ -31,6 +31,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
@@ -77,7 +78,9 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
     private float rotation;
 
     public LunarInfuserBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.LUNAR_INFUSER_BE.get(), pos, state);
+        super(state.getBlock() == ModBlocks.LUNAR_INFUSER.get()
+                ? ModBlockEntities.LUNAR_INFUSER_BE.get()
+                : ModBlockEntities.LIGHT_INFUSER_BE.get(), pos, state);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, LunarInfuserBlockEntity altar) {

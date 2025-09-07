@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.item.custom;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,8 +12,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.TextureColorHelper;
 import net.zuperz.stellar_sorcery.shaders.post.DarkShaderRenderer;
@@ -52,6 +55,8 @@ public class EssenceBottleItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        Player player = entity instanceof Player ? (Player) entity : null;
+
         if (!level.isClientSide) {
             EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
             if (data != null) {
@@ -81,6 +86,19 @@ public class EssenceBottleItem extends Item {
                 }
             }
         }
+
+        if (player != null) {
+            player.awardStat(Stats.ITEM_USED.get(this));
+            stack.consume(1, player);
+            if (!player.hasInfiniteMaterials()) {
+                if (stack.isEmpty()) {
+                    return new ItemStack(ModItems.EMPTY_ESSENCE_BOTTLE.get());
+                }
+                player.getInventory().add(new ItemStack(ModItems.EMPTY_ESSENCE_BOTTLE.get()));
+            }
+        }
+
+        entity.gameEvent(GameEvent.DRINK);
         return super.finishUsingItem(stack, level, entity);
     }
 

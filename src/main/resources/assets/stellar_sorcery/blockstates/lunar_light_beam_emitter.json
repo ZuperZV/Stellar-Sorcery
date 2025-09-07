@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter"
+    },
+    "facing=south": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter",
+      "y": 90
+    },
+    "facing=up": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "stellar_sorcery:block/lunar_light_beam_emitter",
+      "x": 90
+    }
+  }
+}

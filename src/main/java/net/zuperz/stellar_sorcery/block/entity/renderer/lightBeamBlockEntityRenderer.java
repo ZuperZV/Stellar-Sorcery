@@ -26,6 +26,10 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
 
     public lightBeamBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
+    private int cachedBeamLength = 0;
+    private int beamTicksRemaining = 0;
+    private static final int MAX_BEAM_TICKS = 40;
+
     @Override
     public void render(LightBeamEmitterBlockEntity be, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
@@ -35,54 +39,54 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         Direction facing = be.getBlockState().getValue(LightBeamEmitterBlock.FACING);
         BlockPos inputPos = be.getBlockPos().relative(facing.getOpposite());
 
+        int currentLength = 0;
+        boolean hasFluid = false;
+
         BlockEntity inputBE = level.getBlockEntity(inputPos);
-        if (!(inputBE instanceof IHasFluidTank inputTank)) {
-            return;
-        }
+        if (inputBE instanceof IHasFluidTank inputTank) {
+            var handler = inputTank.getFluidHandler();
+            hasFluid = handler.drain(
+                    new net.neoforged.neoforge.fluids.FluidStack(
+                            net.zuperz.stellar_sorcery.fluid.ModFluids.SOURCE_NOCTILUME.get(), 1
+                    ),
+                    net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE
+            ).getAmount() > 0;
 
-        var handler = inputTank.getFluidHandler();
-        boolean hasFluid = handler.drain(
-                new net.neoforged.neoforge.fluids.FluidStack(
-                        net.zuperz.stellar_sorcery.fluid.ModFluids.SOURCE_NOCTILUME.get(), 1
-                ),
-                net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE
-        ).getAmount() > 0;
-
-        if (!hasFluid) {
-            return;
-        }
-
-        BlockPos.MutableBlockPos current = be.getBlockPos().mutable();
-        int beamLength = 0;
-
-        for (int i = 1; i < 32; i++) {
-            current.move(facing);
-            beamLength++;
-
-            BlockState stateAt = level.getBlockState(current);
-            if (!stateAt.isAir()) {
-                BlockEntity beAt = level.getBlockEntity(current);
-                if (beAt instanceof IHasFluidTank) {}
-                break;
+            if (hasFluid) {
+                BlockPos.MutableBlockPos current = be.getBlockPos().mutable();
+                for (int i = 1; i < 32; i++) {
+                    current.move(facing);
+                    currentLength++;
+                    if (!level.getBlockState(current).isAir()) break;
+                }
             }
         }
 
-        if (beamLength <= 0) return;
+        if (currentLength > 0) {
+            cachedBeamLength = currentLength;
+            beamTicksRemaining = MAX_BEAM_TICKS;
+        } else if (beamTicksRemaining > 0) {
+            beamTicksRemaining--;
+        } else {
+            cachedBeamLength = 0;
+        }
+
+        if (cachedBeamLength <= 0) return;
+
+        float alpha = (float) beamTicksRemaining / MAX_BEAM_TICKS;
 
         Vec3 start = Vec3.atCenterOf(be.getBlockPos());
         Vec3 facingVec = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
-        Vec3 end = start.add(facingVec.scale(beamLength));
+        Vec3 end = start.add(facingVec.scale(cachedBeamLength));
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-
-        renderBeam(poseStack, buffer, start, end);
-
+        renderBeam(poseStack, buffer, start, end, alpha);
         poseStack.popPose();
     }
 
     private void renderBeam(PoseStack poseStack, MultiBufferSource buffer,
-                            Vec3 startPos, Vec3 endPos) {
+                            Vec3 startPos, Vec3 endPos, float alpha) {
         VertexConsumer consumer = buffer.getBuffer(RenderType.lightning());
         Matrix4f matrix = poseStack.last().pose();
 
@@ -96,21 +100,16 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         float g = 0.45F;
         float b = 0.5F;
 
-        // Beam
-        drawBeamSegment(matrix, consumer, dx, dy, dz,
-                baseThickness, r, g, b, 0.4F);
-        drawBeamSegment(matrix, consumer, dx, dy, dz,
-                0.04F, r + 0.05f, g + 0.05f, b + 0.05f, 0.9F);
+        drawBeamSegment(matrix, consumer, dx, dy, dz, baseThickness, r, g, b, 0.4F * alpha);
+        drawBeamSegment(matrix, consumer, dx, dy, dz, 0.04F, r + 0.05f, g + 0.05f, b + 0.05f, 0.9F * alpha);
 
         float pixel = 1.0F / 16.0F;
 
-        // Start
-        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + 0.01F, r, g, b, 0.3F);    // Small
-        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + pixel + 0.01f, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F);    // Big
+        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + 0.01F, r, g, b, 0.3F * alpha);
+        drawCube(matrix, consumer, new Vec3(0, 0, 0), baseThickness + pixel + 0.01f, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F * alpha);
 
-        // End
-        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + 0.01F, r, g, b, 0.3F);     // lille
-        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + pixel + 0.01F, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F);   // stor
+        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + 0.01F, r, g, b, 0.3F * alpha);
+        drawCube(matrix, consumer, new Vec3(dx, dy, dz), baseThickness + pixel + 0.01F, r + 0.05f, g + 0.05f, b + 0.05f, 0.1F * alpha);
     }
 
     private void drawCube(Matrix4f matrix, VertexConsumer consumer,

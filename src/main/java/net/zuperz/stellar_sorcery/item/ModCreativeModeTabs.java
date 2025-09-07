@@ -42,9 +42,13 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.ESSENCE_BOILER.get());
                         pOutput.accept(ModItems.EMPTY_ESSENCE_BOTTLE.get());
 
+                        pOutput.accept(ModBlocks.LIGHT_INFUSER.get());
+                        pOutput.accept(ModBlocks.LIGHT_JAR.get());
+                        pOutput.accept(ModBlocks.LIGHT_BEAM_EMITTER.get());
+
                         pOutput.accept(ModBlocks.LUNAR_INFUSER.get());
                         pOutput.accept(ModBlocks.LUNAR_JAR.get());
-                        pOutput.accept(ModBlocks.LIGHT_BEAM_EMITTER.get());
+                        pOutput.accept(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get());
 
                         pOutput.accept(ModItems.ROOT.get());
                         pOutput.accept(ModItems.BLUESTONE_DUST.get());

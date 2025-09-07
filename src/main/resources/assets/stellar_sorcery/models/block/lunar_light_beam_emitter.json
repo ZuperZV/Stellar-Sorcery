@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"1": "stellar_sorcery:block/oak_light_beam_emitter",
-		"particle": "stellar_sorcery:block/oak_light_beam_emitter"
+		"1": "stellar_sorcery:block/light_beam_emitter",
+		"particle": "stellar_sorcery:block/light_beam_emitter"
 	},
 	"elements": [
 		{
