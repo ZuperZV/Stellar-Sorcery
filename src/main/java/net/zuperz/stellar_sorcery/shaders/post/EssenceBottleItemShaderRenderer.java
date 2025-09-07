@@ -1,7 +1,9 @@
 package net.zuperz.stellar_sorcery.shaders.post;
 
+import com.mojang.blaze3d.shaders.Uniform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -9,8 +11,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID, value = Dist.CLIENT)
@@ -47,10 +51,12 @@ public class EssenceBottleItemShaderRenderer {
                 mc.getMainRenderTarget(),
                 id //assets/stellar_sorcery/shaders/post/
         );
+
         chain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
         loadedChains.put(id, chain);
         return chain;
     }
+
 
     @SubscribeEvent
     public static void onRenderStage(RenderLevelStageEvent event) {
@@ -70,7 +76,28 @@ public class EssenceBottleItemShaderRenderer {
                 }
 
                 PostChain chain = shader.chain;
+
                 chain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+                try {
+                    Field passesField = PostChain.class.getDeclaredField("passes");
+                    passesField.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    List<PostPass> passes = (List<PostPass>) passesField.get(chain);
+
+                    for (PostPass pass : passes) {
+                        var shaderInstance = pass.getEffect();
+                        if (shaderInstance == null) continue;
+
+                        Uniform timeU = shaderInstance.getUniform("Time");
+                        if (timeU != null) {
+                            float time = (System.currentTimeMillis() % 100000L) / 1000.0f;
+                            timeU.set(time);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 chain.process(event.getPartialTick().getRealtimeDeltaTicks());
             }
         }

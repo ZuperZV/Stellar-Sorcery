@@ -26,14 +26,22 @@
     "effects": [
       { "id": "minecraft:nausea", "duration": 200, "amplifier": 0 },
       { "id": "minecraft:wither", "duration": 100, "amplifier": 1 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/spider.json",
+      "duration": 300
+    }
   },
   "minecraft:lapis_lazuli,minecraft:book,minecraft:experience_bottle": {
     "name": "item.stellar_sorcery.bottle_essence_of_knowledge",
     "effects": [
       { "id": "minecraft:hero_of_the_village", "duration": 400, "amplifier": 0 },
       { "id": "minecraft:luck", "duration": 600, "amplifier": 1 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/invert.json",
+      "duration": 200
+    }
   },
   "minecraft:blaze_rod,minecraft:diamond,minecraft:ender_pearl": {
     "name": "item.stellar_sorcery.bottle_essence_diamond_power",
@@ -93,7 +101,11 @@
     "effects": [
       { "id": "minecraft:fire_resistance", "duration": 600, "amplifier": 0 },
       { "id": "minecraft:strength", "duration": 300, "amplifier": 1 }
-    ]
+    ],
+    "shader": {
+      "id": "stellar_sorcery:shaders/post/fire.json",
+      "duration": 100
+    }
   },
   "minecraft:snowball,minecraft:blue_ice,stellar_sorcery:ice_iris": {
     "name": "item.stellar_sorcery.bottle_essence_of_frost",
