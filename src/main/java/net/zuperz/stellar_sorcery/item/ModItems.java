@@ -68,9 +68,16 @@ public class ModItems {
     public static final DeferredItem<Item> ESSENCE_BOTTLE = ITEMS.register("essence_bottle",
             () -> new EssenceBottleItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> ESSENCE_AMULET = ITEMS.register("essence_amulet",
+            () -> new EssenceAmuletItem(new Item.Properties().stacksTo(1)));
+
 
     public static final DeferredItem<Item> EMPTY_ESSENCE_BOTTLE = ITEMS.register("empty_essence_bottle",
             () -> new Item(new Item.Properties().stacksTo(16)));
+
+    public static final DeferredItem<Item> EMPTY_ESSENCE_AMULET = ITEMS.register("empty_essence_amulet",
+            () -> new Item(new Item.Properties().stacksTo(16)));
+
 
     public static final DeferredItem<Item> FRITILLARIA_MELEAGRIS_SEEDS = ITEMS.register("fritillaria_meleagris_seeds",
             () -> new ItemNameBlockItem(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get(), new Item.Properties()));
@@ -89,6 +96,16 @@ public class ModItems {
 
     public static final DeferredItem<Item> BLUESTONE_DUST = ITEMS.register("bluestone_dust",
             () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> RITUAL_DAGGER = ITEMS.register("ritual_dagger",
+            () -> new RitualDaggerItem(ModToolTiers.RITUAL,
+                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.RITUAL, 3, -2.4f))));
+
+    public static final DeferredItem<Item> BLOOD_VIAL = ITEMS.register("blood_vial",
+            () -> new BloodVialItem(new Item.Properties().stacksTo(1)));
+
+    public static final DeferredItem<Item> WOODOO_DOLL = ITEMS.register("voodoo_doll",
+            () -> new BloodVialItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

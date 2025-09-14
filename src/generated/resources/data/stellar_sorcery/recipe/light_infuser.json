@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "minecraft:logs"
+    },
+    "B": {
+      "item": "stellar_sorcery:wind_clay_jar"
+    },
+    "C": {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    },
+    "D": {
+      "item": "stellar_sorcery:nigella_damascena"
+    },
+    "E": {
+      "item": "minecraft:spider_eye"
+    }
+  },
+  "pattern": [
+    " B ",
+    "CEC",
+    "ADA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:light_infuser"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "stellar_sorcery:stump",
+  "essence_type": "minecraft:book,minecraft:experience_bottle,minecraft:lapis_lazuli",
+  "fake_time_of_day": "BOTH",
+  "fluid_input": {
+    "amount": 3000,
+    "fluid": "stellar_sorcery:source_noctilume"
+  },
+  "ingredient": {
+    "item": "minecraft:gold_ingot"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:empty_essence_amulet"
+  },
+  "time": 150,
+  "time_of_day": "BOTH"
+}

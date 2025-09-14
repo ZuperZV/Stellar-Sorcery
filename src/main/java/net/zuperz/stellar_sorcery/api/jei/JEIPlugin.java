@@ -16,6 +16,7 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.subtypeInterpreter.EssenceBottleSubtypeInterpreter;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.recipes.AmuletEssenceRecipe;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.recipes.StumpRecipe;
@@ -33,6 +34,10 @@ public class JEIPlugin implements IModPlugin {
     public static mezz.jei.api.recipe.RecipeType<StumpRecipe> STUMP_TYPE =
             new mezz.jei.api.recipe.RecipeType<>(StumpRecipeCategory.UID, StumpRecipe.class);
 
+    public static final mezz.jei.api.recipe.RecipeType<AmuletEssenceRecipe> AMULET_ESSENCE_RECIPE_TYPE =
+            new mezz.jei.api.recipe.RecipeType<>(AmuletInfusionRecipeCategory.UID, AmuletEssenceRecipe.class);
+
+
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "jei_plugin");
@@ -46,6 +51,7 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new StumpRecipeCategory(jeiHelpers.getGuiHelper()));
 
         registration.addRecipeCategories(new EssenceBoilerRecipeCategory(jeiHelpers.getGuiHelper()));
+        registration.addRecipeCategories(new AmuletInfusionRecipeCategory(jeiHelpers.getGuiHelper()));
     }
 
 
@@ -65,6 +71,10 @@ public class JEIPlugin implements IModPlugin {
             var essenceBoiler = world.getRecipeManager();
             registration.addRecipes(EssenceBoilerRecipeCategory.RECIPE_TYPE,
                     getRecipe(essenceBoiler, ModRecipes.ESSENCE_RECIPE_TYPE.get()));
+
+            var amuletEssenceBoiler = world.getRecipeManager();
+            registration.addRecipes(AmuletInfusionRecipeCategory.RECIPE_TYPE,
+                    getRecipe(amuletEssenceBoiler, ModRecipes.AMULET_ESSENCE_RECIPE_TYPE.get()));
         }
     }
 
@@ -93,6 +103,9 @@ public class JEIPlugin implements IModPlugin {
 
         var essenceBoiler = new ItemStack(ModBlocks.ESSENCE_BOILER.get());
         registration.addRecipeCatalyst(essenceBoiler, EssenceBoilerRecipeCategory.RECIPE_TYPE);
+
+        var amuletessenceBoiler = new ItemStack(ModBlocks.ESSENCE_BOILER.get());
+        registration.addRecipeCatalyst(amuletessenceBoiler, AmuletInfusionRecipeCategory.RECIPE_TYPE);
     }
 
     /*
@@ -109,6 +122,10 @@ public class JEIPlugin implements IModPlugin {
                 ModItems.ESSENCE_BOTTLE.get(),
                 new EssenceBottleSubtypeInterpreter()
         );
-    }
 
+        registration.registerSubtypeInterpreter(
+                ModItems.ESSENCE_AMULET.get(),
+                new EssenceBottleSubtypeInterpreter()
+        );
+    }
 }

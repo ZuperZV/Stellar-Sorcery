@@ -25,6 +25,9 @@ public class ModDataComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<EssenceBottleData>> ESSENCE_BOTTLE = register("essence_bottle",
             builder -> builder.persistent(EssenceBottleData.CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<PlayerData>> PLAYER_DATA = register("player_data",
+            builder -> builder.persistent(PlayerData.CODEC));
+
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());

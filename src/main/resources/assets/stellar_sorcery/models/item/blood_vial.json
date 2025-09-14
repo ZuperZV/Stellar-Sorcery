@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/blood_vial_off"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "stellar_sorcery:on": 1
+      },
+      "model": "stellar_sorcery:item/blood_vial_on"
+    }
+  ]
+}

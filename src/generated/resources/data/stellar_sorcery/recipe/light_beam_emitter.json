@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:spider_eye"
+    },
+    "B": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": [
+    " A ",
+    "BCB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:light_beam_emitter"
+  }
+}

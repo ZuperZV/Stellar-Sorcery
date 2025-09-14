@@ -17,6 +17,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -79,8 +80,50 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     public static void tick(Level level, BlockPos pos, BlockState state, EssenceBoilerBlockEntity boiler) {
         if (level.isClientSide) return;
 
-        boolean hasAllItems = true;
+        // AMULET RECIPE : Essence Bottle + Ghast Tear + Empty Essence Amulet -> Essence Amulet
+        ItemStack essenceBottleStack = ItemStack.EMPTY;
+        int essenceBottleSlot = -1;
 
+        int stringSlot = -1;
+        int leatherSlot = -1;
+
+        for (int i = 0; i < boiler.inventory.getSlots(); i++) {
+            ItemStack stack = boiler.inventory.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                if (essenceBottleStack.isEmpty() && stack.is(ModItems.ESSENCE_BOTTLE.get())) {
+                    essenceBottleStack = stack.copy();
+                    essenceBottleSlot = i;
+                } else if (stringSlot == -1 && stack.is(Items.GHAST_TEAR)) {
+                    stringSlot = i;
+                } else if (leatherSlot == -1 && stack.is(ModItems.EMPTY_ESSENCE_AMULET)) {
+                    leatherSlot = i;
+                }
+            }
+        }
+
+        if (!essenceBottleStack.isEmpty() && stringSlot != -1 && leatherSlot != -1) {
+            ItemStack amulet = new ItemStack(ModItems.ESSENCE_AMULET.get());
+
+            if (essenceBottleStack.has(ModDataComponentTypes.ESSENCE_BOTTLE.get())) {
+                EssenceBottleData data = essenceBottleStack.get(ModDataComponentTypes.ESSENCE_BOTTLE.get());
+                amulet.set(ModDataComponentTypes.ESSENCE_BOTTLE.get(), data);
+            }
+
+            boiler.inventory.extractItem(essenceBottleSlot, 1, false);
+            boiler.inventory.extractItem(stringSlot, 1, false);
+            boiler.inventory.extractItem(leatherSlot, 1, false);
+
+            Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, amulet);
+
+            boiler.progress = 0;
+
+            boiler.setChanged();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+            return;
+        }
+
+        // RECIPE: 3 items + water + empty bottle -> Essence Bottle
+        boolean hasAllItems = true;
         for (int i = 0; i < 3; i++) {
             if (boiler.inventory.getStackInSlot(i).isEmpty()) {
                 hasAllItems = false;
@@ -101,7 +144,10 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
             }
         }
 
-        if (hasAllItems && boiler.getFluidTankAmount() > 0 && boiler.getFluidTank().getFluid().isSame(Fluids.WATER) && boiler.inventory.getStackInSlot(3).is(ModItems.EMPTY_ESSENCE_BOTTLE)) {
+        if (hasAllItems && boiler.getFluidTankAmount() > 0 &&
+                boiler.getFluidTank().getFluid().isSame(Fluids.WATER) &&
+                boiler.inventory.getStackInSlot(3).is(ModItems.EMPTY_ESSENCE_BOTTLE)) {
+
             boiler.progress++;
 
             level.playSound(null, pos, SoundEvents.WATER_AMBIENT,
@@ -126,7 +172,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
                 boiler.progress = 0;
             }
-
 
         } else {
             if (boiler.progress != 0) {

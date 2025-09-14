@@ -1,0 +1,55 @@
+{
+  "type": "stellar_sorcery:amulet_essence_recipe",
+  "amuletEssence1": {
+    "item": "minecraft:lapis_lazuli"
+  },
+  "amuletEssence2": {
+    "item": "minecraft:book"
+  },
+  "amuletEssence3": {
+    "item": "minecraft:experience_bottle"
+  },
+  "input1": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:book"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:experience_bottle"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:lapis_lazuli"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:book"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:experience_bottle"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:lapis_lazuli"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_amulet"
+  }
+}

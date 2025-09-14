@@ -1,0 +1,55 @@
+{
+  "type": "stellar_sorcery:amulet_essence_recipe",
+  "amuletEssence1": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "amuletEssence2": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "amuletEssence3": {
+    "item": "minecraft:potion"
+  },
+  "input1": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:amethyst_shard"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:phantom_membrane"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:potion"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:amethyst_shard"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:phantom_membrane"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:potion"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_amulet"
+  }
+}

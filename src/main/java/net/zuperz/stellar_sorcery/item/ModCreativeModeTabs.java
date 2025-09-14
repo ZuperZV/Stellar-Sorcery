@@ -41,6 +41,7 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModBlocks.ESSENCE_BOILER.get());
                         pOutput.accept(ModItems.EMPTY_ESSENCE_BOTTLE.get());
+                        pOutput.accept(ModItems.EMPTY_ESSENCE_AMULET.get());
 
                         pOutput.accept(ModBlocks.LIGHT_INFUSER.get());
                         pOutput.accept(ModBlocks.LIGHT_JAR.get());
@@ -110,6 +111,10 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModFluids.NOCTILUME_BUCKET.get());
 
+                        pOutput.accept(ModItems.RITUAL_DAGGER.get());
+                        pOutput.accept(ModItems.BLOOD_VIAL.get());
+                        pOutput.accept(ModItems.WOODOO_DOLL.get());
+
                         // bottle_essence_of_nature
                         ItemStack bottle_essence_of_nature = new ItemStack(ModItems.ESSENCE_BOTTLE.get());
                         EssenceBottleData data_nature = new EssenceBottleData(
@@ -143,9 +148,9 @@ public class ModCreativeModeTabs {
                         // bottle_essence_of_knowledge
                         ItemStack bottle_essence_of_knowledge = new ItemStack(ModItems.ESSENCE_BOTTLE.get());
                         EssenceBottleData data_knowledge = new EssenceBottleData(
-                                new ItemStack(Items.LAPIS_LAZULI),
                                 new ItemStack(Items.BOOK),
-                                new ItemStack(Items.EXPERIENCE_BOTTLE)
+                                new ItemStack(Items.EXPERIENCE_BOTTLE),
+                                new ItemStack(Items.LAPIS_LAZULI)
                         );
                         bottle_essence_of_knowledge.set(ModDataComponentTypes.ESSENCE_BOTTLE, data_knowledge);
                         pOutput.accept(bottle_essence_of_knowledge);
@@ -189,6 +194,88 @@ public class ModCreativeModeTabs {
                         );
                         bottle_essence_radiance.set(ModDataComponentTypes.ESSENCE_BOTTLE, data_radiance);
                         pOutput.accept(bottle_essence_radiance);
+
+
+
+                        // amulet_essence_of_nature
+                        ItemStack amulet_essence_of_nature = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_nature = new EssenceBottleData(
+                                new ItemStack(ModItems.FRITILLARIA_MELEAGRIS.get()),
+                                new ItemStack(ModBlocks.CALENDULA.get()),
+                                new ItemStack(Items.STICK)
+                        );
+                        amulet_essence_of_nature.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_nature);
+                        pOutput.accept(amulet_essence_of_nature);
+
+                        // amulet_essence_of_night_bloom
+                        ItemStack amulet_essence_of_night_bloom = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_night = new EssenceBottleData(
+                                new ItemStack(Items.FERMENTED_SPIDER_EYE),
+                                new ItemStack(Items.GLOW_BERRIES),
+                                new ItemStack(ModBlocks.NIGELLA_DAMASCENA)
+                        );
+                        amulet_essence_of_night_bloom.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_night);
+                        pOutput.accept(amulet_essence_of_night_bloom);
+
+                        // amulet_essence_of_chaos
+                        ItemStack amulet_essence_of_chaos = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_chaos = new EssenceBottleData(
+                                new ItemStack(Items.GUNPOWDER),
+                                new ItemStack(Items.REDSTONE),
+                                new ItemStack(Items.TNT)
+                        );
+                        amulet_essence_of_chaos.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_chaos);
+                        pOutput.accept(amulet_essence_of_chaos);
+
+                        // amulet_essence_of_knowledge
+                        ItemStack amulet_essence_of_knowledge = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_knowledge = new EssenceBottleData(
+                                new ItemStack(Items.BOOK),
+                                new ItemStack(Items.EXPERIENCE_BOTTLE),
+                                new ItemStack(Items.LAPIS_LAZULI)
+                        );
+                        amulet_essence_of_knowledge.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_knowledge);
+                        pOutput.accept(amulet_essence_of_knowledge);
+
+                        // amulet_essence_diamond_power
+                        ItemStack amulet_essence_diamond_power = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_diamond = new EssenceBottleData(
+                                new ItemStack(Items.BLAZE_ROD),
+                                new ItemStack(Items.DIAMOND),
+                                new ItemStack(Items.ENDER_PEARL)
+                        );
+                        amulet_essence_diamond_power.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_diamond);
+                        pOutput.accept(amulet_essence_diamond_power);
+
+                        // amulet_essence_of_lingering_myst
+                        ItemStack amulet_essence_lingering = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_lingering = new EssenceBottleData(
+                                new ItemStack(Items.AMETHYST_SHARD),
+                                new ItemStack(Items.PHANTOM_MEMBRANE),
+                                new ItemStack(Items.POTION)
+                        );
+                        amulet_essence_lingering.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_lingering);
+                        pOutput.accept(amulet_essence_lingering);
+
+                        // amulet_essence_of_wrath
+                        ItemStack amulet_essence_wrath = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_wrath = new EssenceBottleData(
+                                new ItemStack(Items.BLAZE_POWDER),
+                                new ItemStack(Items.GHAST_TEAR),
+                                new ItemStack(Items.NETHER_STAR)
+                        );
+                        amulet_essence_wrath.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_wrath);
+                        pOutput.accept(amulet_essence_wrath);
+
+                        // amulet_essence_of_radiance
+                        ItemStack amulet_essence_radiance = new ItemStack(ModItems.ESSENCE_AMULET.get());
+                        EssenceBottleData amulet_data_radiance = new EssenceBottleData(
+                                new ItemStack(Items.DRAGON_BREATH),
+                                new ItemStack(Items.GLASS_BOTTLE),
+                                new ItemStack(Items.GLOWSTONE_DUST)
+                        );
+                        amulet_essence_radiance.set(ModDataComponentTypes.ESSENCE_BOTTLE, amulet_data_radiance);
+                        pOutput.accept(amulet_essence_radiance);
 
                         /*
                         // bottle_essence //

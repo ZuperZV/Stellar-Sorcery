@@ -109,7 +109,7 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return this.defaultBlockState()
                 .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
-                .setValue(LIT, false)
+                .setValue(LIT, true)
                 .setValue(DONE, false);
     }
 

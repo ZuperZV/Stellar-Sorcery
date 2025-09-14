@@ -9,26 +9,18 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.zuperz.stellar_sorcery.block.custom.LightBeamEmitterBlock;
 import net.zuperz.stellar_sorcery.block.entity.custom.LightBeamEmitterBlockEntity;
-import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import org.joml.Matrix4f;
 
 public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBeamEmitterBlockEntity> {
 
     public lightBeamBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
-
-    private int cachedBeamLength = 0;
-    private int beamTicksRemaining = 0;
-    private static final int MAX_BEAM_TICKS = 40;
+    int MAX_BEAM_TICKS = 40;
 
     @Override
     public void render(LightBeamEmitterBlockEntity be, float partialTick, PoseStack poseStack,
@@ -36,52 +28,21 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         Level level = be.getLevel();
         if (level == null) return;
 
+        if (be.beamLength <= 0) return;
+
         Direction facing = be.getBlockState().getValue(LightBeamEmitterBlock.FACING);
-        BlockPos inputPos = be.getBlockPos().relative(facing.getOpposite());
-
-        int currentLength = 0;
-        boolean hasFluid = false;
-
-        BlockEntity inputBE = level.getBlockEntity(inputPos);
-        if (inputBE instanceof IHasFluidTank inputTank) {
-            var handler = inputTank.getFluidHandler();
-            hasFluid = handler.drain(
-                    new net.neoforged.neoforge.fluids.FluidStack(
-                            net.zuperz.stellar_sorcery.fluid.ModFluids.SOURCE_NOCTILUME.get(), 1
-                    ),
-                    net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE
-            ).getAmount() > 0;
-
-            if (hasFluid) {
-                BlockPos.MutableBlockPos current = be.getBlockPos().mutable();
-                for (int i = 1; i < 32; i++) {
-                    current.move(facing);
-                    currentLength++;
-                    if (!level.getBlockState(current).isAir()) break;
-                }
-            }
-        }
-
-        if (currentLength > 0) {
-            cachedBeamLength = currentLength;
-            beamTicksRemaining = MAX_BEAM_TICKS;
-        } else if (beamTicksRemaining > 0) {
-            beamTicksRemaining--;
-        } else {
-            cachedBeamLength = 0;
-        }
-
-        if (cachedBeamLength <= 0) return;
-
-        float alpha = (float) beamTicksRemaining / MAX_BEAM_TICKS;
 
         Vec3 start = Vec3.atCenterOf(be.getBlockPos());
         Vec3 facingVec = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
-        Vec3 end = start.add(facingVec.scale(cachedBeamLength));
+        Vec3 end = start.add(facingVec.scale(be.beamLength));
+
+        float alpha = (float) be.beamTicksRemaining / MAX_BEAM_TICKS;
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
+
         renderBeam(poseStack, buffer, start, end, alpha);
+
         poseStack.popPose();
     }
 

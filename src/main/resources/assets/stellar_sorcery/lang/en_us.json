@@ -6,6 +6,8 @@
 
   "tooltip.stellar_sorcery.needs_block": "Needs Block",
 
+  "tooltip.stellar_sorcery.blood": "'s Blood",
+
   "tooltip.stellar_sorcery.star_dust": "Star Dust",
   "tooltip.stellar_sorcery.collected_star_dust": "Collected Star Dust",
 
@@ -14,9 +16,10 @@
 
   "tooltip.stellar_sorcery.infused": " infused ",
   "tooltip.stellar_sorcery.with": " with ",
+  "tooltip.stellar_sorcery.amulet": "Amulet",
 
   "item.stellar_sorcery.empty_essence_bottle": "Empty Essence Bottle",
-  "item.stellar_sorcery.essence_bottle": "Essence Bottle",
+  "item.stellar_sorcery.empty_essence_amulet": "Empty Essence Amulet",
 
   "item.stellar_sorcery.celestial_blade": "Celestial Blade",
   "item.stellar_sorcery.aurora_skull": "Aurora Skull",
@@ -31,6 +34,11 @@
   "item.stellar_sorcery.root": "Root",
 
   "item.stellar_sorcery.bluestone_dust": "Bluestone Dust",
+
+  "item.stellar_sorcery.ritual_dagger": "Ritual Dagger",
+  "item.stellar_sorcery.blood_vial": "Blood Vial",
+
+  "item.stellar_sorcery.voodoo_doll": "Voodoo Doll",
 
   "item.stellar_sorcery.soft_clay_jar": "Soft Clay Jar",
   "item.stellar_sorcery.water_clay_jar": "Water Clay Jar",
@@ -73,15 +81,28 @@
 
   "block.stellar_sorcery.moonshine_small_bud": "Moonshine Small Bud",
 
-  "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
+  "block.stellar_sorcery.light_jar": "Light Jar",
+  "block.stellar_sorcery.light_beam_emitter": "Light Beam Emitter",
+  "block.stellar_sorcery.light_infuser": "Light Infuser",
+
+  "block.stellar_sorcery.lunar_jar": "Lunar Jar",
+  "block.stellar_sorcery.lunar_light_beam_emitter": "Lunar Light Beam Emitter",
+  "block.stellar_sorcery.lunar_infuser": "Lunar Infuser",
+
 
   "emi.category.stellar_sorcery.centrifuge": "Centrifuge",
+
+  "jei.stellar_sorcery.essence_infusion_boiler": "Essence Infusion Boiler",
+
 
   "entity.stellar_sorcery.mob": "Mob",
 
 
   "fluid_type.stellar_sorcery.noctilume": "Noctilume",
 
+
+  "item.stellar_sorcery.essence_amulet": "Essence Amulet",
+  "item.stellar_sorcery.essence_bottle": "Essence Bottle",
 
   "item.stellar_sorcery.bottle_essence_of": "Essence of",
   "item.stellar_sorcery.bottle_essence_of_nature": "Essence of Nature",
@@ -97,5 +118,13 @@
   "item.stellar_sorcery.bottle_essence_of_lingering_myst": "Essence of Lingering Myst",
   "item.stellar_sorcery.bottle_essence_of_radiance": "Essence of Radiance",
   "item.stellar_sorcery.bottle_essence_of_void": "Essence of Void",
-  "item.stellar_sorcery.bottle_essence_of_wrath": "Essence of Wrath"
+  "item.stellar_sorcery.bottle_essence_of_wrath": "Essence of Wrath",
+
+
+  "stellar_sorcery:shaders/post/nature.json": "Nature’s Embrace",
+  "stellar_sorcery:shaders/post/dark.json": "Dark Sight",
+  "stellar_sorcery:shaders/post/spider.json": "Chaotic Web",
+  "stellar_sorcery:shaders/post/invert.json": "Inverted Knowledge",
+  "stellar_sorcery:shaders/post/diamond_time.json": "Diamond Power",
+  "stellar_sorcery:shaders/post/fire.json": "Emberflame Vision"
 }

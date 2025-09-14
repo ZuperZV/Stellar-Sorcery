@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -71,6 +72,8 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
 
         BlockEntity targetBE = null;
 
+        this.beamLength = 0;
+
         for (int i = 1; i < 32; i++) {
             current.move(dir);
             this.beamLength++;
@@ -102,10 +105,24 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
     }
 
     @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        tag.putInt("BeamLength", this.beamLength);
+        tag.putInt("beamTicksRemaining", this.beamTicksRemaining);
+        return tag;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("NeedsNoctilume", this.needsToBeNoctilume);
         tag.putInt("BeamLength", this.beamLength);
+        tag.putInt("beamTicksRemaining", this.beamTicksRemaining);
     }
 
     @Override
@@ -114,6 +131,9 @@ public class LightBeamEmitterBlockEntity extends BlockEntity {
         this.needsToBeNoctilume = tag.getBoolean("NeedsNoctilume");
         if (tag.contains("BeamLength")) {
             this.beamLength = tag.getInt("BeamLength");
+        }
+        if (tag.contains("beamTicksRemaining")) {
+            this.beamTicksRemaining = tag.getInt("beamTicksRemaining");
         }
     }
 }

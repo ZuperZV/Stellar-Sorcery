@@ -32,7 +32,7 @@
       "duration": 300
     }
   },
-  "minecraft:lapis_lazuli,minecraft:book,minecraft:experience_bottle": {
+  "minecraft:book,minecraft:experience_bottle,minecraft:lapis_lazuli": {
     "name": "item.stellar_sorcery.bottle_essence_of_knowledge",
     "effects": [
       { "id": "minecraft:hero_of_the_village", "duration": 400, "amplifier": 0 },
