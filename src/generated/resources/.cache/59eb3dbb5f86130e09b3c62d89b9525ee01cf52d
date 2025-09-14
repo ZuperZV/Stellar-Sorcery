@@ -1,4 +1,4 @@
-// 1.21	2025-09-12T23:14:30.4279951	Loot Tables
+// 1.21	2025-08-31T13:21:38.0383656	Loot Tables
 f1c01e687eeb1b7e99f117041a6a6fb5ef3783a7 data/stellar_sorcery/loot_table/blocks/arcforge.json
 c1872ada0f467e0e57a6b0ff61c4de72b80421ca data/stellar_sorcery/loot_table/blocks/astral_altar.json
 49e5d125ce34aad2613e0294e87fe512bed15904 data/stellar_sorcery/loot_table/blocks/astral_nexus.json
@@ -7,11 +7,8 @@ efd857af3d39f66408f222e8103a980fb4f0eb68 data/stellar_sorcery/loot_table/blocks/
 67ae623e5e20e1f95c9d0a897bb2c3bc4a4c7edd data/stellar_sorcery/loot_table/blocks/essence_boiler.json
 83e6e88a7870e43201dd352dda7a30a9ad3cf033 data/stellar_sorcery/loot_table/blocks/fritillaria_meleagris_crop.json
 e2063e4861de0f864d76bbd0cc17caff26b6d0b3 data/stellar_sorcery/loot_table/blocks/light_beam_emitter.json
-7bf2c7bb642a54155c62e8c9be2ef7fc231d852d data/stellar_sorcery/loot_table/blocks/light_infuser.json
-b66873625b3b3cc570c95e2853ea3a96c602d00e data/stellar_sorcery/loot_table/blocks/light_jar.json
 f985ee05f3b8db458550b0a5e187044166a8d362 data/stellar_sorcery/loot_table/blocks/lunar_infuser.json
 74923289a58b6ed6ab025557f80aa9b1bfbbfb11 data/stellar_sorcery/loot_table/blocks/lunar_jar.json
-d8f5985b4b7d9cef1242e0c7095dc321bca7e57a data/stellar_sorcery/loot_table/blocks/lunar_light_beam_emitter.json
 0d2a3019ab197a083688b6c92c1b974ad4642c18 data/stellar_sorcery/loot_table/blocks/moonshine_cluster.json
 532e444ef1651b6f1fca08ab30ca0071028da145 data/stellar_sorcery/loot_table/blocks/moonshine_large_bud.json
 8eb57661c5151962067dd1cb02f3504db3c0798f data/stellar_sorcery/loot_table/blocks/moonshine_medium_bud.json

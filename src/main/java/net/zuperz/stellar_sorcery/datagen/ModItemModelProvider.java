@@ -28,7 +28,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         basicItem(ModItems.ROOT.get());
         basicItem(ModItems.EMPTY_ESSENCE_BOTTLE.get());
-        basicItem(ModItems.EMPTY_ESSENCE_AMULET.get());
 
         basicItem(ModItems.MOONSHINE_SHARD.get());
         basicItem(ModItems.MOONSHINE_CATALYST.get());
@@ -58,8 +57,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.NOCTILUME_BUCKET.get());
 
         basicItem(ModItems.BLUESTONE_DUST.get());
-
-        handheldItem(ModItems.RITUAL_DAGGER);
     }
 
     private void blockItem(Block block) {

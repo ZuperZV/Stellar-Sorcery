@@ -4,7 +4,7 @@
   "group": "stellar_sorcery_stumps",
   "ingredients": [
     {
-      "tag": "minecraft:logs"
+      "item": "minecraft:oak_log"
     },
     {
       "tag": "stellar_sorcery:stellar_sorcery_flower_items"

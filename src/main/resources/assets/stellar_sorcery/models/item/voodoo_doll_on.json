@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "stellar_sorcery:item/voodoo_doll_on"
-  }
-}

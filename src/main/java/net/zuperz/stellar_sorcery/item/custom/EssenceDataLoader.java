@@ -7,7 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -90,36 +89,6 @@ public class EssenceDataLoader {
         }
     }
 
-    public static MobEffectInstance getDeterministicFallback(String key) {
-        List<Holder<MobEffect>> possibleEffects = List.of(
-                MobEffects.REGENERATION,
-                MobEffects.DAMAGE_RESISTANCE,
-                MobEffects.MOVEMENT_SPEED,
-                MobEffects.DIG_SPEED,
-                MobEffects.NIGHT_VISION,
-                MobEffects.FIRE_RESISTANCE,
-                MobEffects.DARKNESS,
-                MobEffects.LUCK,
-                MobEffects.UNLUCK,
-                MobEffects.SLOW_FALLING,
-                MobEffects.WEAKNESS,
-                MobEffects.WATER_BREATHING,
-                MobEffects.GLOWING
-        );
-
-        if (possibleEffects.isEmpty()) return null;
-
-        int index = Math.abs(key.hashCode()) % possibleEffects.size();
-
-        Holder<MobEffect> chosen = possibleEffects.get(index);
-
-        int duration = 200 + (Math.abs((key + "dur").hashCode()) % 200);
-        int amplifier = Math.abs((key + "amp").hashCode()) % 2;
-
-        return new MobEffectInstance(chosen, duration, amplifier);
-    }
-
-
     public static class ShaderData {
         public final ResourceLocation shaderId;
         public final int durationTicks;
@@ -136,29 +105,6 @@ public class EssenceDataLoader {
 
     public static List<MobEffectInstance> getEffects(String key) {
         return effectMap.getOrDefault(key, List.of());
-    }
-
-    public static List<MobEffectInstance> getAmuletEffects(String key) {
-        List<MobEffectInstance> originalEffects = effectMap.getOrDefault(key, List.of());
-
-        List<MobEffectInstance> weakenedEffects = new ArrayList<>();
-
-        for (MobEffectInstance effect : originalEffects) {
-            int weakenedAmplifier = effect.getAmplifier() / 4;
-
-            MobEffectInstance weakened = new MobEffectInstance(
-                    effect.getEffect(),
-                    effect.getDuration(),
-                    weakenedAmplifier,
-                    effect.isAmbient(),
-                    effect.isVisible(),
-                    effect.showIcon()
-            );
-
-            weakenedEffects.add(weakened);
-        }
-
-        return weakenedEffects;
     }
 
     public static ShaderData getShader(String key) {

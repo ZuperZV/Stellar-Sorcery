@@ -18,12 +18,14 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
-import net.zuperz.stellar_sorcery.datagen.custom.*;
+import net.zuperz.stellar_sorcery.datagen.custom.AstralAltarRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.EssenceRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.StarLightLunarInfuserRecipeBuilder;
+import net.zuperz.stellar_sorcery.datagen.custom.StumpRecipeBuilder;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.recipes.TimeOfDay;
@@ -48,49 +50,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("AAA")
                 .pattern("AAA")
                 .define('A', Items.CLAY_BALL)
-                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
-                .save(pWriter);
+                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL)).save(pWriter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RITUAL_DAGGER.get())
-                .pattern("A")
-                .pattern("B")
-                .pattern("C")
-                .define('A', Items.IRON_INGOT)
-                .define('B', ModItems.BLOOD_VIAL)
-                .define('C', Items.STICK)
-                .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
-                .save(pWriter);
+        // Crafting Shapeless
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LIGHT_JAR.get())
-                .pattern(" A ")
-                .pattern("CBC")
-                .pattern("ADA")
-                .define('A', ItemTags.LOGS)
-                .define('B', Blocks.GLASS)
-                .define('C', ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
-                .define('D', Items.SPIDER_EYE)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.STUMP)
+                .requires(Items.OAK_LOG)
+                .requires(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                .requires(Items.DIRT)
+                .group("stellar_sorcery_stumps")
                 .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
-                .save(pWriter);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LIGHT_INFUSER.get())
-                .pattern(" B ")
-                .pattern("CEC")
-                .pattern("ADA")
-                .define('A', ItemTags.LOGS)
-                .define('B', ModItems.WIND_CLAY_JAR)
-                .define('C', ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
-                .define('D', ModBlocks.NIGELLA_DAMASCENA.asItem())
-                .define('E', Items.SPIDER_EYE)
-                .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
-                .save(pWriter);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LIGHT_BEAM_EMITTER.get())
-                .pattern(" A ")
-                .pattern("BCB")
-                .define('A', Items.SPIDER_EYE)
-                .define('B', Items.AMETHYST_SHARD)
-                .define('C', ItemTags.LOGS)
-                .unlockedBy("has_spider_eye", has(Items.SPIDER_EYE))
                 .save(pWriter);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.VITAL_STUMP)
@@ -102,16 +71,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('D', Items.GOLD_INGOT)
                 .group("stellar_sorcery_stumps")
                 .unlockedBy("has_red_campion", has(ModBlocks.RED_CAMPION.asItem()))
-                .save(pWriter);
-
-        // Crafting Shapeless
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.STUMP)
-                .requires(ItemTags.LOGS)
-                .requires(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
-                .requires(Items.DIRT)
-                .group("stellar_sorcery_stumps")
-                .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
                 .save(pWriter);
 
         // Furnaces
@@ -128,7 +87,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get()),
                         Ingredient.of(Items.WHEAT_SEEDS),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
-                        Ingredient.of(Items.WHEAT)
+                        Ingredient.of(Items.WHEAT),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
                 )
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))
@@ -368,29 +328,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                         Ingredient.of(Items.GLOWSTONE_DUST),
                         Ingredient.of(Items.LAPIS_LAZULI),
                         Ingredient.of(ModItems.FROST_CLAY_JAR),
-                        Ingredient.of(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS),
-                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
+                        Ingredient.of(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
                 )
-                .withEssenceType("minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena")
                 .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 5000))
                 .timeOfDay(TimeOfDay.NIGHT)
                 .recipeTime(100)
                 .unlockedBy("has_glowstone_dust", has(Items.GLOWSTONE_DUST))
-                .save(pWriter);
-
-
-        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.EMPTY_ESSENCE_AMULET.get()),
-                        Ingredient.of(Items.GOLD_INGOT),
-                        Ingredient.of(Items.LAPIS_LAZULI),
-                        Ingredient.of(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS),
-                        Ingredient.of(ModItems.ESSENCE_BOTTLE),
-                        Ingredient.of(Items.HEART_OF_THE_SEA)
-                )
-                .withEssenceType("minecraft:book,minecraft:experience_bottle,minecraft:lapis_lazuli")
-                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 3000))
-                .timeOfDay(TimeOfDay.BOTH)
-                .recipeTime(150)
-                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
                 .save(pWriter);
 
         // Astral Altar
@@ -502,84 +445,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_dragon_breath", has(Items.DRAGON_BREATH))
                 .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_radiance"));
 
-        // Amulet Essence
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS.get()),
-                        Ingredient.of(Items.STICK),
-                        Ingredient.of(ModBlocks.CALENDULA.get()))
-                .unlockedBy("has_fritillaria_meleagris", has(ModItems.FRITILLARIA_MELEAGRIS.get()))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_nature"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.FERMENTED_SPIDER_EYE),
-                        Ingredient.of(Items.GLOW_BERRIES),
-                        Ingredient.of(ModBlocks.NIGELLA_DAMASCENA.get()))
-                .unlockedBy("has_fermented_spider_eye", has(Items.FERMENTED_SPIDER_EYE))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_night_bloom"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.GUNPOWDER),
-                        Ingredient.of(Items.REDSTONE),
-                        Ingredient.of(Items.TNT))
-                .unlockedBy("has_tnt", has(Items.TNT))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_chaos"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.LAPIS_LAZULI),
-                        Ingredient.of(Items.BOOK),
-                        Ingredient.of(Items.EXPERIENCE_BOTTLE))
-                .unlockedBy("has_experience_bottle", has(Items.EXPERIENCE_BOTTLE))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_knowledge"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.BLAZE_ROD),
-                        Ingredient.of(Items.DIAMOND),
-                        Ingredient.of(Items.ENDER_PEARL))
-                .unlockedBy("has_diamond", has(Items.DIAMOND))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_diamond_power"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.AMETHYST_SHARD),
-                        Ingredient.of(Items.PHANTOM_MEMBRANE),
-                        Ingredient.of(Items.POTION))
-                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_lingering_myst"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.BLAZE_POWDER),
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.NETHER_STAR))
-                .unlockedBy("has_nether_star", has(Items.NETHER_STAR))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_wrath"));
-
-        AmuletEssenceRecipeBuilder.essence(RecipeCategory.MISC,
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.DRAGON_BREATH),
-                        Ingredient.of(Items.GLASS_BOTTLE),
-                        Ingredient.of(Items.GLOWSTONE_DUST))
-                .unlockedBy("has_dragon_breath", has(Items.DRAGON_BREATH))
-                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "bottle_essence_of_radiance"));
-
         // Starlight Lunar
 
         StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1),
                         Ingredient.of(ModItems.MOONSHINE_SHARD)
-                )
-                .timeOfDay(TimeOfDay.NIGHT)
-                .recipeTime(100)
-                .save(pWriter);
-
-
-        StarLightLunarInfuserRecipeBuilder.lunarInfuser(RecipeCategory.MISC, new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 3),
-                        Ingredient.of(ModItems.BLUESTONE_DUST.get())
                 )
                 .timeOfDay(TimeOfDay.NIGHT)
                 .recipeTime(100)

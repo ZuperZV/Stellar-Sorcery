@@ -19,8 +19,4 @@ public class ModToolTiers {
     public static final Tier CELESTIAL = new SimpleTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
             2561, 8.0F, 3.0F, 15,
             () -> Ingredient.of((ItemTags.PLANKS)));
-
-    public static final Tier RITUAL = new SimpleTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
-            16, 8.0F, 3.0F, 15,
-            () -> Ingredient.of((ModItems.MOONSHINE_SHARD)));
 }

@@ -1,9 +1,7 @@
-// 1.21	2025-09-13T23:19:48.4462645	Item Models: stellar_sorcery
-4da642d0814f094dbd00a6614f121084e0289215 assets/stellar_sorcery/models/item/blood_vial.json
+// 1.21	2025-08-31T17:24:32.1111401	Item Models: stellar_sorcery
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
 a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay_jar.json
-5ed3eaa249c74ee202181b99760d50d0b1a153d3 assets/stellar_sorcery/models/item/empty_essence_amulet.json
 161ce21b62ecd65a5c9a3540bc4378f5f8d3a562 assets/stellar_sorcery/models/item/empty_essence_bottle.json
 059f3536729aca303dd1563273f16e7dc44ca509 assets/stellar_sorcery/models/item/extracter_clay_jar.json
 31ee6d4f8979ba7e64698fc988d8f7ee24f1761f assets/stellar_sorcery/models/item/fire_clay_jar.json
@@ -19,7 +17,6 @@ a854080d2d6e39dfbd6c88ee169cc034eeb3b3a0 assets/stellar_sorcery/models/item/moon
 5c809b6984d84d3748a9e7febb38c954c839104f assets/stellar_sorcery/models/item/nigella_damascena.json
 ae3c8b317ae8b00b27958da1a37eb07e70e6924b assets/stellar_sorcery/models/item/noctilume_bucket.json
 b8548e4f9e3ed07149ee3acc79021b5626999219 assets/stellar_sorcery/models/item/red_campion.json
-9c643e29ef9bff94717ef94d14a840f87dc08932 assets/stellar_sorcery/models/item/ritual_dagger.json
 ab886abd328a6fb7fb0dac837bba781917e8ecf2 assets/stellar_sorcery/models/item/root.json
 1262d036adab1536d7c8f136bb106f687dbcf151 assets/stellar_sorcery/models/item/shadow_clay_jar.json
 21e118bd6b58875c8be8ca306ad81d6f92159e3a assets/stellar_sorcery/models/item/soft_clay_jar.json
