@@ -44,6 +44,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.FROST_CLAY_JAR.get());
         basicItem(ModItems.STORM_CLAY_JAR.get());
         basicItem(ModItems.EXTRACTER_CLAY_JAR.get());
+        basicItem(ModItems.WHITE_CHALK_STICK.get());
 
         flowerItem(ModBlocks.RED_CAMPION);
         flowerItem(ModBlocks.CALENDULA);

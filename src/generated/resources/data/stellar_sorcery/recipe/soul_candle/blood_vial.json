@@ -1,0 +1,31 @@
+{
+  "type": "stellar_sorcery:altar",
+  "blockMapping": {
+    "O": "stellar_sorcery:white_chalk"
+  },
+  "fake_time_of_day": "BOTH",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:emerald"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:blood_vial"
+  },
+  "pattern": [
+    "_OOO_",
+    "O___O",
+    "O___O",
+    "O___O",
+    "_OOO_"
+  ],
+  "time": 200,
+  "time_of_day": "BOTH"
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/white_chalk_stick",
+    "layer1": "stellar_sorcery:item/block_overlay"
+  }
+}

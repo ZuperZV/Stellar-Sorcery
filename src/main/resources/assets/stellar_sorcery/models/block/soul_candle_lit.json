@@ -1,0 +1,7 @@
+{
+  "parent": "stellar_sorcery:block/template_soul_candle",
+  "textures": {
+    "0": "stellar_sorcery:block/soul_candle_lit",
+    "particle": "stellar_sorcery:block/soul_candle_lit"
+  }
+}

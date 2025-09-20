@@ -30,6 +30,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("stump_be", () -> BlockEntityType.Builder.of(
                     StumpBlockEntity::new, ModBlocks.STUMP.get()).build(null));
 
+    public static final Supplier<BlockEntityType<SoulCandleBlockEntity>> ALTER_BE =
+            BLOCK_ENTITIES.register("alter_be", () -> BlockEntityType.Builder.of(
+                    SoulCandleBlockEntity::new, ModBlocks.SOUL_CANDLE.get()).build(null));
+
     public static final Supplier<BlockEntityType<EssenceBoilerBlockEntity>> ESSENCE_BOILER_BE =
             BLOCK_ENTITIES.register("essence_boiler_be", () -> BlockEntityType.Builder.of(
                     EssenceBoilerBlockEntity::new, ModBlocks.ESSENCE_BOILER.get()).build(null));

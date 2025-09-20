@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "": [
+      { "model": "stellar_sorcery:block/white_chalk_a" },
+      { "model": "stellar_sorcery:block/white_chalk_b" },
+      { "model": "stellar_sorcery:block/white_chalk_c" },
+      { "model": "stellar_sorcery:block/white_chalk_d" },
+      { "model": "stellar_sorcery:block/white_chalk_e" },
+      { "model": "stellar_sorcery:block/white_chalk_f" },
+      { "model": "stellar_sorcery:block/white_chalk_g" },
+      { "model": "stellar_sorcery:block/white_chalk_h" },
+      { "model": "stellar_sorcery:block/white_chalk_i" },
+      { "model": "stellar_sorcery:block/white_chalk_j" },
+      { "model": "stellar_sorcery:block/white_chalk_k" },
+      { "model": "stellar_sorcery:block/white_chalk_l" },
+      { "model": "stellar_sorcery:block/white_chalk_m" },
+      { "model": "stellar_sorcery:block/white_chalk_n" },
+      { "model": "stellar_sorcery:block/white_chalk_o" },
+      { "model": "stellar_sorcery:block/white_chalk_p" },
+      { "model": "stellar_sorcery:block/white_chalk_q" },
+      { "model": "stellar_sorcery:block/white_chalk_r" },
+      { "model": "stellar_sorcery:block/white_chalk_s" },
+      { "model": "stellar_sorcery:block/white_chalk_t" },
+      { "model": "stellar_sorcery:block/white_chalk_u" },
+      { "model": "stellar_sorcery:block/white_chalk_v" },
+      { "model": "stellar_sorcery:block/white_chalk_w" },
+      { "model": "stellar_sorcery:block/white_chalk_x" },
+      { "model": "stellar_sorcery:block/white_chalk_y" },
+      { "model": "stellar_sorcery:block/white_chalk_z" }
+    ]
+  }
+}

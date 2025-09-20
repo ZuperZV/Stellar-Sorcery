@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
@@ -42,6 +43,15 @@ public class ModBlocks {
             () -> new StumpBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+    public static final DeferredBlock<Block> SOUL_CANDLE = registerBlock("soul_candle",
+            () -> new SoulCandleBlock(BlockBehaviour.Properties.of().strength(0.1F).sound(SoundType.CANDLE).lightLevel(SoulCandleBlock.LIGHT_EMISSION)
+                    .pushReaction(PushReaction.DESTROY).requiresCorrectToolForDrops().noOcclusion()));
+
+    public static final DeferredBlock<Block> WHITE_CHALK = registerBlock("white_chalk",
+            () -> new ChalkBlock(BlockBehaviour.Properties.of().sound(SoundType.MOSS)
+                    .requiresCorrectToolForDrops().noOcclusion().noCollission().instabreak().pushReaction(PushReaction.DESTROY),
+                    ParticleTypes.CLOUD, 0.99f, 1, 0.01f, ModItems.WHITE_CHALK_STICK));
+
     public static final DeferredBlock<Block> ESSENCE_BOILER = registerBlock("essence_boiler",
             () -> new EssenceBoilerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAMPFIRE).requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.DEEPSLATE_TILES).noOcclusion().lightLevel(litBlockEmission(15)).ignitedByLava()));
@@ -52,7 +62,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> STAR_LIGHT = registerBlock("star_light",
             () -> new StarLightBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
-                    .sound(new SoundType(1.0F, 1.0F, SoundEvents.ALLAY_DEATH, SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, SoundEvents.ALLAY_ITEM_GIVEN, SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, SoundEvents.ALLAY_THROW)).noOcclusion()));
+                    .sound(new SoundType(1.0F, 1.0F, SoundEvents.ALLAY_DEATH, SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, SoundEvents.ALLAY_ITEM_GIVEN,
+                            SoundEvents.ALLAY_AMBIENT_WITHOUT_ITEM, SoundEvents.ALLAY_THROW)).noOcclusion()));
 
     public static final DeferredBlock<Block> FRITILLARIA_MELEAGRIS_CROP = BLOCKS.register("fritillaria_meleagris_crop",
             () -> new FritillariaMeleagrisCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));

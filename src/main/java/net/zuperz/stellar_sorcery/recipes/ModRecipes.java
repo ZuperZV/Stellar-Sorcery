@@ -26,6 +26,9 @@ public class ModRecipes {
     public static final Supplier<RecipeType<StumpRecipe>> STUMP_RECIPE_TYPE =
             RECIPE_TYPES.register("stump", () -> StumpRecipe.Type.INSTANCE);
 
+    public static final Supplier<RecipeType<SoulCandleRecipe>> ALTER_RECIPE_TYPE =
+            RECIPE_TYPES.register("altar", () -> SoulCandleRecipe.Type.INSTANCE);
+
     public static final Supplier<RecipeType<EssenceRecipe>> ESSENCE_RECIPE_TYPE =
             RECIPE_TYPES.register("essence_recipe", () -> EssenceRecipe.Type.INSTANCE);
 
@@ -39,6 +42,9 @@ public class ModRecipes {
 
     public static final Supplier<RecipeSerializer<StumpRecipe>> STUMP_SERIALIZER =
             SERIALIZERS.register("stump", () -> StumpRecipe.Serializer.INSTANCE);
+
+    public static final Supplier<RecipeSerializer<SoulCandleRecipe>> ALTER_SERIALIZER =
+            SERIALIZERS.register("altar", () -> SoulCandleRecipe.Serializer.INSTANCE);
 
     public static final Supplier<RecipeSerializer<EssenceRecipe>> ESSENCE_SERIALIZER =
             SERIALIZERS.register("essence_recipe", () -> EssenceRecipe.Serializer.INSTANCE);

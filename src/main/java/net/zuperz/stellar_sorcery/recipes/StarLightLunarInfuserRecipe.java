@@ -3,10 +3,8 @@ package net.zuperz.stellar_sorcery.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -14,22 +12,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
-import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.LunarInfuserBlockEntity;
-import net.zuperz.stellar_sorcery.block.entity.custom.VitalStumpBlockEntity;
-import net.zuperz.stellar_sorcery.component.EssenceBottleData;
-import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
-import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.CodecFix;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StarLightLunarInfuserRecipe implements Recipe<FluidRecipeInput> {
 

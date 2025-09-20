@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.recipes.AstralAltarRecipe;
-import net.zuperz.stellar_sorcery.recipes.TimeOfDay;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 
 import javax.annotation.Nullable;
 import java.util.*;

@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralNexusBlockEntity;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.CodecFix;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;

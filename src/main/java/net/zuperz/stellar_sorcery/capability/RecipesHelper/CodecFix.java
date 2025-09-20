@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.recipes;
+package net.zuperz.stellar_sorcery.capability.RecipesHelper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

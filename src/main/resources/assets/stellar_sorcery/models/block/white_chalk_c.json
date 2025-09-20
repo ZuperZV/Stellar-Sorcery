@@ -1,0 +1,7 @@
+{
+  "parent": "stellar_sorcery:block/chalk_base",
+  "textures": {
+    "0": "stellar_sorcery:block/white_chalk_c",
+    "particle": "stellar_sorcery:block/white_chalk_c"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "stellar_sorcery:block/soul_candle"
+    },
+    "lit=true": {
+      "model": "stellar_sorcery:block/soul_candle_lit"
+    }
+  }
+}
