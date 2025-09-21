@@ -1,0 +1,55 @@
+{
+  "type": "stellar_sorcery:amulet_essence_recipe",
+  "amuletEssence1": {
+    "item": "stellar_sorcery:fritillaria_meleagris"
+  },
+  "amuletEssence2": {
+    "item": "minecraft:stick"
+  },
+  "amuletEssence3": {
+    "item": "stellar_sorcery:calendula"
+  },
+  "input1": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:stick"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "stellar_sorcery:calendula"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "stellar_sorcery:fritillaria_meleagris"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:stick"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "stellar_sorcery:calendula"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "stellar_sorcery:fritillaria_meleagris"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_amulet"
+  }
+}

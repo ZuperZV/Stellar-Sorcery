@@ -3,6 +3,7 @@ package net.zuperz.stellar_sorcery.item.custom;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
@@ -10,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -29,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class EssenceBottleItem extends Item {
+public class EssenceAmuletItem extends Item {
 
-    public EssenceBottleItem(Properties properties) {
+    public EssenceAmuletItem(Properties properties) {
         super(properties);
     }
 
@@ -41,7 +43,7 @@ public class EssenceBottleItem extends Item {
 
     @Override
     public int getUseDuration(ItemStack p_41454_, LivingEntity p_344979_) {
-        return 32;
+        return 42;
     }
 
     @Override
@@ -108,8 +110,52 @@ public class EssenceBottleItem extends Item {
             }
         }
 
-        entity.gameEvent(GameEvent.DRINK);
         return super.finishUsingItem(stack, level, entity);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
+        Player player = entity instanceof Player ? (Player) entity : null;
+
+        if (!level.isClientSide) {
+            EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
+            if (data != null) {
+                String key = makeKey(
+                        data.getEmbeddedItem().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem1().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem2().getItem().builtInRegistryHolder().key().location().toString()
+                );
+
+                List<MobEffectInstance> effects = EssenceDataLoader.getAmuletEffects(key);
+
+                if (effects.isEmpty()) {
+                    MobEffectInstance fallback = EssenceDataLoader.getDeterministicFallback(key);
+                    if (fallback != null) {
+                        assert player != null;
+                        player.addEffect(fallback);
+                    }
+                } else {
+                    for (MobEffectInstance effect : effects) {
+                        assert player != null;
+                        player.addEffect(new MobEffectInstance(effect));
+                    }
+                }
+            }
+        } else {
+            EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
+            if (data != null) {
+                String key = makeKey(
+                        data.getEmbeddedItem().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem1().getItem().builtInRegistryHolder().key().location().toString(),
+                        data.getEmbeddedItem2().getItem().builtInRegistryHolder().key().location().toString()
+                );
+
+                EssenceDataLoader.ShaderData shader = EssenceDataLoader.getShader(key);
+                if (shader != null) {
+                    EssenceBottleItemShaderRenderer.enableShader(shader.shaderId, shader.durationTicks);
+                }
+            }
+        }
     }
 
     @Override
@@ -129,43 +175,17 @@ public class EssenceBottleItem extends Item {
             String customTranslationKey = EssenceDataLoader.getName(key);
 
             if (customTranslationKey != null) {
-                return Component.translatable(customTranslationKey);
+                return Component.translatable(customTranslationKey)
+                        .append(Component.literal(" "))
+                        .append(Component.translatable("tooltip.stellar_sorcery.amulet"));
             } else {
-                return Component.translatable("item.stellar_sorcery.essence_bottle");
+                return Component.translatable("item.stellar_sorcery.essence_amulet");
             }
         } else {
-            return Component.translatable("item.stellar_sorcery.essence_bottle");
+            return Component.translatable("item.stellar_sorcery.essence_amulet");
         }
     }
 
-    public int getColor(ItemStack stack, int tintIndex) {
-        if (tintIndex != 1) return 0xFFFFFFFF;
-
-        EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
-        if (data == null) return 0xFFFFFFFF;
-
-        List<ItemStack> items = List.of(data.getEmbeddedItem(), data.getEmbeddedItem1(), data.getEmbeddedItem2());
-
-        int r = 0, g = 0, b = 0, count = 0;
-
-        for (ItemStack s : items) {
-            if (!s.isEmpty()) {
-                int color = TextureColorHelper.getAverageColor(s);
-                r += (color >> 16) & 0xFF;
-                g += (color >> 8) & 0xFF;
-                b += color & 0xFF;
-                count++;
-            }
-        }
-
-        if (count == 0) return 0xFFFFFFFF;
-
-        r /= count;
-        g /= count;
-        b /= count;
-
-        return (0xFF << 24) | (r << 16) | (g << 8) | b;
-    }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag flag) {
@@ -246,6 +266,36 @@ public class EssenceBottleItem extends Item {
         }
     }
 
+
+    public int getColor(ItemStack stack, int tintIndex) {
+        if (tintIndex != 1) return 0xFFFFFFFF;
+
+        EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
+        if (data == null) return 0xFFFFFFFF;
+
+        List<ItemStack> items = List.of(data.getEmbeddedItem(), data.getEmbeddedItem1(), data.getEmbeddedItem2());
+
+        int r = 0, g = 0, b = 0, count = 0;
+
+        for (ItemStack s : items) {
+            if (!s.isEmpty()) {
+                int color = TextureColorHelper.getAverageColor(s);
+                r += (color >> 16) & 0xFF;
+                g += (color >> 8) & 0xFF;
+                b += color & 0xFF;
+                count++;
+            }
+        }
+
+        if (count == 0) return 0xFFFFFFFF;
+
+        r /= count;
+        g /= count;
+        b /= count;
+
+        return (0xFF << 24) | (r << 16) | (g << 8) | b;
+    }
+
     private String makeKey(String... ids) {
         List<String> sorted = Arrays.asList(ids);
         Collections.sort(sorted);
@@ -255,6 +305,7 @@ public class EssenceBottleItem extends Item {
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE);
+
         if (data != null) {
             return Optional.of(new EssenceBottleTooltip(
                     data.getEmbeddedItem(),
@@ -265,6 +316,7 @@ public class EssenceBottleItem extends Item {
         return Optional.empty();
     }
 
+
     @Override
     public Component getDescription() {
         return this.getName(ItemStack.EMPTY);
@@ -272,6 +324,6 @@ public class EssenceBottleItem extends Item {
 
     @Override
     public String getDescriptionId(ItemStack pStack) {
-        return "item.stellar_sorcery.bottle_essence_of";
+        return "item.stellar_sorcery.essence_amulet";
     }
 }

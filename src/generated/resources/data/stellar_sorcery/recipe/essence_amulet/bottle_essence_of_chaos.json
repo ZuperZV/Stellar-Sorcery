@@ -1,0 +1,55 @@
+{
+  "type": "stellar_sorcery:amulet_essence_recipe",
+  "amuletEssence1": {
+    "item": "minecraft:gunpowder"
+  },
+  "amuletEssence2": {
+    "item": "minecraft:redstone"
+  },
+  "amuletEssence3": {
+    "item": "minecraft:tnt"
+  },
+  "input1": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:gunpowder"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:redstone"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:tnt"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:gunpowder"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:redstone"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "minecraft:tnt"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_amulet"
+  }
+}

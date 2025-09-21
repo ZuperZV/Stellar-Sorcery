@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.IItemDecorator;
 import net.zuperz.stellar_sorcery.component.StarDustData;
 import net.zuperz.stellar_sorcery.item.custom.AuroraSkullItem;
 
-public class NumberBarDecorator implements IItemDecorator {
+public class StarDustNumberBarDecorator implements IItemDecorator {
 
     @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {

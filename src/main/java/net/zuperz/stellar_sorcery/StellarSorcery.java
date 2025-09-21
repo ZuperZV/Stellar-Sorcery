@@ -2,6 +2,7 @@ package net.zuperz.stellar_sorcery;
 
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -16,6 +17,7 @@ import net.zuperz.stellar_sorcery.block.entity.renderer.*;
 import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
 import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
+import net.zuperz.stellar_sorcery.item.custom.EssenceAmuletItem;
 import net.zuperz.stellar_sorcery.item.custom.EssenceDataLoader;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.entity.ModEntities;
@@ -27,9 +29,10 @@ import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleClientTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
-import net.zuperz.stellar_sorcery.item.custom.decorator.NumberBarDecorator;
+import net.zuperz.stellar_sorcery.item.custom.decorator.StarDustNumberBarDecorator;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
+import net.zuperz.stellar_sorcery.util.ModItemProperties;
 import org.slf4j.Logger;import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -122,7 +125,7 @@ public class StellarSorcery
 
         @SubscribeEvent
         public static void registerItemDecorators(RegisterItemDecorationsEvent event) {
-            event.register(ModItems.AURORA_SKULL.get(), new NumberBarDecorator());
+            event.register(ModItems.AURORA_SKULL.get(), new StarDustNumberBarDecorator());
         }
 
         @SubscribeEvent
@@ -159,6 +162,19 @@ public class StellarSorcery
                 }
                 return -1;
             }, ModItems.ESSENCE_BOTTLE.get());
+
+
+            event.register((stack, tintIndex) -> {
+                if (stack.getItem() instanceof EssenceAmuletItem bottleItem) {
+                    return bottleItem.getColor(stack, tintIndex);
+                }
+                return -1;
+            }, ModItems.ESSENCE_AMULET.get());
+        }
+
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            ModItemProperties.addCustomItemProperties();
         }
     }
 

@@ -146,7 +146,6 @@ public class SoulCandleBlock extends BaseEntityBlock {
         if (f < 0.3F) {
             level.addParticle(ParticleTypes.SMOKE, vec3.x, vec3.y, vec3.z, 0.0, 0.0, 0.0);
             if (f < 0.17F) {
-                System.out.println("playLocalSound");
                 level.playLocalSound(
                         vec3.x + 0.5,
                         vec3.y + 0.5,

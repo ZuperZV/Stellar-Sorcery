@@ -1,0 +1,55 @@
+{
+  "type": "stellar_sorcery:amulet_essence_recipe",
+  "amuletEssence1": {
+    "item": "minecraft:fermented_spider_eye"
+  },
+  "amuletEssence2": {
+    "item": "minecraft:glow_berries"
+  },
+  "amuletEssence3": {
+    "item": "stellar_sorcery:nigella_damascena"
+  },
+  "input1": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:fermented_spider_eye"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:glow_berries"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "stellar_sorcery:nigella_damascena"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_bottle"
+  },
+  "input2": {
+    "item": "minecraft:ghast_tear"
+  },
+  "output": {
+    "components": {
+      "stellar_sorcery:essence_bottle": {
+        "embedded_item": {
+          "count": 1,
+          "id": "minecraft:fermented_spider_eye"
+        },
+        "embedded_item1": {
+          "count": 1,
+          "id": "minecraft:glow_berries"
+        },
+        "embedded_item2": {
+          "count": 1,
+          "id": "stellar_sorcery:nigella_damascena"
+        }
+      }
+    },
+    "count": 1,
+    "id": "stellar_sorcery:essence_amulet"
+  }
+}

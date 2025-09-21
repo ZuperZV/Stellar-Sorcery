@@ -32,6 +32,9 @@ public class ModRecipes {
     public static final Supplier<RecipeType<EssenceRecipe>> ESSENCE_RECIPE_TYPE =
             RECIPE_TYPES.register("essence_recipe", () -> EssenceRecipe.Type.INSTANCE);
 
+    public static final Supplier<RecipeType<AmuletEssenceRecipe>> AMULET_ESSENCE_RECIPE_TYPE =
+            RECIPE_TYPES.register("amulet_essence_recipe", () -> AmuletEssenceRecipe.Type.INSTANCE);
+
     public static final Supplier<RecipeType<StarLightLunarInfuserRecipe>> STAR_LIGHT_LUNAR_INFUSER_RECIPE_TYPE =
             RECIPE_TYPES.register("star_light_lunar_infuser", () -> StarLightLunarInfuserRecipe.Type.INSTANCE);
 
@@ -48,6 +51,9 @@ public class ModRecipes {
 
     public static final Supplier<RecipeSerializer<EssenceRecipe>> ESSENCE_SERIALIZER =
             SERIALIZERS.register("essence_recipe", () -> EssenceRecipe.Serializer.INSTANCE);
+
+    public static final Supplier<RecipeSerializer<AmuletEssenceRecipe>> AMULET_ESSENCE_SERIALIZER =
+            SERIALIZERS.register("amulet_essence_recipe", () -> AmuletEssenceRecipe.Serializer.INSTANCE);
 
     public static final Supplier<RecipeSerializer<StarLightLunarInfuserRecipe>> STAR_LIGHT_LUNAR_INFUSER_SERIALIZER =
             SERIALIZERS.register("star_light_lunar_infuser", () -> StarLightLunarInfuserRecipe.Serializer.INSTANCE);

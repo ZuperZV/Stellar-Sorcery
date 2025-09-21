@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -23,6 +24,7 @@ import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 import net.zuperz.stellar_sorcery.util.ModTags;
+import net.zuperz.stellar_sorcery.datagen.custom.*;
 
 import javax.annotation.Nullable;
 import java.util.List;

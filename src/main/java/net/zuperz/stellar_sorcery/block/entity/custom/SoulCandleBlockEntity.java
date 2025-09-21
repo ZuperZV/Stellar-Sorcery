@@ -58,14 +58,15 @@ public class SoulCandleBlockEntity extends BlockEntity {
     private Optional<SoulCandleRecipe> activeRecipe = Optional.empty();
     public EntityType<?> entityLastSacrificed = null;
 
-    private float rotation;
-
     public SoulCandleBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ALTER_BE.get(), pos, state);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, SoulCandleBlockEntity soulCandle) {
         soulCandle.prevProgress = soulCandle.progress;
+
+        state = state.setValue(CRAFTING, soulCandle.progress > 0);
+        level.setBlockAndUpdate(pos, state);
 
         if (state.getValue(LIT)) {
 
@@ -137,14 +138,10 @@ public class SoulCandleBlockEntity extends BlockEntity {
                     if (soulCandle.itemsConsumed >= totalItems) {
                         soulCandle.craftItem(recipe);
                         soulCandle.resetCrafting();
-                        return;
                     }
                 }
             }
         }
-
-        state = state.setValue(CRAFTING, soulCandle.progress > 0);
-        level.setBlockAndUpdate(pos, state);
     }
 
     private void resetCrafting() {
@@ -510,8 +507,11 @@ public class SoulCandleBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+
         tag.putInt("progress", progress);
+        tag.putInt("maxProgress", maxProgress);
         tag.putInt("prevProgress", prevProgress);
+        tag.putInt("itemsConsumed", itemsConsumed);
 
         if (entityLastSacrificed != null) {
             ResourceLocation id = EntityType.getKey(entityLastSacrificed);
@@ -540,17 +540,19 @@ public class SoulCandleBlockEntity extends BlockEntity {
         });
     }
 
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        progress = tag.getInt("progress");
-        prevProgress = tag.getInt("prevProgress");
 
+        progress = tag.getInt("progress");
+        maxProgress = tag.getInt("maxProgress");
+        prevProgress = tag.getInt("prevProgress");
+        itemsConsumed = tag.getInt("itemsConsumed");
 
         if (tag.contains("entityLastSacrificed")) {
             String id = tag.getString("entityLastSacrificed");
             ResourceLocation rl = ResourceLocation.parse(id);
-
             entityLastSacrificed = BuiltInRegistries.ENTITY_TYPE.get(rl);
         } else {
             entityLastSacrificed = null;
@@ -587,14 +589,6 @@ public class SoulCandleBlockEntity extends BlockEntity {
         } else {
             activeRecipe = Optional.empty();
         }
-    }
-
-    public float getRenderingRotation() {
-        rotation += 0.5f;
-        if (rotation >= 360) {
-            rotation = 0;
-        }
-        return rotation;
     }
 
     @Nullable

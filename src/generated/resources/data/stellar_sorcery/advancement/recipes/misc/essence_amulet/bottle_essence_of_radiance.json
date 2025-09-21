@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dragon_breath": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:dragon_breath"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:essence_amulet/bottle_essence_of_radiance"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dragon_breath"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:essence_amulet/bottle_essence_of_radiance"
+    ]
+  }
+}
