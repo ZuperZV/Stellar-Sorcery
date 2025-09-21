@@ -450,15 +450,63 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 )
                 .patternLine("_OOO_")
                 .patternLine("O___O")
-                .patternLine("O___O")
+                .patternLine("O_A_O")
                 .patternLine("O___O")
                 .patternLine("_OOO_")
 
+                .block('A', ModBlocks.SOUL_CANDLE.get())
                 .block('O', ModBlocks.WHITE_CHALK.get())
 
                 .timeOfDay(TimeOfDay.BOTH)
-                .recipeTime(200)
-                .unlockedBy("has_obsidian", has(Blocks.OBSIDIAN))
+                .recipeTime(50)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
+                .save(pWriter);
+
+
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.RITUAL_DAGGER.get()),
+                        Ingredient.of(Items.GHAST_TEAR),
+                        Ingredient.of(Items.GOAT_HORN)
+                )
+                .patternLine("__OOOOO__")
+                .patternLine("_O_____O_")
+                .patternLine("O_______O")
+                .patternLine("O_______O")
+                .patternLine("O___A___O")
+                .patternLine("O_______O")
+                .patternLine("O_______O")
+                .patternLine("_O_____O_")
+                .patternLine("__OOOOO__")
+
+                .block('A', ModBlocks.SOUL_CANDLE.get())
+                .block('O', ModBlocks.WHITE_CHALK.get())
+
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(100)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
+                .save(pWriter);
+
+
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.CLAY_JAR.get()),
+                        Ingredient.of(Items.GHAST_TEAR),
+                        Ingredient.of(Items.GOAT_HORN),
+                        Ingredient.of(Items.AMETHYST_SHARD)
+                )
+                .patternLine("__OOOOO__")
+                .patternLine("_O_____O_")
+                .patternLine("O__OOO__O")
+                .patternLine("O_O___O_O")
+                .patternLine("O_O_A_O_O")
+                .patternLine("O_O___O_O")
+                .patternLine("O__OOO__O")
+                .patternLine("_O_____O_")
+                .patternLine("__OOOOO__")
+
+                .block('A', ModBlocks.SOUL_CANDLE.get())
+                .block('O', ModBlocks.WHITE_CHALK.get())
+
+                .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(100)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
                 .save(pWriter);
 
         // Essence

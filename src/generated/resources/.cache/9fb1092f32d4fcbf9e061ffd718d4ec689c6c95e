@@ -1,4 +1,4 @@
-// 1.21	2025-09-21T00:51:36.1808204	Recipes
+// 1.21	2025-09-21T21:13:31.7983206	Recipes
 d3747469a9e4d2883c7d240b64560b806091fb68 data/stellar_sorcery/advancement/recipes/misc/astral_altar/dirt.json
 594a28100a0d611a4a7637988643f9d0a9a14025 data/stellar_sorcery/advancement/recipes/misc/astral_altar/netherite_ingot.json
 a247b72dd8e7d5fae67f9ef2ba5796a02d7cfb8b data/stellar_sorcery/advancement/recipes/misc/astral_altar/raw_copper.json
@@ -26,7 +26,9 @@ c0413087d9d3295500eb7c15db2f2193d81f4276 data/stellar_sorcery/advancement/recipe
 eb9e4e26483a631a2133d160f388130e54a79fe0 data/stellar_sorcery/advancement/recipes/misc/lunar_infuser/moonshine_shard.json
 49abe15715b7b589149fe539aed5c9f8f6613f03 data/stellar_sorcery/advancement/recipes/misc/ritual_dagger.json
 f4ac0f773a2adb2f940845a3332bff5e05630fc9 data/stellar_sorcery/advancement/recipes/misc/soft_clay_jar.json
-7f750bf3766c80416e86da795861307cb69d4f80 data/stellar_sorcery/advancement/recipes/misc/soul_candle/blood_vial.json
+9357a21e4b3fb256e0aecd794002b0d08dd1dc91 data/stellar_sorcery/advancement/recipes/misc/soul_candle/blood_vial.json
+8329aad3f34c20e22987ce271e8c63b2f54f26d5 data/stellar_sorcery/advancement/recipes/misc/soul_candle/clay_jar.json
+eeb242fa3b76a7a139ea2a22838b77eec013d84d data/stellar_sorcery/advancement/recipes/misc/soul_candle/ritual_dagger.json
 847bd518b4fc1340b56e382f69b6bc344df133ab data/stellar_sorcery/advancement/recipes/misc/stump.json
 53b9e90cc467122f04471bef7c652b474ad3779f data/stellar_sorcery/advancement/recipes/misc/stump/bluestone_dust.json
 ff9238b8f0ea7944bca7bb320a29428a9c51b52f data/stellar_sorcery/advancement/recipes/misc/stump/calendula.json
@@ -78,7 +80,9 @@ de4872d0ee04eaf54ecc6aadbaa936be968720e1 data/stellar_sorcery/recipe/lunar_infus
 ee70f38a375a08a32ee89f25f7067903dbc53d42 data/stellar_sorcery/recipe/lunar_infuser/moonshine_shard.json
 236ff13ca15e1825b5d0274b952f76b84e16f71c data/stellar_sorcery/recipe/ritual_dagger.json
 038b0a032e93b4885e10cf941196939757504132 data/stellar_sorcery/recipe/soft_clay_jar.json
-527645b7a9142c49ed33127aaa3cdc842dc1ca80 data/stellar_sorcery/recipe/soul_candle/blood_vial.json
+0730b3181d2847171a017058057799834045b392 data/stellar_sorcery/recipe/soul_candle/blood_vial.json
+d1f4b1f4338000297126fb49785a46871c362a48 data/stellar_sorcery/recipe/soul_candle/clay_jar.json
+5fd26d20404faca7353273970cf6edc4e1d28c98 data/stellar_sorcery/recipe/soul_candle/ritual_dagger.json
 f0b0f33057ec6a8b63dfc9c2dc02c56d159c6ca0 data/stellar_sorcery/recipe/stump.json
 8676aa10cc1ac16ecf3632fd7f187a13568d2902 data/stellar_sorcery/recipe/stump/bluestone_dust.json
 8551c1f363e66c3d670ae52e2be32f580384143e data/stellar_sorcery/recipe/stump/calendula.json

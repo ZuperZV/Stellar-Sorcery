@@ -95,8 +95,9 @@
 
   "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
 
-  "emi.category.stellar_sorcery.centrifuge": "Centrifuge",
-  "jei.stellar_sorcery.essence_infusion_boiler": "Essence Infusion Boiler",
+  "recipe_mods.stellar_sorcery.soul_candle": "Soul Circle Alter",
+  "recipe_mods.stellar_sorcery.essence_infusion_boiler": "Essence Infusion Boiler",
+  "recipe_mods.stellar_sorcery.astral_altar": "Astral Altar",
 
   "entity.stellar_sorcery.mob": "Mob",
 

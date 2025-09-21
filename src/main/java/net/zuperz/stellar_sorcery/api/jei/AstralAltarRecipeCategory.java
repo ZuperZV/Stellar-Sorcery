@@ -129,7 +129,7 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
 
     @Override
     public Component getTitle() {
-        return Component.translatable("block.stellar_sorcery.astral_altar");
+        return Component.translatable("recipe_mods.stellar_sorcery.astral_altar");
     }
 
     @Override

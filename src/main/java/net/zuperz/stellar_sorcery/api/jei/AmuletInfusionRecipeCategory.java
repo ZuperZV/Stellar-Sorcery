@@ -96,7 +96,7 @@ public class AmuletInfusionRecipeCategory implements IRecipeCategory<AmuletEssen
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.stellar_sorcery.essence_infusion_boiler");
+        return Component.translatable("recipe_mods.stellar_sorcery.essence_infusion_boiler");
     }
 
     @Override

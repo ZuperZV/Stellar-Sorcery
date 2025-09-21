@@ -57,6 +57,7 @@ public class SoulCandleBlockEntity extends BlockEntity {
     private final List<ItemStack> storedIngredients = new ArrayList<>();
     private Optional<SoulCandleRecipe> activeRecipe = Optional.empty();
     public EntityType<?> entityLastSacrificed = null;
+    private float rotation;
 
     public SoulCandleBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ALTER_BE.get(), pos, state);
@@ -437,10 +438,12 @@ public class SoulCandleBlockEntity extends BlockEntity {
         EntityType.LIGHTNING_BOLT.spawn(level, blockPos, MobSpawnType.TRIGGERED).setVisualOnly(true);
     }
 
-    private void markForUpdate() {
-        if (level instanceof ServerLevel serverLevel) {
-            serverLevel.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+    public float getRenderingRotation() {
+        rotation += 0.5f;
+        if (rotation >= 360) {
+            rotation = 0;
         }
+        return rotation;
     }
 
     public static class BlockRecipeInput implements RecipeInput {
@@ -471,37 +474,12 @@ public class SoulCandleBlockEntity extends BlockEntity {
         }
     }
 
-    public class CombinedRecipeInput implements RecipeInput {
-        private final List<ItemStack> stacks;
-        private final BlockPos pos;
-
-        public CombinedRecipeInput(List<ItemStack> stacks, BlockPos pos) {
-            this.stacks = stacks.stream()
-                    .filter(s -> !s.isEmpty())
-                    .toList();
-            this.pos = pos;
-        }
-
-        @Override
-        public ItemStack getItem(int index) {
-            if (index < 0 || index >= stacks.size()) {
-                return ItemStack.EMPTY;
-            }
-            return stacks.get(index);
-        }
-
-        @Override
-        public int size() {
-            return stacks.size();
-        }
-
-        public List<ItemStack> items() {
-            return stacks;
-        }
-
-        public BlockPos getPos() {
-            return pos;
-        }
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        tag.putInt("progress", this.progress);
+        tag.putInt("maxProgress", this.maxProgress);
+        return tag;
     }
 
     @Override
@@ -595,10 +573,5 @@ public class SoulCandleBlockEntity extends BlockEntity {
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
     }
 }

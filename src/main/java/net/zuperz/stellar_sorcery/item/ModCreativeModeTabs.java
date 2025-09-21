@@ -47,6 +47,9 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.LIGHT_JAR.get());
                         pOutput.accept(ModBlocks.LIGHT_BEAM_EMITTER.get());
 
+                        pOutput.accept(ModBlocks.SOUL_CANDLE.get());
+                        pOutput.accept(ModItems.WHITE_CHALK_STICK.get());
+
                         pOutput.accept(ModBlocks.LUNAR_INFUSER.get());
                         pOutput.accept(ModBlocks.LUNAR_JAR.get());
                         pOutput.accept(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get());
