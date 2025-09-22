@@ -1,10 +1,6 @@
 package net.zuperz.stellar_sorcery.item;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.component.BundleContents;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -12,6 +8,7 @@ import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.custom.*;
+import net.zuperz.stellar_sorcery.util.ModTags;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -110,6 +107,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> WHITE_CHALK_STICK = ITEMS.register("white_chalk_stick",
             () -> new ChalkItem(new Item.Properties().stacksTo(1).durability(16), ModBlocks.WHITE_CHALK.get()));
+
+    public static final DeferredItem<Item> CHALK_CANISTER = ITEMS.register("chalk_canister",
+            () -> new BlockCanisterItem(new Item.Properties().stacksTo(1).durability(16),4, ModTags.Blocks.CHALK_BLOCKS));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

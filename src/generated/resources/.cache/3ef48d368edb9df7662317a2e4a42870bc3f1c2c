@@ -1,4 +1,4 @@
-// 1.21	2025-08-04T16:51:28.1458153	Tags for minecraft:block mod id stellar_sorcery
+// 1.21	2025-09-22T15:34:28.1491984	Tags for minecraft:block mod id stellar_sorcery
 d116e2c0790e9adda0f9f810d8dad03155b54a9b data/minecraft/tags/block/crops.json
 9540b664c31bd76dba2d8682c9375d7651490aae data/minecraft/tags/block/flowers.json
 7d3ab907c6315215204c098e7a9ce98590366ea7 data/minecraft/tags/block/flower_pots.json
@@ -6,4 +6,5 @@ d116e2c0790e9adda0f9f810d8dad03155b54a9b data/minecraft/tags/block/crops.json
 df9dc83a7f0fad6b07b90d674daf505dd0983b27 data/minecraft/tags/block/mineable/pickaxe.json
 df9dc83a7f0fad6b07b90d674daf505dd0983b27 data/minecraft/tags/block/needs_iron_tool.json
 24f8329774d94f73ca723bc5d9ef6127e5a872a3 data/minecraft/tags/block/needs_stone_tool.json
+ecdf48200e2d03adee5e727dce85826c9a5809dd data/stellar_sorcery/tags/block/chalk_blocks.json
 9540b664c31bd76dba2d8682c9375d7651490aae data/stellar_sorcery/tags/block/steller_sorcery_flowers_blocks.json

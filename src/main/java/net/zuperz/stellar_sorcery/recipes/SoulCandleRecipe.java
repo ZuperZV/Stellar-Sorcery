@@ -25,6 +25,7 @@ import net.minecraft.world.phys.AABB;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.CodecFix;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
@@ -41,28 +42,19 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
     public final Map<String, Block> blockMapping;
     public final List<Optional<Ingredient>> additionalIngredients;
     public final Optional<EntityType<?>> entityType;
-    public final Optional<String> requiredEssenceType;
-    public final Optional<Block> additionalBlock;
-    public final Optional<Map<String, String>> blockState;
-    public final Optional<Boolean> needsBlock;
-    public final Optional<Block> blockOutput;
     public final Optional<TimeOfDay> timeOfDay;
     public final Optional<TimeOfDay> fakeTimeOfDay;
+    public final List<SoulCandleCommand> commands;
     public final int recipeTime;
 
-    public SoulCandleRecipe(ItemStack output, List<String> pattern, Map<String, Block> blockMapping, List<Optional<Ingredient>> additionalIngredients, Optional<EntityType<?>> entityType, Optional<String> requiredEssenceType,
-                            Optional<Block> additionalBlock, Optional<Map<String, String>> blockState, Optional<Boolean> needsBlock, Optional<Block> blockOutput,
-                            Optional<TimeOfDay> timeOfDay, Optional<TimeOfDay> fakeTimeOfDay, int recipeTime) {
+    public SoulCandleRecipe(ItemStack output, List<String> pattern, Map<String, Block> blockMapping, List<Optional<Ingredient>> additionalIngredients, Optional<EntityType<?>> entityType,
+                            Optional<TimeOfDay> timeOfDay, Optional<TimeOfDay> fakeTimeOfDay, List<SoulCandleCommand> commands, int recipeTime) {
         this.pattern = pattern;
         this.blockMapping = blockMapping;
         this.entityType = entityType;
-        this.requiredEssenceType = requiredEssenceType;
-        this.additionalBlock = additionalBlock;
-        this.blockState = blockState;
-        this.needsBlock = needsBlock;
-        this.blockOutput = blockOutput;
         this.timeOfDay = timeOfDay;
         this.fakeTimeOfDay = fakeTimeOfDay;
+        this.commands = commands;
         this.recipeTime = recipeTime;
 
         this.additionalIngredients = new ArrayList<>(additionalIngredients);
@@ -93,8 +85,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
         BlockPos center = blockInput.pos();
 
         if (HasEntitySacrificed(level, center)) return false;
-
-        if (extractedAdditionalBlock(level, center)) return false;
 
         if (IsTimeOfDay(level)) return false;
 
@@ -128,7 +118,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
                 }
             }
         }
-        System.out.println("true");
         return true;
     }
 
@@ -152,20 +141,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
                 for (ItemEntity itemEntity : itemsOnGround) {
                     ItemStack stack = itemEntity.getItem();
                     if (stack.isEmpty()) continue;
-
-                    if (stack.is(ModItems.ESSENCE_BOTTLE.get()) && requiredEssenceType.isPresent()) {
-                        if (!stack.has(ModDataComponentTypes.ESSENCE_BOTTLE)) continue;
-
-                        EssenceBottleData data = stack.get(ModDataComponentTypes.ESSENCE_BOTTLE.get());
-                        boolean matches = checkEssenceItems(
-                                requiredEssenceType.get(),
-                                String.valueOf(data.getEmbeddedItem().getItem()),
-                                String.valueOf(data.getEmbeddedItem1().getItem()),
-                                String.valueOf(data.getEmbeddedItem2().getItem())
-                        );
-
-                        if (!matches) continue;
-                    }
 
                     Ingredient matched = null;
                     for (Ingredient ing : unmatched) {
@@ -203,50 +178,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
         return false;
     }
 
-    private boolean extractedAdditionalBlock(Level level, BlockPos center) {
-        if (additionalBlock.isPresent() && needsBlock.orElse(false)) {
-            boolean found = false;
-
-            for (int dx = -2; dx <= 2 && !found; dx++) {
-                for (int dz = -2; dz <= 2 && !found; dz++) {
-                    if (dx == 0 && dz == 0) continue;
-
-                    BlockPos checkPos = center.offset(dx, 0, dz);
-                    BlockState stateAt = level.getBlockState(checkPos);
-                    if (stateAt.getBlock().equals(additionalBlock.get())) {
-                        if (blockState.isPresent()) {
-                            Map<String, String> requiredStates = blockState.get();
-                            boolean allMatch = true;
-                            for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
-                                Property<?> property = stateAt.getBlock().getStateDefinition().getProperty(entry.getKey());
-                                if (property == null) {
-                                    allMatch = false;
-                                    break;
-                                }
-
-                                Optional<? extends Comparable<?>> parsed = property.getValue(entry.getValue());
-                                if (parsed.isEmpty() || !stateAt.getValue(property).equals(parsed.get())) {
-                                    allMatch = false;
-                                    break;
-                                }
-                            }
-
-                            if (allMatch) {
-                                found = true;
-                            }
-                        } else {
-                            found = true;
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean HasEntitySacrificed(Level level, BlockPos center) {
         if (entityType.isPresent()) {
             BlockEntity be = level.getBlockEntity(center);
@@ -257,16 +188,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
             if (!altar.entityLastSacrificed.equals(entityType.get())) return true;
         }
         return false;
-    }
-
-    public boolean checkEssenceItems(String input, String actualEssence, String actualEssence1, String actualEssence2) {
-        String[] expectedItems = input.split(",");
-        Arrays.sort(expectedItems);
-
-        String[] actualItems = new String[] { actualEssence, actualEssence1, actualEssence2 };
-        Arrays.sort(actualItems);
-
-        return Arrays.equals(expectedItems, actualItems);
     }
 
     @Override
@@ -348,21 +269,33 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
 
                     BuiltInRegistries.ENTITY_TYPE.byNameCodec().optionalFieldOf("entityType").forGetter(recipe -> recipe.entityType),
 
-                    Codec.STRING.optionalFieldOf("essence_type").forGetter(recipe -> recipe.requiredEssenceType),
-
-                    BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block").forGetter(recipe -> recipe.additionalBlock),
-                    Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("block_state").forGetter(recipe -> recipe.blockState),
-
-                    Codec.BOOL.optionalFieldOf("needs_block").forGetter(recipe -> recipe.needsBlock),
-                    BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("block_output").forGetter(recipe -> recipe.blockOutput),
-
                     TimeOfDay.CODEC.optionalFieldOf("time_of_day").forGetter(recipe -> recipe.timeOfDay),
                     TimeOfDay.CODEC.optionalFieldOf("fake_time_of_day").forGetter(recipe -> recipe.fakeTimeOfDay),
 
-                    Codec.INT.fieldOf("time").forGetter(recipe -> recipe.recipeTime)
+                    Codec.STRING.fieldOf("command").forGetter(r -> r.commands.isEmpty() ? "" : r.commands.get(0).getCommand()),
+                    Codec.STRING.xmap(SoulCandleCommand.Target::valueOf, SoulCandleCommand.Target::name).fieldOf("target")
+                            .forGetter(r -> r.commands.isEmpty() ? SoulCandleCommand.Target.SOUL_CANDLE : r.commands.get(0).getTarget()),
+                    Codec.STRING.xmap(SoulCandleCommand.Trigger::valueOf, SoulCandleCommand.Trigger::name).fieldOf("trigger")
+                            .forGetter(r -> r.commands.isEmpty() ? SoulCandleCommand.Trigger.ON_START : r.commands.get(0).getTrigger()),
 
-            ).apply(instance, SoulCandleRecipe::new);
+                    Codec.INT.fieldOf("time").forGetter(r -> r.recipeTime)
+
+            ).apply(instance, (output, pattern, blockMapping, additionalIngredients, entityType, timeOfDay, fakeTimeOfDay,
+                               commandStr, target, trigger, recipeTime) ->
+                    new SoulCandleRecipe(
+                            output,
+                            pattern,
+                            blockMapping,
+                            additionalIngredients,
+                            entityType,
+                            timeOfDay,
+                            fakeTimeOfDay,
+                            List.of(new SoulCandleCommand(commandStr, target, trigger)),
+                            recipeTime
+                    )
+            );
         });
+
 
         @Override
         public MapCodec<SoulCandleRecipe> codec() {
@@ -395,49 +328,18 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
                 buffer.writeBoolean(false);
             }
 
-            if (recipe.requiredEssenceType.isPresent()) {
-                buffer.writeBoolean(true);
-                buffer.writeUtf(recipe.requiredEssenceType.get());
-            } else {
-                buffer.writeBoolean(false);
-            }
-
-            if (recipe.additionalBlock.isPresent()) {
-                buffer.writeBoolean(true);
-                Block block = recipe.additionalBlock.get();
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(block));
-            } else {
-                buffer.writeBoolean(false);
-            }
-
-            if (recipe.blockState.isPresent()) {
-                buffer.writeBoolean(true);
-                Map<String, String> stateMap = recipe.blockState.get();
-                buffer.writeVarInt(stateMap.size());
-                for (Map.Entry<String, String> entry : stateMap.entrySet()) {
-                    buffer.writeUtf(entry.getKey());
-                    buffer.writeUtf(entry.getValue());
-                }
-            } else {
-                buffer.writeBoolean(false);
-            }
-
-            buffer.writeBoolean(recipe.needsBlock.isPresent());
-            recipe.needsBlock.ifPresent(buffer::writeBoolean);
-
-            if (recipe.blockOutput.isPresent()) {
-                buffer.writeBoolean(true);
-                Block block = recipe.blockOutput.get();
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(block));
-            } else {
-                buffer.writeBoolean(false);
-            }
-
             buffer.writeBoolean(recipe.timeOfDay.isPresent());
             recipe.timeOfDay.ifPresent(t -> buffer.writeUtf("BOTH")); // <--- do not lock at it. it is stil is datagenet
 
             buffer.writeBoolean(recipe.fakeTimeOfDay.isPresent());
             recipe.fakeTimeOfDay.ifPresent(t -> buffer.writeUtf(recipe.fakeTimeOfDay.get().toString()));
+
+            buffer.writeVarInt(recipe.commands.size());
+            for (SoulCandleCommand cmd : recipe.commands) {
+                buffer.writeUtf(cmd.getCommand());
+                buffer.writeUtf(cmd.getTarget().name());
+                buffer.writeUtf(cmd.getTrigger().name());
+            }
 
             buffer.writeVarInt(recipe.recipeTime);
 
@@ -478,40 +380,6 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
                 entityType = Optional.of(ByteBufCodecs.registry(Registries.ENTITY_TYPE).decode(buffer));
             }
 
-            Optional<String> requiredEssenceType = Optional.empty();
-            if (buffer.readBoolean()) {
-                requiredEssenceType = Optional.of(buffer.readUtf());
-            }
-
-            Block additionalBlock = null;
-            if (buffer.readBoolean()) {
-                ResourceLocation loc = buffer.readResourceLocation();
-                additionalBlock = BuiltInRegistries.BLOCK.get(loc);
-            }
-
-            Optional<Map<String, String>> blockState = Optional.empty();
-            if (buffer.readBoolean()) {
-                int size = buffer.readVarInt();
-                Map<String, String> map = new HashMap<>();
-                for (int i = 0; i < size; i++) {
-                    String key = buffer.readUtf();
-                    String value = buffer.readUtf();
-                    map.put(key, value);
-                }
-                blockState = Optional.of(map);
-            }
-
-            Optional<Boolean> needsBlock = Optional.empty();
-            if (buffer.readBoolean()) {
-                needsBlock = Optional.of(buffer.readBoolean());
-            }
-
-            Block blockOutput = null;
-            if (buffer.readBoolean()) {
-                ResourceLocation loc = buffer.readResourceLocation();
-                blockOutput = BuiltInRegistries.BLOCK.get(loc);
-            }
-
             Optional<TimeOfDay> timeOfDay = Optional.empty();
             if (buffer.readBoolean()) {
                 timeOfDay = Optional.of(TimeOfDay.valueOf(buffer.readUtf().toUpperCase()));
@@ -524,11 +392,20 @@ public class SoulCandleRecipe implements Recipe<RecipeInput> {
                 System.out.println("fakeTimeOfDay: " + fakeTimeOfDay);
             }
 
+            int cmdCount = buffer.readVarInt();
+            List<SoulCandleCommand> commands = new ArrayList<>();
+            for (int i = 0; i < cmdCount; i++) {
+                String command = buffer.readUtf();
+                SoulCandleCommand.Target target = SoulCandleCommand.Target.valueOf(buffer.readUtf());
+                SoulCandleCommand.Trigger trigger = SoulCandleCommand.Trigger.valueOf(buffer.readUtf());
+                commands.add(new SoulCandleCommand(command, target, trigger));
+            }
+
             int recipeTime = buffer.readVarInt();
 
             ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
 
-            return new SoulCandleRecipe(output, pattern, blockMapping, ingredients, entityType, requiredEssenceType, Optional.ofNullable(additionalBlock), blockState, needsBlock, Optional.ofNullable(blockOutput), fakeTimeOfDay, timeOfDay, recipeTime);
+            return new SoulCandleRecipe(output, pattern, blockMapping, ingredients, entityType, timeOfDay, fakeTimeOfDay, commands, recipeTime);
         }
 
         private final StreamCodec<RegistryFriendlyByteBuf, SoulCandleRecipe> STREAM_CODEC = StreamCodec.of(

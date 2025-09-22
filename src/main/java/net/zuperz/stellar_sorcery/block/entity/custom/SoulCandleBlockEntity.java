@@ -33,8 +33,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.recipes.SoulCandleRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +79,10 @@ public class SoulCandleBlockEntity extends BlockEntity {
                     soulCandle.itemsConsumed = 0;
                     return;
                 }
+            }
+
+            if (soulCandle.entityLastSacrificed != null) {
+                takeEntityLastSacrificed(level, pos, soulCandle);
             }
 
             soulCandle.progress++;
@@ -138,10 +144,120 @@ public class SoulCandleBlockEntity extends BlockEntity {
 
                     if (soulCandle.itemsConsumed >= totalItems) {
                         soulCandle.craftItem(recipe);
+                        soulCandle.executeCommands(SoulCandleCommand.Trigger.ON_END, recipe);
                         soulCandle.resetCrafting();
                     }
                 }
             }
+        }
+
+        if (soulCandle.activeRecipe.isPresent()) {
+            SoulCandleRecipe recipe = soulCandle.activeRecipe.get();
+
+            if (soulCandle.progress < soulCandle.maxProgress) {
+                soulCandle.executeCommands(SoulCandleCommand.Trigger.EACH_TICK, recipe);
+
+                if (soulCandle.progress == 1) {
+                    soulCandle.executeCommands(SoulCandleCommand.Trigger.ON_START, recipe);
+                }
+
+                if (soulCandle.progress == soulCandle.maxProgress / 2) {
+                    soulCandle.executeCommands(SoulCandleCommand.Trigger.AT_PROGRESS_HALF, recipe);
+                }
+            }
+        }
+    }
+
+    private static void takeEntityLastSacrificed(Level level, BlockPos pos, SoulCandleBlockEntity soulCandle) {
+        soulCandle.entityLastSacrificed = null;
+
+        level.playSound(null, pos, SoundEvents.ITEM_PICKUP,
+                SoundSource.BLOCKS, 1f, 2f);
+
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.ASH,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.6,
+                    pos.getZ() + 0.5,
+                    5,
+                    0.2, 0.2, 0.2,
+                    0.01
+            );
+
+            serverLevel.sendParticles(ParticleTypes.CLOUD,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.6,
+                    pos.getZ() + 0.5,
+                    20,
+                    0.3, 0.3, 0.3,
+                    0.01
+            );
+        }
+    }
+
+    private void executeCommands(SoulCandleCommand.Trigger trigger, SoulCandleRecipe recipe) {
+        for (SoulCandleCommand cmd : recipe.commands) {
+            if (cmd.getTrigger() != trigger) continue;
+
+            String executedCommand = cmd.getCommand();
+
+            switch (cmd.getTarget()) {
+                case SOUL_CANDLE -> {
+                    executedCommand = executedCommand
+                            .replace("$posX", String.valueOf(getBlockPos().getX()))
+                            .replace("$posY", String.valueOf(getBlockPos().getY()))
+                            .replace("$posZ", String.valueOf(getBlockPos().getZ()))
+                            .replace("$pos", getBlockPos().getX() + " " + getBlockPos().getY() + " " + getBlockPos().getZ());
+
+                    System.out.println("SOUL_CANDLE command: " + executedCommand);
+                }
+
+                case PLAYER_CLOSEST -> {
+                    var player = level.getNearestPlayer(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), 10, false);
+                    if (player != null) {
+                        String cmdForPlayer = executedCommand
+                                .replace("$playerX", String.valueOf(player.getX()))
+                                .replace("$playerY", String.valueOf(player.getY()))
+                                .replace("$playerZ", String.valueOf(player.getZ()))
+                                .replace("$player", player.getName().getString());
+
+                        System.out.println("PLAYER_CLOSEST command: " + cmdForPlayer);
+                    }
+                }
+
+                case ALL_PLAYERS -> {
+                    List<Player> allPlayers = (List<Player>) level.players();
+                    for (Player player : allPlayers) {
+                        String cmdForPlayer = executedCommand
+                                .replace("$playerX", String.valueOf(player.getX()))
+                                .replace("$playerY", String.valueOf(player.getY()))
+                                .replace("$playerZ", String.valueOf(player.getZ()))
+                                .replace("$player", player.getName().getString());
+
+                        System.out.println("ALL_PLAYERS command for " + player.getName().getString() + ": " + cmdForPlayer);
+                    }
+                }
+
+                case PLAYERS_IN_5_BLOCKS -> {
+                    AABB area = new AABB(getBlockPos()).inflate(5);
+                    List<Player> playersInArea = level.getEntitiesOfClass(Player.class, area);
+                    for (Player player : playersInArea) {
+                        String cmdForPlayer = executedCommand
+                                .replace("$player", player.getName().getString())
+                                .replace("$playerX", String.valueOf(player.getX()))
+                                .replace("$playerY", String.valueOf(player.getY()))
+                                .replace("$playerZ", String.valueOf(player.getZ()));
+
+                        System.out.println("PLAYERS_IN_5_BLOCKS command for " + player.getName().getString() + ": " + cmdForPlayer);
+                    }
+                }
+            }
+
+            System.out.println("executedCommand: " + executedCommand);
+
+            level.getServer().getCommands().performPrefixedCommand(
+                    level.getServer().createCommandSourceStack(),
+                    executedCommand );
         }
     }
 
@@ -261,7 +377,6 @@ public class SoulCandleBlockEntity extends BlockEntity {
         level.addFreshEntity(itemEntity);
 
         itemCraftingParticles(level);
-        blockCraftingParticles(recipe, level);
     }
 
     private @Nullable Optional<RecipeHolder<SoulCandleRecipe>> getSoulCandleRecipeRecipeHolder(Level level) {
@@ -326,82 +441,6 @@ public class SoulCandleBlockEntity extends BlockEntity {
 
         level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
                 SoundSource.BLOCKS, 0.3f, 0.2f);
-    }
-
-    private void blockCraftingParticles(SoulCandleRecipe altarRecipe, Level level) {
-        if (altarRecipe.additionalBlock.isPresent() && altarRecipe.blockOutput.isPresent()) {
-            Block requiredBlock = altarRecipe.additionalBlock.get();
-            Block newBlock = altarRecipe.blockOutput.get();
-
-            for (int dx = -2; dx <= 2; dx++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    if (dx == 0 && dz == 0) continue;
-
-                    BlockPos checkPos = worldPosition.offset(dx, 0, dz);
-                    Block blockAt = level.getBlockState(checkPos).getBlock();
-
-                    BlockState stateAt = level.getBlockState(checkPos);
-                    if (stateAt.getBlock().equals(requiredBlock)) {
-                        boolean matchesState = true;
-
-                        if (altarRecipe.blockState.isPresent()) {
-                            Map<String, String> requiredStates = altarRecipe.blockState.get();
-
-                            for (Map.Entry<String, String> entry : requiredStates.entrySet()) {
-                                Property<?> property = stateAt.getBlock().getStateDefinition().getProperty(entry.getKey());
-
-                                if (property == null) {
-                                    matchesState = false;
-                                    break;
-                                }
-
-                                Optional<? extends Comparable<?>> parsed = property.getValue(entry.getValue());
-                                if (parsed.isEmpty() || !stateAt.getValue(property).equals(parsed.get())) {
-                                    matchesState = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (matchesState) {
-                            level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
-
-                            if (level instanceof ServerLevel serverLevel) {
-                                serverLevel.sendParticles(ParticleTypes.END_ROD,
-                                        checkPos.getX() + 0.5,
-                                        checkPos.getY() + 0.5,
-                                        checkPos.getZ() + 0.5,
-                                        20,
-                                        0.3, 0.3, 0.3,
-                                        0.01
-                                );
-                            }
-
-                            level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
-                                    SoundSource.BLOCKS, 1.0f, 1.2f);
-                        }
-
-                        if (matchesState) {
-                            level.setBlockAndUpdate(checkPos, newBlock.defaultBlockState());
-
-                            if (level instanceof ServerLevel serverLevel) {
-                                serverLevel.sendParticles(ParticleTypes.END_ROD,
-                                        checkPos.getX() + 0.5,
-                                        checkPos.getY() + 0.5,
-                                        checkPos.getZ() + 0.5,
-                                        20,
-                                        0.3, 0.3, 0.3,
-                                        0.01
-                                );
-                            }
-
-                            level.playSound(null, checkPos, SoundEvents.AMETHYST_BLOCK_CHIME,
-                                    SoundSource.BLOCKS, 1.0f, 1.2f);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public static void setCrafting(BlockPos altarPos, Level level, boolean boo) {

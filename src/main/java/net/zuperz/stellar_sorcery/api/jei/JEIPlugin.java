@@ -113,7 +113,9 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(amuletessenceBoiler, AmuletInfusionRecipeCategory.RECIPE_TYPE);
 
         var soulCandle = new ItemStack(ModBlocks.SOUL_CANDLE.get());
+        var whiteChalk = new ItemStack(ModItems.WHITE_CHALK_STICK.get());
         registration.addRecipeCatalyst(soulCandle, SoulCandleRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(whiteChalk, SoulCandleRecipeCategory.RECIPE_TYPE);
     }
 
     /*

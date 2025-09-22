@@ -15,6 +15,7 @@ public class ModTags {
     public static class Items {
 
         public static final TagKey<Item> STELLAR_SORCERY_FLOWER_ITEMS = tag("stellar_sorcery_flower_items");
+        public static final TagKey<Item> CHALK_STICK_ITEMS = tag("chalk_stick_blocks");
 
         private static TagKey<Item> tag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, name));
@@ -28,6 +29,7 @@ public class ModTags {
     public static class Blocks {
 
         public static final TagKey<Block> STELLER_SORCERY_FLOWERS_BLOCKS = tag("steller_sorcery_flowers_blocks");
+        public static final TagKey<Block> CHALK_BLOCKS = tag("chalk_blocks");
 
 
         private static TagKey<Block> tag(String name) {

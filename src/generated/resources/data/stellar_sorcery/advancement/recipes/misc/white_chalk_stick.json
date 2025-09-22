@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_extracter_clay_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:extracter_clay_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:white_chalk_stick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_extracter_clay_jar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:white_chalk_stick"
+    ]
+  }
+}

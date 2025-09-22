@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.datagen.custom.*;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
@@ -39,6 +40,25 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     protected void buildRecipes(RecipeOutput pWriter) {
         // Crafting Shaped
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Blocks.CALCITE)
+                .pattern("BA")
+                .pattern("AB")
+                .define('A', Blocks.DIORITE)
+                .define('B', Items.QUARTZ)
+                .unlockedBy("has_quartz", has(Items.QUARTZ))
+                .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WHITE_CHALK_STICK.get())
+                .pattern(" B ")
+                .pattern("DAD")
+                .pattern("CAC")
+                .define('A', Blocks.CALCITE)
+                .define('B', ModItems.EXTRACTER_CLAY_JAR.get())
+                .define('C', ModItems.TWIG_CLAY_JAR.get())
+                .define('D', Items.BONE)
+                .unlockedBy("has_extracter_clay_jar", has(ModItems.EXTRACTER_CLAY_JAR.get()))
+                .save(pWriter);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SOFT_CLAY_JAR.get())
                 .pattern(" A ")
@@ -390,6 +410,20 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
                 .save(pWriter);
 
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.SOUL_CANDLE.get()),
+                        Ingredient.of(Items.WHITE_CANDLE),
+                        Ingredient.of(Blocks.SOUL_SAND),
+                        Ingredient.of(ModItems.BLUESTONE_DUST),
+                        Ingredient.of(ModItems.ESSENCE_BOTTLE)
+                )
+                .withEssenceType("minecraft:amethyst_shard,minecraft:phantom_membrane,minecraft:potion")
+                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 10000))
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(205)
+                .unlockedBy("has_white_candle", has(Items.WHITE_CANDLE))
+                .save(pWriter);
+
         // Astral Altar
 
         AstralAltarRecipeBuilder.astralAltar(RecipeCategory.MISC, new ItemStack(Items.NETHERITE_INGOT),
@@ -444,9 +478,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         //Soul Candle
 
         SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.BLOOD_VIAL.get()),
-                        Ingredient.of(Items.DIAMOND),
-                        Ingredient.of(Items.GOLD_INGOT),
-                        Ingredient.of(Items.EMERALD)
+                        Ingredient.of(Items.IRON_INGOT),
+                        Ingredient.of(Items.COAL),
+                        Ingredient.of(ModItems.MOONSHINE_SHARD)
                 )
                 .patternLine("_OOO_")
                 .patternLine("O___O")
@@ -457,39 +491,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .block('A', ModBlocks.SOUL_CANDLE.get())
                 .block('O', ModBlocks.WHITE_CHALK.get())
 
-                .timeOfDay(TimeOfDay.BOTH)
-                .recipeTime(50)
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(150)
                 .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
                 .save(pWriter);
 
 
-        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.RITUAL_DAGGER.get()),
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.GOAT_HORN)
-                )
-                .patternLine("__OOOOO__")
-                .patternLine("_O_____O_")
-                .patternLine("O_______O")
-                .patternLine("O_______O")
-                .patternLine("O___A___O")
-                .patternLine("O_______O")
-                .patternLine("O_______O")
-                .patternLine("_O_____O_")
-                .patternLine("__OOOOO__")
-
-                .block('A', ModBlocks.SOUL_CANDLE.get())
-                .block('O', ModBlocks.WHITE_CHALK.get())
-
-                .timeOfDay(TimeOfDay.BOTH)
-                .recipeTime(100)
-                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
-                .save(pWriter);
-
-
-        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.CLAY_JAR.get()),
-                        Ingredient.of(Items.GHAST_TEAR),
-                        Ingredient.of(Items.GOAT_HORN),
-                        Ingredient.of(Items.AMETHYST_SHARD)
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.CHALK_CANISTER.get()),
+                        Ingredient.of(ModItems.EMPTY_ESSENCE_BOTTLE),
+                        Ingredient.of(ModItems.WHITE_CHALK_STICK),
+                        Ingredient.of(Items.GOLD_INGOT),
+                        Ingredient.of(Items.IRON_INGOT),
+                        Ingredient.of(Items.REDSTONE)
                 )
                 .patternLine("__OOOOO__")
                 .patternLine("_O_____O_")
@@ -508,6 +521,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .recipeTime(100)
                 .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
                 .save(pWriter);
+
+        /*
+                .addCommand("/summon minecraft:sheep $posX $posY $posZ",
+                        SoulCandleCommand.Target.SOUL_CANDLE,
+                        SoulCandleCommand.Trigger.ON_END)
+         */
 
         // Essence
 

@@ -4,19 +4,19 @@
     "A": "stellar_sorcery:soul_candle",
     "O": "stellar_sorcery:white_chalk"
   },
-  "fake_time_of_day": "BOTH",
+  "command": "",
+  "fake_time_of_day": "NIGHT",
   "ingredients": [
     {
-      "item": "minecraft:diamond"
+      "item": "minecraft:iron_ingot"
     },
     {
-      "item": "minecraft:gold_ingot"
+      "item": "minecraft:coal"
     },
     {
-      "item": "minecraft:emerald"
+      "item": "stellar_sorcery:moonshine_shard"
     }
   ],
-  "needs_block": false,
   "output": {
     "item": "stellar_sorcery:blood_vial"
   },
@@ -27,6 +27,8 @@
     "O___O",
     "_OOO_"
   ],
-  "time": 50,
-  "time_of_day": "BOTH"
+  "target": "SOUL_CANDLE",
+  "time": 150,
+  "time_of_day": "NIGHT",
+  "trigger": "ON_START"
 }

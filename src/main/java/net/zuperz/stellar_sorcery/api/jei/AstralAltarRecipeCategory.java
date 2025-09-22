@@ -190,6 +190,8 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
             int iconX = 76 - 2;
             int iconY = centerY - 20;
 
+            slotDrawable.draw(guiGraphics, iconX- 1, iconY + 1);
+
             if (mouseX >= iconX && mouseX <= iconX + 16 && mouseY >= iconY && mouseY <= iconY + 16) {
                 guiGraphics.renderTooltip(
                         Minecraft.getInstance().font,

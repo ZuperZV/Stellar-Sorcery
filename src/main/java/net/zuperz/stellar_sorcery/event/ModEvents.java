@@ -13,6 +13,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
+import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID)
 public class ModEvents {
@@ -38,7 +39,15 @@ public class ModEvents {
                     EntityType.LIGHTNING_BOLT.spawn(serverLevel, event.getEntity().blockPosition(), MobSpawnType.TRIGGERED)
                             .setVisualOnly(true);
                 }
+                break;
 
+            } else if (level.getBlockEntity(pos) instanceof SoulCandleBlockEntity soulCandleBlockEntity) {
+                soulCandleBlockEntity.setSacrificedEntity(event.getEntity().getType());
+
+                if (level instanceof ServerLevel serverLevel) {
+                    EntityType.LIGHTNING_BOLT.spawn(serverLevel, event.getEntity().blockPosition(), MobSpawnType.TRIGGERED)
+                            .setVisualOnly(true);
+                }
                 break;
             }
         }

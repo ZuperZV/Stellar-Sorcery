@@ -3,15 +3,15 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "stellar_sorcery:soul_candle/ritual_dagger"
+        "recipe": "stellar_sorcery:stump/soul_candle"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_white_chalk": {
+    "has_white_candle": {
       "conditions": {
         "items": [
           {
-            "items": "stellar_sorcery:white_chalk"
+            "items": "minecraft:white_candle"
           }
         ]
       },
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_white_chalk"
+      "has_white_candle"
     ]
   ],
   "rewards": {
     "recipes": [
-      "stellar_sorcery:soul_candle/ritual_dagger"
+      "stellar_sorcery:stump/soul_candle"
     ]
   }
 }

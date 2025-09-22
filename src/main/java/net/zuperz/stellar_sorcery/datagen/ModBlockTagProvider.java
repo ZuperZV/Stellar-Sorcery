@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.util.ModTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,5 +71,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.POTTED_RED_CAMPION.get())
                 .add(ModBlocks.POTTED_CALENDULA.get())
                 .add(ModBlocks.POTTED_NIGELLA_DAMASCENA.get());
+
+        this.tag(ModTags.Blocks.CHALK_BLOCKS)
+                .add(ModBlocks.WHITE_CHALK.get());
     }
 }

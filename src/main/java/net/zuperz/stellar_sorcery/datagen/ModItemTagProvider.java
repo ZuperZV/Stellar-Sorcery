@@ -43,5 +43,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .add(ModBlocks.RED_CAMPION.get().asItem())
                 .add(ModBlocks.CALENDULA.get().asItem())
                 .add(ModBlocks.NIGELLA_DAMASCENA.get().asItem());
+
+        this.tag(ModTags.Items.CHALK_STICK_ITEMS)
+                .add(ModItems.WHITE_CHALK_STICK.get());
     }
 }

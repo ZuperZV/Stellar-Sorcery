@@ -1,0 +1,29 @@
+{
+  "type": "stellar_sorcery:stump",
+  "essence_type": "minecraft:amethyst_shard,minecraft:phantom_membrane,minecraft:potion",
+  "fake_time_of_day": "NIGHT",
+  "fluid_input": {
+    "amount": 10000,
+    "fluid": "stellar_sorcery:source_noctilume"
+  },
+  "ingredient": {
+    "item": "minecraft:white_candle"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "item": "stellar_sorcery:bluestone_dust"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:soul_candle"
+  },
+  "time": 205,
+  "time_of_day": "NIGHT"
+}

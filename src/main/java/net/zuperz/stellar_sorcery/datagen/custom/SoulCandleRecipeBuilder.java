@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.TimeOfDay;
 import net.zuperz.stellar_sorcery.recipes.SoulCandleRecipe;
 
@@ -29,15 +30,10 @@ public class SoulCandleRecipeBuilder implements RecipeBuilder {
     private final List<String> pattern = new ArrayList<>();
     private final Map<String, Block> blockMapping = new HashMap<>();
     private final List<Optional<Ingredient>> additionalIngredients;
-
     private Optional<EntityType<?>> entityType = Optional.empty();
-    private Optional<String> essenceType = Optional.empty();
-    private Optional<Block> additionalBlock = Optional.empty();
-    private Optional<Map<String, String>> blockState = Optional.empty();
-    private Optional<Boolean> needsBlock = Optional.of(false);
-    private Optional<Block> blockOutput = Optional.empty();
     private Optional<TimeOfDay> timeOfDay = Optional.empty();
     private Optional<TimeOfDay> fakeTimeOfDay = Optional.empty();
+    private final List<SoulCandleCommand> commands = new ArrayList<>();
     private int recipeTime = 100;
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
@@ -72,33 +68,13 @@ public class SoulCandleRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public SoulCandleRecipeBuilder withEntityType(EntityType<?> entityType) {
+    public SoulCandleRecipeBuilder addCommand(String command, SoulCandleCommand.Target target, SoulCandleCommand.Trigger trigger) {
+        this.commands.add(new SoulCandleCommand(command, target, trigger));
+        return this;
+    }
+
+    public SoulCandleRecipeBuilder entityType(EntityType<?> entityType) {
         this.entityType = Optional.of(entityType);
-        return this;
-    }
-
-    public SoulCandleRecipeBuilder withEssenceType(String essenceType) {
-        this.essenceType = Optional.of(essenceType);
-        return this;
-    }
-
-    public SoulCandleRecipeBuilder withAdditionalBlock(Block block) {
-        this.additionalBlock = Optional.of(block);
-        return this;
-    }
-
-    public SoulCandleRecipeBuilder withBlockState(Map<String, String> state) {
-        this.blockState = Optional.of(state);
-        return this;
-    }
-
-    public SoulCandleRecipeBuilder needsBlock(boolean needsBlock) {
-        this.needsBlock = Optional.of(needsBlock);
-        return this;
-    }
-
-    public SoulCandleRecipeBuilder blockOutput(Block block) {
-        this.blockOutput = Optional.of(block);
         return this;
     }
 
@@ -148,13 +124,9 @@ public class SoulCandleRecipeBuilder implements RecipeBuilder {
                 blockMapping,
                 additionalIngredients,
                 entityType,
-                essenceType,
-                additionalBlock,
-                blockState,
-                needsBlock,
-                blockOutput,
                 timeOfDay,
                 fakeTimeOfDay,
+                commands,
                 recipeTime
         );
 

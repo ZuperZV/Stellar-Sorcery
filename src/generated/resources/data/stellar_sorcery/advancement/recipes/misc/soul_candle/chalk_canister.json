@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "stellar_sorcery:soul_candle/clay_jar"
+        "recipe": "stellar_sorcery:soul_candle/chalk_canister"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "stellar_sorcery:soul_candle/clay_jar"
+      "stellar_sorcery:soul_candle/chalk_canister"
     ]
   }
 }

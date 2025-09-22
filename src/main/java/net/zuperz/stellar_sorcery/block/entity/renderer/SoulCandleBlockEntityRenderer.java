@@ -87,6 +87,32 @@ public class SoulCandleBlockEntityRenderer implements BlockEntityRenderer<SoulCa
     @Override
     public void render(SoulCandleBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+        // Entity //
+
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+
+        pPoseStack.pushPose();
+        pPoseStack.translate(0.5f, 0.6f, 0.5f);
+        pPoseStack.scale(0.35f, 0.35f, 0.35f);
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() + 135));
+
+        if(pBlockEntity.entityLastSacrificed != null) {
+            entity = pBlockEntity.entityLastSacrificed.create(Minecraft.getInstance().level);
+        } else {
+            entity = null;
+        }
+
+        if(entity != null) {
+            entityRenderDispatcher.render(
+                    entity,
+                    0,
+                    1.25,
+                    0,
+                    0, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+        }
+
+        pPoseStack.popPose();
+
         ResourceLocation texture = null;
 
         if (pBlockEntity.getBlockState().getValue(CRAFTING)) {
@@ -145,37 +171,5 @@ public class SoulCandleBlockEntityRenderer implements BlockEntityRenderer<SoulCa
             RenderSystem.disableBlend();
             pPoseStack.popPose();
         }
-
-        // Entity //
-
-        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.5f, 1.2f, 0.5f);
-        pPoseStack.scale(0.35f, 0.35f, 0.35f);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() + 135));
-
-        if(pBlockEntity.entityLastSacrificed != null) {
-            entity = pBlockEntity.entityLastSacrificed.create(Minecraft.getInstance().level);
-        } else {
-            entity = null;
-        }
-
-        if(entity != null) {
-            entityRenderDispatcher.render(
-                    entity,
-                    0,
-                    1.25,
-                    0,
-                    0, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
-        }
-
-        pPoseStack.popPose();
-    }
-
-    private int getLightLevel(Level level, BlockPos pos) {
-        int bLight = level.getBrightness(LightLayer.BLOCK, pos);
-        int sLight = level.getBrightness(LightLayer.SKY, pos);
-        return LightTexture.pack(bLight, sLight);
     }
 }

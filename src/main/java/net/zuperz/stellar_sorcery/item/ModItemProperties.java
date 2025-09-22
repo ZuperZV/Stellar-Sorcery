@@ -14,5 +14,8 @@ public class ModItemProperties {
 
         ItemProperties.register(ModItems.WOODOO_DOLL.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "on"),
                 (pStack, pLevel, pEntity, pSeed) -> pStack.get(ModDataComponentTypes.PLAYER_DATA) != null ? 1f : 0f);
+
+        ItemProperties.register(ModItems.CHALK_CANISTER.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "on"),
+                (pStack, pLevel, pEntity, pSeed) -> pStack.get(ModDataComponentTypes.BLOCK_STORAGE_DATA) != null ? 1f : 0f);
     }
 }

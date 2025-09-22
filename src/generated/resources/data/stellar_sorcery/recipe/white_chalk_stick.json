@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:calcite"
+    },
+    "B": {
+      "item": "stellar_sorcery:extracter_clay_jar"
+    },
+    "C": {
+      "item": "stellar_sorcery:twig_clay_jar"
+    },
+    "D": {
+      "item": "minecraft:bone"
+    }
+  },
+  "pattern": [
+    " B ",
+    "DAD",
+    "CAC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:white_chalk_stick"
+  }
+}
