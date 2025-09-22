@@ -109,7 +109,10 @@ public class ModItems {
             () -> new ChalkItem(new Item.Properties().stacksTo(1).durability(16), ModBlocks.WHITE_CHALK.get()));
 
     public static final DeferredItem<Item> CHALK_CANISTER = ITEMS.register("chalk_canister",
-            () -> new BlockCanisterItem(new Item.Properties().stacksTo(1).durability(16),4, ModTags.Blocks.CHALK_BLOCKS));
+            () -> new BlockCanisterItem(new Item.Properties().stacksTo(1),4, ModTags.Blocks.CHALK_BLOCKS));
+
+    public static final DeferredItem<Item> WRAITH_CLOAK = ITEMS.register("wraith_cloak",
+            () -> new WraithCloakItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

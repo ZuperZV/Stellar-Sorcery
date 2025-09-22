@@ -49,6 +49,7 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModBlocks.SOUL_CANDLE.get());
                         pOutput.accept(ModItems.WHITE_CHALK_STICK.get());
+                        pOutput.accept(ModItems.CHALK_CANISTER.get());
 
                         pOutput.accept(ModBlocks.LUNAR_INFUSER.get());
                         pOutput.accept(ModBlocks.LUNAR_JAR.get());
@@ -99,6 +100,8 @@ public class ModCreativeModeTabs {
                         ItemStack extracterJar = new ItemStack(ModItems.EXTRACTER_CLAY_JAR.get());
                         extracterJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_EXTRACTER));
                         pOutput.accept(extracterJar);
+
+                        pOutput.accept(ModItems.WRAITH_CLOAK.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());

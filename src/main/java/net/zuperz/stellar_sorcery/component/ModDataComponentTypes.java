@@ -31,6 +31,9 @@ public class ModDataComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockStorageData>> BLOCK_STORAGE_DATA = register("block_storage_data",
             builder -> builder.persistent(BlockStorageData.CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ActiveData>> ACTIVE = register("active",
+            builder -> builder.persistent(ActiveData.CODEC));
+
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());

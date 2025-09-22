@@ -27,11 +27,11 @@ public class BlockStorageData {
     }
 
     public static class SavedBlock {
-        public final BlockPos pos;
+        public final BlockPos relativePos;
         public final BlockState state;
 
-        public SavedBlock(BlockPos pos, BlockState state) {
-            this.pos = pos;
+        public SavedBlock(BlockPos relativePos, BlockState state) {
+            this.relativePos = relativePos;
             this.state = state;
         }
 
@@ -39,21 +39,21 @@ public class BlockStorageData {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof SavedBlock that)) return false;
-            return pos.equals(that.pos) && state.equals(that.state);
+            return relativePos.equals(that.relativePos) && state.equals(that.state);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(pos, state);
+            return Objects.hash(relativePos, state);
         }
     }
 
     public static final Codec<SavedBlock> SAVED_BLOCK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(b -> b.pos),
+            BlockPos.CODEC.fieldOf("relative_pos").forGetter(b -> b.relativePos),
             ResourceLocation.CODEC.fieldOf("block").forGetter(b -> BuiltInRegistries.BLOCK.getKey(b.state.getBlock()))
-    ).apply(instance, (pos, blockId) -> {
+    ).apply(instance, (relativePos, blockId) -> {
         Block block = BuiltInRegistries.BLOCK.get(blockId);
-        return new SavedBlock(pos, block.defaultBlockState());
+        return new SavedBlock(relativePos, block.defaultBlockState());
     }));
 
     public static final Codec<BlockStorageData> CODEC = SAVED_BLOCK_CODEC.listOf().xmap(

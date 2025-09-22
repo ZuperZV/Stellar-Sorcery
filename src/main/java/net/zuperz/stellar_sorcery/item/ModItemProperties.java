@@ -1,11 +1,9 @@
-package net.zuperz.stellar_sorcery.util;
+package net.zuperz.stellar_sorcery.item;
 
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
-import net.zuperz.stellar_sorcery.item.ModItems;
 
 public class ModItemProperties {
     public static void addCustomItemProperties() {
@@ -17,5 +15,8 @@ public class ModItemProperties {
 
         ItemProperties.register(ModItems.CHALK_CANISTER.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "on"),
                 (pStack, pLevel, pEntity, pSeed) -> pStack.get(ModDataComponentTypes.BLOCK_STORAGE_DATA) != null ? 1f : 0f);
+
+        ItemProperties.register(ModItems.WRAITH_CLOAK.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "on"),
+                (pStack, pLevel, pEntity, pSeed) -> pStack.get(ModDataComponentTypes.ACTIVE) != null && pStack.get(ModDataComponentTypes.ACTIVE).getActive() ? 1f : 0f);
     }
 }

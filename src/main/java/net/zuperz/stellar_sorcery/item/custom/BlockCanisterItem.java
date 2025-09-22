@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.item.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -10,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
@@ -53,17 +55,18 @@ public class BlockCanisterItem extends Item {
                     .forEach(p -> {
                         BlockState state = level.getBlockState(p);
                         if (state.is(blockTag)) {
-                            foundBlocks.add(new BlockStorageData.SavedBlock(p.immutable(), state));
+                            foundBlocks.add(new BlockStorageData.SavedBlock(p.subtract(pos), state));
                         }
                     });
 
-            for (var b : foundBlocks) {
+            for (var block : foundBlocks) {
                 if (level instanceof ServerLevel serverLevel) {
+                    BlockPos absolutePos = pos.offset(block.relativePos);
                     serverLevel.sendParticles(ParticleTypes.ASH,
-                            b.pos.getX() + 0.5, b.pos.getY() + 0.1, b.pos.getZ() + 0.5,
+                            absolutePos.getX() + 0.5, absolutePos.getY() + 0.1, absolutePos.getZ() + 0.5,
                             8, 0.3, 0.3, 0.3, 0.01);
                 }
-                level.removeBlock(b.pos, false);
+                level.removeBlock(pos.offset(block.relativePos), false);
             }
 
             if (!foundBlocks.isEmpty()) {
@@ -79,11 +82,17 @@ public class BlockCanisterItem extends Item {
 
         } else {
             if (level instanceof ServerLevel serverLevel) {
-                for (var b : existingData.getBlocks()) {
-                    serverLevel.setBlockAndUpdate(b.pos, b.state);
-                    serverLevel.sendParticles(ParticleTypes.ASH,
-                            b.pos.getX() + 0.5, b.pos.getY() + 0.1, b.pos.getZ() + 0.5,
-                            6, 0.3, 0.3, 0.3, 0.01);
+                for (var block : existingData.getBlocks()) {
+                    BlockPos placePos = pos.offset(block.relativePos);
+
+                    BlockState currentState = level.getBlockState(placePos);
+
+                    if (currentState.isAir() && canSurvive(serverLevel, placePos)) {
+                        serverLevel.setBlockAndUpdate(placePos, block.state);
+                        serverLevel.sendParticles(ParticleTypes.ASH,
+                                placePos.getX() + 0.5, placePos.getY() + 0.1, placePos.getZ() + 0.5,
+                                6, 0.3, 0.3, 0.3, 0.01);
+                    }
                 }
             }
 
@@ -97,5 +106,11 @@ public class BlockCanisterItem extends Item {
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    public boolean canSurvive(LevelReader level, BlockPos pos) {
+        BlockPos below = pos.below();
+        BlockState stateBelow = level.getBlockState(below);
+        return stateBelow.isFaceSturdy(level, below, Direction.UP);
     }
 }
