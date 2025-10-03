@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.data.EssenceDataLoader;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.TextureColorHelper;

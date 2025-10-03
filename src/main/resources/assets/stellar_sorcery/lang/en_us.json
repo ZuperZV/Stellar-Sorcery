@@ -37,6 +37,7 @@
   "item.stellar_sorcery.ritual_dagger": "Ritual Dagger",
   "item.stellar_sorcery.blood_vial": "Blood Vial",
 
+  "item.stellar_sorcery.wraith_string": "Wraith String",
   "item.stellar_sorcery.voodoo_doll": "Voodoo Doll",
 
   "item.stellar_sorcery.soft_clay_jar": "Soft Clay Jar",
@@ -68,6 +69,7 @@
   "block.stellar_sorcery.vital_stump": "Vital Stump",
   "block.stellar_sorcery.stump": "Stump",
 
+  "block.stellar_sorcery.cursed_candle": "Cursed Candle",
   "block.stellar_sorcery.essence_boiler": "Essence Boiler",
 
   "block.stellar_sorcery.red_campion": "Red Campion",

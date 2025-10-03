@@ -1,0 +1,36 @@
+{
+  "id": "soul_candle",
+  "title": "Soul Candle",
+  "type": "item",
+  "icon": "stellar_sorcery:soul_candle",
+  "search_items": ["minecraft:candle", "stellar_sorcery:soul_candle", "soul", "candle"],
+  "pages": [
+    {
+      "page_type": "text",
+      "text": "Soul Candles are infused with captured spirits. They glow with an eerie light and are used in dark rituals."
+    },
+    {
+      "page_type": "recipe",
+      "recipe_type": "crafting_table",
+      "recipe": {
+        "pattern": [
+          " S ",
+          " C ",
+          " B "
+        ],
+        "key": {
+          "S": "stellar_sorcery:soul_fragment",
+          "C": "minecraft:candle",
+          "B": "minecraft:black_dye"
+        },
+        "result": "stellar_sorcery:soul_candle"
+      }
+    },
+    {
+      "page_type": "lore",
+      "text": "Whispered legends claim that every Soul Candle contains the trapped cries of the fallen."
+    }
+  ],
+  "related": ["soul_fragment", "ritual_summoning"]
+}
+

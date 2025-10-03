@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.item.custom;
+package net.zuperz.stellar_sorcery.data;
 
 import com.google.gson.*;
 import com.google.common.reflect.TypeToken;

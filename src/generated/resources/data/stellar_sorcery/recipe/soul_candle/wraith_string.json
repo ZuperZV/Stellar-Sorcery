@@ -1,0 +1,40 @@
+{
+  "type": "stellar_sorcery:altar",
+  "blockMapping": {
+    "A": "stellar_sorcery:soul_candle",
+    "O": "stellar_sorcery:white_chalk"
+  },
+  "command": "",
+  "fake_time_of_day": "NIGHT",
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "stellar_sorcery:shadow_clay_jar"
+    }
+  ],
+  "output": {
+    "item": "stellar_sorcery:wraith_string"
+  },
+  "pattern": [
+    "_OOO_",
+    "O___O",
+    "O_A_O",
+    "O___O",
+    "_OOO_"
+  ],
+  "target": "SOUL_CANDLE",
+  "time": 100,
+  "time_of_day": "NIGHT",
+  "trigger": "ON_START"
+}

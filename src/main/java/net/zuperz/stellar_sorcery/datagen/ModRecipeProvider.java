@@ -496,6 +496,48 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
                 .save(pWriter);
 
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.WRAITH_STRING.get()),
+                        Ingredient.of(Items.STRING),
+                        Ingredient.of(Items.STRING),
+                        Ingredient.of(Items.REDSTONE),
+                        Ingredient.of(Items.AMETHYST_SHARD),
+                        Ingredient.of(ModItems.SHADOW_CLAY_JAR)
+                )
+                .patternLine("_OOO_")
+                .patternLine("O___O")
+                .patternLine("O_A_O")
+                .patternLine("O___O")
+                .patternLine("_OOO_")
+
+                .block('A', ModBlocks.SOUL_CANDLE.get())
+                .block('O', ModBlocks.WHITE_CHALK.get())
+
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(100)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
+                .save(pWriter);
+
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.WRAITH_CLOAK.get()),
+                        Ingredient.of(ModItems.WRAITH_STRING.get()),
+                        Ingredient.of(ModItems.WRAITH_STRING.get()),
+                        Ingredient.of(Items.GOLD_INGOT),
+                        Ingredient.of(Items.SPIDER_EYE),
+                        Ingredient.of(ModItems.SHADOW_CLAY_JAR)
+                )
+                .patternLine("_OOO_")
+                .patternLine("O___O")
+                .patternLine("O_A_O")
+                .patternLine("O___O")
+                .patternLine("_OOO_")
+
+                .block('A', ModBlocks.SOUL_CANDLE.get())
+                .block('O', ModBlocks.WHITE_CHALK.get())
+
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(100)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
+                .save(pWriter);
+
 
         SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.CHALK_CANISTER.get()),
                         Ingredient.of(ModItems.EMPTY_ESSENCE_BOTTLE),

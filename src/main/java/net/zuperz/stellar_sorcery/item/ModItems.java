@@ -114,6 +114,12 @@ public class ModItems {
     public static final DeferredItem<Item> WRAITH_CLOAK = ITEMS.register("wraith_cloak",
             () -> new WraithCloakItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> WRAITH_STRING = ITEMS.register("wraith_string",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
+            () -> new CodexArcanumItem(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

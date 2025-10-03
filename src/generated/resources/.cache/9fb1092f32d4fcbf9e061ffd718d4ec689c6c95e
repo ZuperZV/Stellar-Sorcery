@@ -1,4 +1,4 @@
-// 1.21	2025-09-22T16:03:44.4552724	Recipes
+// 1.21	2025-09-25T16:54:16.1586661	Recipes
 1cbf3bf1bb75677be898fec8e936cbf90d971988 data/minecraft/advancement/recipes/misc/calcite.json
 6fdacc99dad05300d69402d39fc23f719e621077 data/minecraft/recipe/calcite.json
 d3747469a9e4d2883c7d240b64560b806091fb68 data/stellar_sorcery/advancement/recipes/misc/astral_altar/dirt.json
@@ -30,6 +30,8 @@ eb9e4e26483a631a2133d160f388130e54a79fe0 data/stellar_sorcery/advancement/recipe
 f4ac0f773a2adb2f940845a3332bff5e05630fc9 data/stellar_sorcery/advancement/recipes/misc/soft_clay_jar.json
 9357a21e4b3fb256e0aecd794002b0d08dd1dc91 data/stellar_sorcery/advancement/recipes/misc/soul_candle/blood_vial.json
 0576bede72cefe4b5750efa29e654a5ad6750b3f data/stellar_sorcery/advancement/recipes/misc/soul_candle/chalk_canister.json
+d6b01006b0019e7c5c57167656b4b3cbcf71ce02 data/stellar_sorcery/advancement/recipes/misc/soul_candle/wraith_cloak.json
+a04c23675cf58867c0d1d9888d478d5ae54444d3 data/stellar_sorcery/advancement/recipes/misc/soul_candle/wraith_string.json
 847bd518b4fc1340b56e382f69b6bc344df133ab data/stellar_sorcery/advancement/recipes/misc/stump.json
 53b9e90cc467122f04471bef7c652b474ad3779f data/stellar_sorcery/advancement/recipes/misc/stump/bluestone_dust.json
 ff9238b8f0ea7944bca7bb320a29428a9c51b52f data/stellar_sorcery/advancement/recipes/misc/stump/calendula.json
@@ -84,7 +86,9 @@ ee70f38a375a08a32ee89f25f7067903dbc53d42 data/stellar_sorcery/recipe/lunar_infus
 236ff13ca15e1825b5d0274b952f76b84e16f71c data/stellar_sorcery/recipe/ritual_dagger.json
 038b0a032e93b4885e10cf941196939757504132 data/stellar_sorcery/recipe/soft_clay_jar.json
 7737bc2bd416ed0de618e3ca8847e10b5d8d3251 data/stellar_sorcery/recipe/soul_candle/blood_vial.json
-415e1ee08202d5c20dc19d409b28fed113cbf487 data/stellar_sorcery/recipe/soul_candle/chalk_canister.json
+fee40ecd80e4463d09ff544fabd00336da866dc9 data/stellar_sorcery/recipe/soul_candle/chalk_canister.json
+1f37d602a874f60e06169dd5dea9d670ec4a5914 data/stellar_sorcery/recipe/soul_candle/wraith_cloak.json
+4940a836f789a24bbba23dab4e9c9a2fae93d104 data/stellar_sorcery/recipe/soul_candle/wraith_string.json
 f0b0f33057ec6a8b63dfc9c2dc02c56d159c6ca0 data/stellar_sorcery/recipe/stump.json
 8676aa10cc1ac16ecf3632fd7f187a13568d2902 data/stellar_sorcery/recipe/stump/bluestone_dust.json
 8551c1f363e66c3d670ae52e2be32f580384143e data/stellar_sorcery/recipe/stump/calendula.json

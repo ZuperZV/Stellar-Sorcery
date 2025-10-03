@@ -60,6 +60,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         basicItem(ModItems.BLUESTONE_DUST.get());
 
+        basicItem(ModItems.WRAITH_STRING.get());
+
         handheldItem(ModItems.RITUAL_DAGGER);
     }
 

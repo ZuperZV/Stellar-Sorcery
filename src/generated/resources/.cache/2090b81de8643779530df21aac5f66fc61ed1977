@@ -1,4 +1,4 @@
-// 1.21	2025-09-20T22:29:50.108623	Item Models: stellar_sorcery
+// 1.21	2025-09-25T09:37:59.3583587	Item Models: stellar_sorcery
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
 a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay_jar.json
@@ -29,3 +29,4 @@ ab886abd328a6fb7fb0dac837bba781917e8ecf2 assets/stellar_sorcery/models/item/root
 cf04d6205f548b80b33fe9e351ead12acceed854 assets/stellar_sorcery/models/item/water_clay_jar.json
 28dd40133fcf55e86c0f88018c684d4238677bd4 assets/stellar_sorcery/models/item/white_chalk_stick.json
 782aa4e77506f13053eabedb0ac90943c71369f9 assets/stellar_sorcery/models/item/wind_clay_jar.json
+fdf7e863ba03b987f00ed68802f92ac58267b3e0 assets/stellar_sorcery/models/item/wraith_string.json

@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:circle_altar",
+  "output": {
+    "id": "minecraft:diamond_sword",
+    "count": 1
+  },
+  "ingredient": {
+    "item": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "aaa",
+    "a#a",
+    "aaa"
+  ],
+  "key": {
+    "a": "minecraft:diamond_block",
+    "#": "stellar_sorcery:cursed_candle"
+  },
+  "time_of_day": "night",
+  "time": 200
+}

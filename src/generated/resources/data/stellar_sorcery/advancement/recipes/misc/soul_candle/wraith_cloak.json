@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:soul_candle/wraith_cloak"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_chalk": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:white_chalk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_white_chalk"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:soul_candle/wraith_cloak"
+    ]
+  }
+}

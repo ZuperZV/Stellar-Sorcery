@@ -31,6 +31,8 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creativetab.stellar_sorcery.stellar_sorcery_tab"))
                     .icon(() -> new ItemStack(ModItems.CELESTIAL_BLADE.get()))
                     .displayItems((pParameters, pOutput) -> {
+                        pOutput.accept(ModItems.CODEX_ARCANUM.get());
+
                         pOutput.accept(ModItems.CELESTIAL_BLADE.get());
 
                         pOutput.accept(ModBlocks.ASTRAL_ALTAR.get());
@@ -101,6 +103,7 @@ public class ModCreativeModeTabs {
                         extracterJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_EXTRACTER));
                         pOutput.accept(extracterJar);
 
+                        pOutput.accept(ModItems.WRAITH_STRING.get());
                         pOutput.accept(ModItems.WRAITH_CLOAK.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
