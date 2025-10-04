@@ -1,8 +1,9 @@
-package net.zuperz.stellar_sorcery.data;
+package net.zuperz.stellar_sorcery.screen.Helpers;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.zuperz.stellar_sorcery.data.CodexModule;
 
 import java.util.ArrayList;
 import java.util.List;

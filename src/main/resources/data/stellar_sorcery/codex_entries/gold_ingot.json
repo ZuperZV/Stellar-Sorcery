@@ -1,0 +1,44 @@
+{
+  "id": "gold_ingot",
+  "title": "Gold Ingot",
+  "type": "item",
+  "icon": "gold_ingot",
+  "search_items": ["minecraft:candle", "stellar_sorcery:soul_candle", "soul", "candle"],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text": "gold_ingot areare used in dark rituals."
+        },
+        {
+          "module_type": "recipe",
+          "recipe_type": "crafting_table",
+          "pattern": [
+            " C ",
+            "CCB",
+            " B "
+          ],
+          "key": {
+            "S": "stellar_sorcery:soul_fragment",
+            "C": "minecraft:candle",
+            "B": "minecraft:black_dye"
+          },
+          "result": "stellar_sorcery:soul_candle"
+        },
+        {
+          "module_type": "furnace_recipe",
+          "input": "minecraft:iron_ore",
+          "output": "minecraft:iron_ingot",
+          "experience": 0.7,
+          "cooking_time": 200
+        },
+        {
+          "module_type": "text",
+          "text": "Whispered legee trapped cries of the fallen."
+        }
+      ]
+    }
+  ],
+  "related": ["soul_fragment", "ritual_summoning"]
+}

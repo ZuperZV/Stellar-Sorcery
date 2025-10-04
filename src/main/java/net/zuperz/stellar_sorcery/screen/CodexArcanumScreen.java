@@ -24,8 +24,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
 import net.zuperz.stellar_sorcery.data.*;
+import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
+import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +46,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected int imageWidth = 248;
     protected int imageHeight = 180;
     private int scrollOffset = 0;
+
+    private final List<String> playerBookmarks = new ArrayList<>();
+    private final List<BookmarkButton> bookmarkButtons = new ArrayList<>();
+    private BookmarkButton setterButton = null;
 
     public CodexArcanumScreen(CodexArcanumMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
@@ -72,6 +79,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected void init() {
         this.createMenuControls();
         this.createPageControlButtons();
+
+        this.playerBookmarks.clear();
+        this.playerBookmarks.addAll(CodexBookmarksData.getBookmarks(this.minecraft.player));
+
+        this.createBookmarkButtons();
     }
 
     protected void createMenuControls() {
@@ -267,6 +279,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
+        renderBookmarks(guiGraphics);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 300); // Ensure bookmarks items are under the book
+        guiGraphics.blit(BOOK_TEXTURE, x + 241, y, 241, 0, 7, 180);
+        guiGraphics.pose().popPose();
+
         drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
         drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
     }
@@ -421,5 +439,104 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     protected void closeScreen() {
         this.minecraft.setScreen(null);
+    }
+
+    // Bookmark
+    private void createBookmarkButtons() {
+        for (BookmarkButton b : bookmarkButtons) {
+            try { this.removeWidget(b); } catch (Exception ignored) {}
+        }
+        bookmarkButtons.clear();
+        if (setterButton != null) {
+            try { this.removeWidget(setterButton); } catch (Exception ignored) {}
+            setterButton = null;
+        }
+
+        int baseX = (width - imageWidth) / 2 + 248;
+        int baseY = (height - imageHeight) / 2 + 12;
+
+        int maxBookmarks = Math.min(playerBookmarks.size(), 24);
+
+        for (int i = 0; i < maxBookmarks; i++) {
+            final String entryId = playerBookmarks.get(i);
+            CodexEntry entry = entryList.stream().filter(e -> e.id.equals(entryId)).findFirst().orElse(null);
+            if (entry == null) continue;
+
+            int col = i / 12;
+            int row = i % 12;
+
+            int x = baseX + col * 12;
+            int y = baseY + row * 15;
+
+            BookmarkButton b = new BookmarkButton(x, y, false, btn -> {
+                // Delete bookmark if shift is down
+                if (hasShiftDown()) {
+                    CodexBookmarksData.removeBookmark(this.minecraft.player, entryId);
+                    playerBookmarks.remove(entryId);
+                    this.createBookmarkButtons();
+                    return;
+                }
+                // Else open entry
+                if (entry != null) {
+                    this.selectedEntry = entry;
+                    this.selectedPage = 0;
+                    this.scrollOffset = 0;
+                    this.updateButtonVisibility();
+                }
+            });
+
+            this.addRenderableWidget(b);
+            bookmarkButtons.add(b);
+        }
+
+        // Add "add bookmark" button if there's space
+        if (playerBookmarks.size() < 24) {
+            int idx = playerBookmarks.size();
+            int col = idx / 12;
+            int row = idx % 12;
+            int x = baseX + col * 12;
+            int y = baseY + row * 15;
+
+            setterButton = new BookmarkButton(x, y, true, btn -> {
+                if (this.selectedEntry != null) {
+                    CodexBookmarksData.addBookmark(this.minecraft.player, this.selectedEntry.id);
+                    this.playerBookmarks.clear();
+                    this.playerBookmarks.addAll(CodexBookmarksData.getBookmarks(this.minecraft.player));
+                    this.createBookmarkButtons();
+                }
+            });
+
+            this.addRenderableWidget(setterButton);
+        }
+    }
+
+    private void renderBookmarks(GuiGraphics guiGraphics) {
+        for (int bookmarkSize = 0; bookmarkSize < bookmarkButtons.size(); bookmarkSize++) {
+            String id = playerBookmarks.get(bookmarkSize);
+            CodexEntry entry = entryList.stream().filter(e -> e.id.equals(id)).findFirst().orElse(null);
+            if (entry == null || entry.icon == null) continue;
+
+            ItemStack iconStack = RecipeHelper.parseItem(entry.icon);
+            BookmarkButton b = bookmarkButtons.get(bookmarkSize);
+
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
+            int colx = x + 248;
+            if (bookmarkSize >= 12) colx += 12;
+            if (!b.isHovered()) colx -= 5;
+
+            renderScaledItem(guiGraphics, iconStack, colx, y + 15 + (bookmarkSize * 15), 7);
+        }
+    }
+
+    private void renderScaledItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int size) {
+        if (stack.isEmpty()) return;
+
+        float scale = size / 16.0f;
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(x, y, 0);
+        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.renderItem(stack, 0, 0);
+        guiGraphics.pose().popPose();
     }
 }
