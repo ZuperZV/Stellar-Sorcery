@@ -86,6 +86,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         this.updateButtonVisibility();
     }
 
+    @Override
+    protected void renderLabels(GuiGraphics p_281635_, int p_282681_, int p_283686_) {
+    }
+
     protected void pageBack() {
         if (selectedEntry == null) return;
 
@@ -98,6 +102,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 this.selectedPage = this.selectedEntry.right_side.size() - 1;
             }
         }
+        scrollOffset = 0;
 
         this.updateButtonVisibility();
     }
@@ -114,6 +119,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 this.selectedPage = 0;
             }
         }
+        scrollOffset = 0;
 
         this.updateButtonVisibility();
     }
@@ -165,6 +171,37 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
     }
 
+    private int getCurrentPageContentHeight(int areaW) {
+        if (selectedEntry == null || selectedEntry.right_side == null || selectedEntry.right_side.isEmpty()) return 0;
+        if (selectedPage < 0 || selectedPage >= selectedEntry.right_side.size()) return 0;
+
+        CodexPage page = selectedEntry.right_side.get(selectedPage);
+        if (page == null || page.modules == null) return 0;
+
+        int drawY = 0;
+
+        for (CodexModule module : page.modules) {
+            if (module.text != null && !module.text.isEmpty()) {
+                List<FormattedCharSequence> lines = this.font.split(Component.literal(module.text), areaW - 4);
+                drawY += lines.size() * 10 + 4;
+                continue;
+            }
+
+            if (module.result != null) {
+                drawY += 18 * 3 + 25 + 12;
+                continue;
+            }
+
+            if (module.input != null && module.output != null) {
+                drawY += 25 + 12;
+                continue;
+            }
+
+            drawY += 12;
+        }
+        return drawY;
+    }
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         int x = (width - imageWidth) / 2;
@@ -175,8 +212,15 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int areaH = 112;
 
         if (MouseUtil.isMouseOver(mouseX, mouseY, areaX, areaY, areaW, areaH)) {
+            int contentHeight = getCurrentPageContentHeight(areaW);
+
+            int maxScroll = Math.max(0, contentHeight - areaH);
+
             scrollOffset -= verticalAmount > 0 ? 10 : -10;
+
             if (scrollOffset < 0) scrollOffset = 0;
+            if (scrollOffset > maxScroll) scrollOffset = maxScroll;
+
             return true;
         }
 
@@ -231,7 +275,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int yIcon = y + 11;
         int xIcon = x + 146;
 
-        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, 0x474747, false);
+        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, 0xa9a9a9);
 
         if (selectedEntry.icon != null && !selectedEntry.icon.equals("")) {
             ItemStack iconStack = RecipeHelper.parseItem(selectedEntry.icon.toString());
@@ -261,7 +305,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                     case "text" -> {
                         List<FormattedCharSequence> lines = this.font.split(Component.literal(module.text), areaW - 4);
                         for (FormattedCharSequence line : lines) {
-                            guiGraphics.drawString(this.font, line, drawX, drawY, 0xCCCCCC);
+                            guiGraphics.drawString(this.font, line, drawX, drawY, 0x282828, false);
                             drawY += 10;
                         }
                         drawY += 4;
@@ -300,7 +344,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                         ItemStack output = RecipeHelper.parseItem(module.output);
 
                         renderItemWithTooltip(guiGraphics, input, drawX, drawY, mouseX, mouseY);
-                        guiGraphics.drawString(this.font, Component.literal("🔥"), drawX + 25, drawY + 4, 0xFFFFFF);
+
+                        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/arrow.png"), drawX + 25, drawY + 4, 0, 0, 23, 15);
+
                         renderItemWithTooltip(guiGraphics, output, drawX + 50, drawY, mouseX, mouseY);
 
                         drawY += 25;
