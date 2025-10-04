@@ -1,60 +1,63 @@
 package net.zuperz.stellar_sorcery.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.InputConstants;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusFactory;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.zuperz.stellar_sorcery.data.CodexDataLoader;
-import net.zuperz.stellar_sorcery.data.CodexEntry;
-import net.zuperz.stellar_sorcery.data.CodexPage;
+import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
+import net.zuperz.stellar_sorcery.data.*;
+import net.zuperz.stellar_sorcery.util.MouseUtil;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu> {
-    public static final int PAGE_INDICATOR_TEXT_Y_OFFSET = 16;
-    public static final int PAGE_TEXT_X_OFFSET = 36;
-    public static final int PAGE_TEXT_Y_OFFSET = 30;
     private CodexEntry selectedEntry = null;
     private int selectedPage = 0;
-    private List<FormattedCharSequence> cachedPageComponents = Collections.emptyList();
-    private int cachedPage = -1;
-    private Component pageMsg = CommonComponents.EMPTY;
     private PageButton forwardButton;
     private PageButton backButton;
     private final boolean playTurnSound;
     private List<CodexEntry> entryList = List.of();
+    private ItemStack hoveredStack = ItemStack.EMPTY;
+    private static final ResourceLocation BOOK_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book.png");
+    protected int imageWidth = 248;
+    protected int imageHeight = 180;
+    private int scrollOffset = 0;
 
     public CodexArcanumScreen(CodexArcanumMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
         this.playTurnSound = true;
-        // Load entries from manager
+
         this.entryList = List.copyOf(CodexDataLoader.getAllEntries());
         if (!entryList.isEmpty()) {
             this.selectedEntry = entryList.get(0);
         }
     }
 
-    public void setSelectedEntry(CodexEntry entry) {
-        this.selectedEntry = entry;
-        this.selectedPage = 0;
-        this.cachedPage = -1;
-    }
-
     public boolean setPage(int p_98276_) {
-        int i = Mth.clamp(p_98276_, 0, this.selectedEntry.pages.size() - 1);
+        int i = Mth.clamp(p_98276_, 0, this.selectedEntry.right_side.size() - 1);
         if (i != this.selectedPage) {
             this.selectedPage = i;
-            this.cachedPage = -1;
             return true;
         } else {
             return false;
@@ -69,62 +72,87 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected void init() {
         this.createMenuControls();
         this.createPageControlButtons();
-
-        int y = 30;
-        for (int i = 0; i < entryList.size(); i++) {
-            CodexEntry entry = entryList.get(i);
-            int entryIndex = i;
-            this.addRenderableWidget(Button.builder(Component.literal(entry.title), b -> {
-                this.selectedEntry = entryList.get(entryIndex);
-                this.selectedPage = 0;
-            }).bounds(this.leftPos + 10, y, 120, 20).build());
-            y += 22;
-        }
     }
 
     protected void createMenuControls() {
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, p_315823_ -> this.onClose()).bounds(this.width / 2 - 100, 196, 200, 20).build());
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).bounds(this.width / 2 - 100, (height - imageHeight) / 2 + 191, 200, 20).build());
     }
 
     protected void createPageControlButtons() {
-        int i = (this.width - 192) / 2;
-        int j = 2;
-        this.forwardButton = this.addRenderableWidget(new PageButton(i + 116, 159, true, p_98297_ -> this.pageForward(), this.playTurnSound));
-        this.backButton = this.addRenderableWidget(new PageButton(i + 43, 159, false, p_98287_ -> this.pageBack(), this.playTurnSound));
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        this.forwardButton = this.addRenderableWidget(new PageButton(x + 203, y + 156, true, button -> this.pageForward(), this.playTurnSound));
+        this.backButton = this.addRenderableWidget(new PageButton(x + 23, y + 156, false, button -> this.pageBack(), this.playTurnSound));
         this.updateButtonVisibility();
     }
 
-    private int getNumPages() {
-        return this.selectedEntry != null ? this.selectedEntry.pages.size() : 0;
-    }
-
     protected void pageBack() {
+        if (selectedEntry == null) return;
+
         if (this.selectedPage > 0) {
             this.selectedPage--;
+        } else {
+            int index = this.entryList.indexOf(this.selectedEntry);
+            if (index > 0) {
+                this.selectedEntry = this.entryList.get(index - 1);
+                this.selectedPage = this.selectedEntry.right_side.size() - 1;
+            }
         }
 
         this.updateButtonVisibility();
     }
 
     protected void pageForward() {
-        if (this.selectedPage < this.getNumPages() - 1) {
+        if (selectedEntry == null) return;
+
+        if (this.selectedPage < this.selectedEntry.right_side.size() - 1) {
             this.selectedPage++;
+        } else {
+            int index = this.entryList.indexOf(this.selectedEntry);
+            if (index < this.entryList.size() - 1) {
+                this.selectedEntry = this.entryList.get(index + 1);
+                this.selectedPage = 0;
+            }
         }
 
         this.updateButtonVisibility();
     }
 
     private void updateButtonVisibility() {
-        this.forwardButton.visible = this.selectedPage < this.getNumPages() - 1;
-        this.backButton.visible = this.selectedPage > 0;
+        if (selectedEntry == null) {
+            this.forwardButton.visible = false;
+            this.backButton.visible = false;
+            return;
+        }
+
+        int entryIndex = entryList.indexOf(selectedEntry);
+
+        this.backButton.visible = this.selectedPage > 0 || entryIndex > 0;
+
+        this.forwardButton.visible =
+                this.selectedPage < this.selectedEntry.right_side.size() - 1 ||
+                        entryIndex < entryList.size() - 1;
     }
 
     @Override
-    public boolean keyPressed(int p_98278_, int p_98279_, int p_98280_) {
-        if (super.keyPressed(p_98278_, p_98279_, p_98280_)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         } else {
-            switch (p_98278_) {
+            var runtime = JEIPlugin.getJeiRuntime();
+            if (runtime != null && !hoveredStack.isEmpty()) {
+                var keyMappings = runtime.getKeyMappings();
+                InputConstants.Key key = InputConstants.getKey(keyCode, scanCode);
+
+                if (keyMappings.getShowRecipe().isActiveAndMatches(key)) {
+                    openJeiForStack(hoveredStack, false); // recipes (R)
+                }
+                if (keyMappings.getShowUses().isActiveAndMatches(key)) {
+                    openJeiForStack(hoveredStack, true); // uses (U)
+                }
+            }
+
+            switch (keyCode) {
                 case 266:
                     this.backButton.onPress();
                     return true;
@@ -138,26 +166,182 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, delta);
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        // Draw selected entry and page
-        if (selectedEntry != null && selectedEntry.pages != null && !selectedEntry.pages.isEmpty()) {
-            CodexPage page = selectedEntry.pages.get(selectedPage);
-            guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), this.leftPos + 140, 30, 0xFFFFFF);
-            guiGraphics.drawString(this.font, Component.literal(page.text != null ? page.text : ""), this.leftPos + 140, 50, 0xCCCCCC);
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        int areaX = x + 138;
+        int areaY = y + 44;
+        int areaW = 96;
+        int areaH = 112;
+
+        if (MouseUtil.isMouseOver(mouseX, mouseY, areaX, areaY, areaW, areaH)) {
+            scrollOffset -= verticalAmount > 0 ? 10 : -10;
+            if (scrollOffset < 0) scrollOffset = 0;
+            return true;
+        }
+
+        int entryIndex = entryList.indexOf(selectedEntry);
+        if ((verticalAmount > 0) && (this.selectedPage > 0 || entryIndex > 0)) {
+            this.pageBack();
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+            return true;
+        } else if ((verticalAmount < 0) && (this.selectedPage < this.selectedEntry.right_side.size() - 1 || entryIndex < entryList.size() - 1)) {
+            this.pageForward();
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    }
+
+    public static void openJeiForStack(ItemStack stack, boolean showUses) {
+        IJeiRuntime runtime = JEIPlugin.getJeiRuntime();
+        if (runtime == null || stack.isEmpty()) return;
+
+        IFocusFactory focusFactory = runtime.getJeiHelpers().getFocusFactory();
+        IRecipesGui recipesGui = runtime.getRecipesGui();
+
+        Optional<ITypedIngredient<ItemStack>> typed = runtime.getJeiHelpers()
+                .getIngredientManager()
+                .createTypedIngredient(VanillaTypes.ITEM_STACK, stack);
+
+        if (typed.isPresent()) {
+            IFocus<ItemStack> focus = focusFactory.createFocus(
+                    showUses ? RecipeIngredientRole.INPUT : RecipeIngredientRole.OUTPUT,
+                    typed.get()
+            );
+
+            recipesGui.show(focus);
         }
     }
 
     @Override
-    public void renderBackground(GuiGraphics p_295678_, int p_296491_, int p_294260_, float p_294869_) {
-        this.renderTransparentBackground(p_295678_);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        renderBg(guiGraphics, delta, mouseX, mouseY);
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        renderTooltip(guiGraphics, mouseX, mouseY);
+
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
+        drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
+    }
+
+    private void drawIconAndTitle(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+        int yIcon = y + 11;
+        int xIcon = x + 146;
+
+        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, 0x474747, false);
+
+        if (selectedEntry.icon != null && !selectedEntry.icon.equals("")) {
+            ItemStack iconStack = RecipeHelper.parseItem(selectedEntry.icon.toString());
+            renderItemWithTooltip(guiGraphics, iconStack, xIcon + 34, yIcon + 7, mouseX, mouseY);
+            guiGraphics.blit(BOOK_TEXTURE, xIcon, yIcon, 0, 180, 84, 30);
+        }
+    }
+
+    private void drawSelectedPage(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+        int areaX = x + 138;
+        int areaY = y + 44;
+        int areaW = 96;
+        int areaH = 112;
+
+        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+        if (selectedEntry != null && selectedEntry.right_side != null && !selectedEntry.right_side.isEmpty()) {
+            if (selectedPage < 0 || selectedPage >= selectedEntry.right_side.size()) return;
+            CodexPage page = selectedEntry.right_side.get(selectedPage);
+            if (page == null || page.modules == null) return;
+
+            int drawY = areaY - scrollOffset;
+            int drawX = areaX + 2;
+
+            for (CodexModule module : page.modules) {
+                switch (module.module_type) {
+                    case "text" -> {
+                        List<FormattedCharSequence> lines = this.font.split(Component.literal(module.text), areaW - 4);
+                        for (FormattedCharSequence line : lines) {
+                            guiGraphics.drawString(this.font, line, drawX, drawY, 0xCCCCCC);
+                            drawY += 10;
+                        }
+                        drawY += 4;
+                    }
+                    case "recipe" -> {
+                        guiGraphics.drawString(this.font, Component.literal("Crafting Recipe:"), drawX, drawY, 0xAAAAFF);
+                        drawY += 12;
+
+                        List<ItemStack> grid = RecipeHelper.buildCraftingGrid(module);
+                        ItemStack result = RecipeHelper.parseItem(module.result);
+
+                        int slotSize = 18;
+                        for (int row = 0; row < 3; row++) {
+                            for (int col = 0; col < 3; col++) {
+                                int index = row * 3 + col;
+                                ItemStack stack = grid.get(index);
+
+                                int xPos = drawX + col * slotSize;
+                                int yPos = drawY + row * slotSize;
+
+                                renderItemWithTooltip(guiGraphics, stack, xPos, yPos, mouseX, mouseY);
+                            }
+                        }
+
+                        int resultX = drawX + slotSize * 3 + 20;
+                        int resultY = drawY + slotSize;
+                        renderItemWithTooltip(guiGraphics, result, resultX, resultY, mouseX, mouseY);
+
+                        drawY += slotSize * 3 + 25;
+                    }
+                    case "furnace_recipe" -> {
+                        guiGraphics.drawString(this.font, Component.literal("Furnace Recipe:"), drawX, drawY, 0xFFAA00);
+                        drawY += 12;
+
+                        ItemStack input = RecipeHelper.parseItem(module.input);
+                        ItemStack output = RecipeHelper.parseItem(module.output);
+
+                        renderItemWithTooltip(guiGraphics, input, drawX, drawY, mouseX, mouseY);
+                        guiGraphics.drawString(this.font, Component.literal("🔥"), drawX + 25, drawY + 4, 0xFFFFFF);
+                        renderItemWithTooltip(guiGraphics, output, drawX + 50, drawY, mouseX, mouseY);
+
+                        drawY += 25;
+                    }
+                    default -> {
+                        guiGraphics.drawString(this.font, Component.literal("Unknown module type: " + module.module_type), drawX, drawY, 0xFF0000);
+                        drawY += 12;
+                    }
+                }
+            }
+        }
+
+        guiGraphics.disableScissor();
+
+        if (hoveredStack != null && !hoveredStack.isEmpty()) {
+            guiGraphics.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
+            hoveredStack = ItemStack.EMPTY;
+        }
+    }
+
+    private void renderItemWithTooltip(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int mouseX, int mouseY) {
+        guiGraphics.fill(x, y, x + 16, y + 16, 0xFF555555);
+        guiGraphics.renderItem(stack, x, y);
+        guiGraphics.renderItemDecorations(this.font, stack, x, y);
+
+        if (mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16 && !stack.isEmpty()) {
+            hoveredStack = stack;
+        }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float p_97788_, int p_97789_, int p_97790_) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, ResourceLocation.withDefaultNamespace("textures/gui/book.png"));
+    public void renderBackground(GuiGraphics guiGraphics, int p_296491_, int p_294260_, float p_296330_) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
     }
 
     @Override
@@ -191,31 +375,5 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     protected void closeScreen() {
         this.minecraft.setScreen(null);
-    }
-
-    @Nullable
-    public Style getClickedComponentStyleAt(double p_98269_, double p_98270_) {
-        if (this.cachedPageComponents.isEmpty()) {
-            return null;
-        } else {
-            int i = Mth.floor(p_98269_ - (double)((this.width - 192) / 2) - 36.0);
-            int j = Mth.floor(p_98270_ - 2.0 - 30.0);
-            if (i >= 0 && j >= 0) {
-                int k = Math.min(128 / 9, this.cachedPageComponents.size());
-                if (i <= 114 && j < 9 * k + k) {
-                    int l = j / 9;
-                    if (l >= 0 && l < this.cachedPageComponents.size()) {
-                        FormattedCharSequence formattedcharsequence = this.cachedPageComponents.get(l);
-                        return this.minecraft.font.getSplitter().componentStyleAtWidth(formattedcharsequence, i);
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
     }
 }

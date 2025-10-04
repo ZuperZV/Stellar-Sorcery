@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.data;
 
+import java.util.List;
+
 public class CodexPage {
-    public String page_type;
-    public String text;
+    public List<CodexModule> modules;
 }

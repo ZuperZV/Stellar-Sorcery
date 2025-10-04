@@ -5,6 +5,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
+    private static IJeiRuntime jeiRuntime;
 
     public static mezz.jei.api.recipe.RecipeType<AstralAltarRecipe> ASTRAL_ALTAR_TYPE =
             new mezz.jei.api.recipe.RecipeType<>(AstralAltarRecipeCategory.UID, AstralAltarRecipe.class);
@@ -36,11 +38,6 @@ public class JEIPlugin implements IModPlugin {
 
     public static final mezz.jei.api.recipe.RecipeType<SoulCandleRecipe> SOUL_CANDLE_RECIPE_TYPE =
             new mezz.jei.api.recipe.RecipeType<>(AmuletInfusionRecipeCategory.UID, SoulCandleRecipe.class);
-
-    @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "jei_plugin");
-    }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
@@ -137,5 +134,19 @@ public class JEIPlugin implements IModPlugin {
                 ModItems.ESSENCE_AMULET.get(),
                 new EssenceBottleSubtypeInterpreter()
         );
+    }
+
+    @Override
+    public ResourceLocation getPluginUid() {
+        return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "jei_plugin");
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        JEIPlugin.jeiRuntime = jeiRuntime;
+    }
+
+    public static IJeiRuntime getJeiRuntime() {
+        return jeiRuntime;
     }
 }

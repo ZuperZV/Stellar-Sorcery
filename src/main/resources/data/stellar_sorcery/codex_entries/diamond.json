@@ -1,22 +1,22 @@
 {
-  "id": "soul_candle",
-  "title": "Soul Candle",
+  "id": "diamond",
+  "title": "Diamond Block",
   "type": "item",
-  "icon": "stellar_sorcery:soul_candle",
+  "icon": "minecraft:diamond_block",
   "search_items": ["minecraft:candle", "stellar_sorcery:soul_candle", "soul", "candle"],
   "right_side": [
     {
       "modules": [
         {
           "module_type": "text",
-          "text": "Soul Candles are infused with captured spirits. They glow with an eerie light and are used in dark rituals."
+          "text": "Diamond Block areare used in dark rituals."
         },
         {
           "module_type": "recipe",
           "recipe_type": "crafting_table",
           "pattern": [
-            " S ",
             " C ",
+            "CCB",
             " B "
           ],
           "key": {
@@ -35,7 +35,7 @@
         },
         {
           "module_type": "text",
-          "text": "Whispered legends claim that every Soul Candle contains the trapped cries of the fallen."
+          "text": "Whispered legee trapped cries of the fallen."
         }
       ]
     }
