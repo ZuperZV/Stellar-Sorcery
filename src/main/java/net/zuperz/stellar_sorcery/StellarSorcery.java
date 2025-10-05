@@ -7,8 +7,6 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.block.entity.renderer.*;
@@ -30,14 +28,12 @@ import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleClientTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
 import net.zuperz.stellar_sorcery.item.custom.decorator.StarDustNumberBarDecorator;
+import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import net.zuperz.stellar_sorcery.screen.ModMenuTypes;
 import org.slf4j.Logger;import com.mojang.logging.LogUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -45,12 +41,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.fml.common.Mod;
-
-import java.util.HashMap;
-import java.util.Map;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 
 @Mod(StellarSorcery.MOD_ID)
 public class StellarSorcery
@@ -58,13 +52,10 @@ public class StellarSorcery
     public static final String MOD_ID = "stellar_sorcery";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    private static boolean networkingRegistered = false;
-    private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
-
     public StellarSorcery(IEventBus modEventBus, ModContainer modContainer)
     {
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::registerNetworking);
+        modEventBus.addListener(this::registerNetworkHandlers);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
@@ -188,24 +179,22 @@ public class StellarSorcery
         }
     }
 
-    private static record NetworkMessage<T extends CustomPacketPayload>(
-            StreamCodec<? extends FriendlyByteBuf, T> reader,
-            IPayloadHandler<T> handler) {
-    }
+    public void registerNetworkHandlers(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MOD_ID)
+                .versioned("1.0")
+                .optional();
 
-    public static <T extends CustomPacketPayload> void addNetworkMessage(CustomPacketPayload.Type<T> id,
-                                                                         StreamCodec<? extends FriendlyByteBuf, T> reader,
-                                                                         IPayloadHandler<T> handler) {
-        if (networkingRegistered) {
-            throw new IllegalStateException("Cannot register new network messages after networking has been registered");
-        }
-        MESSAGES.put(id, new NetworkMessage<>(reader, handler));
-    }
+        registrar.playToServer(
+                SetBookmarksPacket.TYPE,
+                SetBookmarksPacket.STREAM_CODEC,
+                SetBookmarksPacket::handle
+        );
+        registrar.playToClient(
+                SyncBookmarksPacket.TYPE,
+                SyncBookmarksPacket.STREAM_CODEC,
+                SyncBookmarksPacket::handle
+        );
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void registerNetworking(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar(MOD_ID);
-        MESSAGES.forEach((id, networkMessage) -> registrar.playBidirectional(id, ((NetworkMessage) networkMessage).reader(), ((NetworkMessage) networkMessage).handler()));
-        networkingRegistered = true;
+        LOGGER.info("[StellarSorcery] Network channel registered for BookmarkPacket!");
     }
 }

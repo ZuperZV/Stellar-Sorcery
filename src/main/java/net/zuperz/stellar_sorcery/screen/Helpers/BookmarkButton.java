@@ -15,15 +15,11 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 public class BookmarkButton extends Button {
     private static final ResourceLocation BOOK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book.png");
-    private final boolean isSetter;
+    int zLayer = 0;
 
-    public BookmarkButton(int x, int y, boolean isSetter, OnPress onPress) {
+    public BookmarkButton(int x, int y, int zLayer, OnPress onPress) {
         super(x, y, 11, 13, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
-        this.isSetter = isSetter;
-    }
-
-    public boolean isSetter() {
-        return this.isSetter;
+        this.zLayer = zLayer;
     }
 
     @Override
@@ -34,7 +30,10 @@ public class BookmarkButton extends Button {
         int drawW = hovered ? 11 : 7;
         int drawH = 13;
 
+        gui.pose().pushPose();
+        gui.pose().translate(0, 0, zLayer);
         gui.blit(BOOK_TEXTURE, this.getX(), this.getY(), texU, texV, drawW, drawH);
+        gui.pose().popPose();
     }
 
     @Override

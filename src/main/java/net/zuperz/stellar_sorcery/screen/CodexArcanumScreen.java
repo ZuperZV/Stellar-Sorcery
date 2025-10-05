@@ -24,6 +24,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
 import net.zuperz.stellar_sorcery.data.*;
+import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
@@ -453,24 +454,29 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         int baseX = (width - imageWidth) / 2 + 248;
-        int baseY = (height - imageHeight) / 2 + 12;
+        int baseY = (height - imageHeight) / 2 + 8;
 
-        int maxBookmarks = Math.min(playerBookmarks.size(), 24);
+        int maxBookmarks = Math.min(playerBookmarks.size(), 22);
 
-        for (int i = 0; i < maxBookmarks; i++) {
-            final String entryId = playerBookmarks.get(i);
+        for (int bookmarkSize = 0; bookmarkSize < maxBookmarks; bookmarkSize++) {
+            final String entryId = playerBookmarks.get(bookmarkSize);
             CodexEntry entry = entryList.stream().filter(e -> e.id.equals(entryId)).findFirst().orElse(null);
             if (entry == null) continue;
 
-            int col = i / 12;
-            int row = i % 12;
+            int col = bookmarkSize / 11;
+            int row = bookmarkSize % 11;
 
-            int x = baseX + col * 12;
+            int x = baseX + col * 6;
             int y = baseY + row * 15;
 
-            BookmarkButton b = new BookmarkButton(x, y, false, btn -> {
+            int zLayer = maxBookmarks - bookmarkSize;
+
+            BookmarkButton b = new BookmarkButton(x, y, zLayer, btn -> {
                 // Delete bookmark if shift is down
                 if (hasShiftDown()) {
+                    net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                            new SetBookmarksPacket(entryId, false)
+                    );
                     CodexBookmarksData.removeBookmark(this.minecraft.player, entryId);
                     playerBookmarks.remove(entryId);
                     this.createBookmarkButtons();
@@ -490,18 +496,23 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         // Add "add bookmark" button if there's space
-        if (playerBookmarks.size() < 24) {
+        if (playerBookmarks.size() < 22) {
             int idx = playerBookmarks.size();
-            int col = idx / 12;
-            int row = idx % 12;
-            int x = baseX + col * 12;
+            int col = idx / 11;
+            int row = idx % 11;
+            int x = baseX + col * 6;
             int y = baseY + row * 15;
 
-            setterButton = new BookmarkButton(x, y, true, btn -> {
-                if (this.selectedEntry != null) {
+            int zLayer = maxBookmarks - idx;
+
+            setterButton = new BookmarkButton(x, y, zLayer, btn -> {
+                if (this.selectedEntry != null && this.minecraft.player != null && !playerBookmarks.contains(this.selectedEntry.id)) {
+                    net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                            new SetBookmarksPacket(this.selectedEntry.id, true)
+                    );
+
                     CodexBookmarksData.addBookmark(this.minecraft.player, this.selectedEntry.id);
-                    this.playerBookmarks.clear();
-                    this.playerBookmarks.addAll(CodexBookmarksData.getBookmarks(this.minecraft.player));
+                    this.playerBookmarks.add(this.selectedEntry.id);
                     this.createBookmarkButtons();
                 }
             });
@@ -511,6 +522,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     private void renderBookmarks(GuiGraphics guiGraphics) {
+        int baseX = (width - imageWidth) / 2 + 248;
+        int baseY = (height - imageHeight) / 2 + 8;
+        int maxBookmarks = Math.min(playerBookmarks.size(), 22);
+
         for (int bookmarkSize = 0; bookmarkSize < bookmarkButtons.size(); bookmarkSize++) {
             String id = playerBookmarks.get(bookmarkSize);
             CodexEntry entry = entryList.stream().filter(e -> e.id.equals(id)).findFirst().orElse(null);
@@ -519,22 +534,26 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             ItemStack iconStack = RecipeHelper.parseItem(entry.icon);
             BookmarkButton b = bookmarkButtons.get(bookmarkSize);
 
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
-            int colx = x + 248;
-            if (bookmarkSize >= 12) colx += 12;
-            if (!b.isHovered()) colx -= 5;
+            int col = (bookmarkSize >= 11) ? 1 : 0;
+            int row = (bookmarkSize >= 11) ? (bookmarkSize - 12) : bookmarkSize;
 
-            renderScaledItem(guiGraphics, iconStack, colx, y + 15 + (bookmarkSize * 15), 7);
+            int colx = baseX + (col * 6);
+            int coly = baseY + (row * 15);
+
+            if (col == 1) coly += 15;
+
+            if (!b.isHoveredOrFocused()) colx -= 5;
+
+            renderScaledItem(guiGraphics, iconStack, colx, coly + 3, maxBookmarks - bookmarkSize - 1, 7);
         }
     }
 
-    private void renderScaledItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int size) {
+    private void renderScaledItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int z, int size) {
         if (stack.isEmpty()) return;
 
         float scale = size / 16.0f;
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
+        guiGraphics.pose().translate(x, y, z);
         guiGraphics.pose().scale(scale, scale, 1.0f);
         guiGraphics.renderItem(stack, 0, 0);
         guiGraphics.pose().popPose();

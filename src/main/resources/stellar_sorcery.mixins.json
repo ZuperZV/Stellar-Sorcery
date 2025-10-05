@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "net.zuperz.stellar_sorcery.mixin",
   "refmap": "stellar_sorcery.refmap.json",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ModPlayerDataSaverMixin"
   ],
   "client": [],
   "injectors": {

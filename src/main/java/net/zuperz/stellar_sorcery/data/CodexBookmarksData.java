@@ -1,45 +1,58 @@
 package net.zuperz.stellar_sorcery.data;
 
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CodexBookmarksData {
-    private static final String TAG_BOOKMARKS = "stellar_sorcery_bookmarks";
+
+    private static final ArrayList<String> clientBookmarks = new ArrayList<>();
 
     public static List<String> getBookmarks(Player player) {
-        List<String> list = new ArrayList<>();
-        if (player.getPersistentData().contains(TAG_BOOKMARKS)) {
-            ListTag tagList = player.getPersistentData().getList(TAG_BOOKMARKS, 8);
-            for (int i = 0; i < tagList.size(); i++) {
-                list.add(tagList.getString(i));
-            }
+        if (player == null) return List.of();
+
+        // --- SERVER ---
+        if (player instanceof ServerPlayer serverPlayer && serverPlayer instanceof IModPlayerData serverData) {
+            return new ArrayList<>(serverData.stellarSorceryGetBookmarks());
         }
-        return list;
+
+        // --- CLIENT ---
+        if (Minecraft.getInstance().player != null) {
+            return new ArrayList<>(clientBookmarks);
+        }
+
+        return List.of();
     }
 
     public static void addBookmark(Player player, String entryId) {
-        List<String> bookmarks = getBookmarks(player);
-        if (!bookmarks.contains(entryId) && bookmarks.size() < 24) {
-            bookmarks.add(entryId);
-            save(player, bookmarks);
+        if (player instanceof IModPlayerData data) {
+            ArrayList<String> bookmarks = data.stellarSorceryGetBookmarks();
+            if (!bookmarks.contains(entryId) && bookmarks.size() < 24) {
+                bookmarks.add(entryId);
+                data.stellarSorcerySetBookmarks(bookmarks);
+            }
+        } else {
+            if (!clientBookmarks.contains(entryId) && clientBookmarks.size() < 24) {
+                clientBookmarks.add(entryId);
+            }
         }
     }
 
     public static void removeBookmark(Player player, String entryId) {
-        List<String> bookmarks = getBookmarks(player);
-        bookmarks.remove(entryId);
-        save(player, bookmarks);
+        if (player instanceof IModPlayerData data) {
+            ArrayList<String> bookmarks = data.stellarSorceryGetBookmarks();
+            bookmarks.remove(entryId);
+            data.stellarSorcerySetBookmarks(bookmarks);
+        } else {
+            clientBookmarks.remove(entryId);
+        }
     }
 
-    private static void save(Player player, List<String> bookmarks) {
-        ListTag listTag = new ListTag();
-        for (String id : bookmarks) {
-            listTag.add(StringTag.valueOf(id));
-        }
-        player.getPersistentData().put(TAG_BOOKMARKS, listTag);
+    public static void syncClientBookmarks(List<String> bookmarks) {
+        clientBookmarks.clear();
+        clientBookmarks.addAll(bookmarks);
     }
 }
