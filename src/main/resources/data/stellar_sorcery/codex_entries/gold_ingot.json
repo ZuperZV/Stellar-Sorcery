@@ -3,7 +3,7 @@
   "title": "Gold Ingot",
   "type": "item",
   "icon": "gold_ingot",
-  "search_items": ["minecraft:candle", "stellar_sorcery:soul_candle", "soul", "candle"],
+  "search_items": ["minecraft:gold_ingot", "gold", "gold_ingot", "ingot"],
   "right_side": [
     {
       "modules": [

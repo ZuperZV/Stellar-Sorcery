@@ -8,13 +8,11 @@ import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +30,6 @@ import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +56,33 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private final List<String> playerBookmarks = new ArrayList<>();
     private final List<BookmarkButton> bookmarkButtons = new ArrayList<>();
     private BookmarkButton setterButton = null;
+
+    private EditBox searchBox;
+    private boolean searchBarActive = false;
+    private boolean mouseWasOverSearch = false;
+    private List<CodexEntry> searchResults = new ArrayList<>();
+
+    //Position in texture Maybe
+    private final int SEARCH_TEX_X = 158;
+    private final int SEARCH_TEX_Y = 180;
+    private final int SEARCH_TEX_W = 83;
+    private final int SEARCH_TEX_H = 16;
+
+    private final int SEARCH_FIELD_X = 177;
+    private final int SEARCH_FIELD_Y = 184;
+    private final int SEARCH_FIELD_W = 57;
+    private final int SEARCH_FIELD_H = 11;
+
+    //Position in book
+    private final int SEARCH_TEX_X_P = 158;
+    private final int SEARCH_TEX_Y_P = -16;
+    private final int SEARCH_TEX_W_P = 83;
+    private final int SEARCH_TEX_H_P = 16;
+
+    private final int SEARCH_FIELD_X_P = 177;
+    private final int SEARCH_FIELD_Y_P = -15;
+    private final int SEARCH_FIELD_W_P = 56;
+    private final int SEARCH_FIELD_H_P = 11;
 
     public CodexArcanumScreen(CodexArcanumMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
@@ -93,6 +117,20 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         this.playerBookmarks.addAll(CodexBookmarksData.getBookmarks(this.minecraft.player));
 
         this.createBookmarkButtons();
+
+        int searchX = SEARCH_FIELD_X;
+        int searchY = SEARCH_FIELD_Y;
+        this.searchBox = new EditBox(this.font, searchX, searchY, SEARCH_FIELD_W, SEARCH_FIELD_H, Component.literal("Search"));
+        this.searchBox.setBordered(false);
+        this.searchBox.setVisible(false);
+        this.searchBox.setTextColor(0x000000);
+        this.searchBox.setMaxLength(30);
+
+        this.searchBox.setResponder(text -> {
+            updateSearchResults(text);
+        });
+
+        this.addRenderableWidget(searchBox);
     }
 
     protected void createMenuControls() {
@@ -295,6 +333,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.blit(BOOK_TEXTURE, x + 241, y, 241, 0, 7, 180);
         guiGraphics.pose().popPose();
 
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
+        guiGraphics.blit(BOOK_TEXTURE, x + 158, y + 180, 158, 180, 83, 16);
+        guiGraphics.pose().popPose();
+
         if (hoveredStack != null && !hoveredStack.isEmpty()) {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
@@ -302,6 +345,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.pose().popPose();
             hoveredStack = ItemStack.EMPTY;
         }
+
+        renderSearchBar(guiGraphics, mouseX, mouseY);
 
         drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
         drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
@@ -426,9 +471,33 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     @Override
-    public boolean mouseClicked(double p_98272_, double p_98273_, int p_98274_) {
-        return super.mouseClicked(p_98272_, p_98273_, p_98274_);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!searchResults.isEmpty()) {
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
+
+            int startX = x + SEARCH_FIELD_X - 158;
+            int startY = y + SEARCH_FIELD_Y - 180 + SEARCH_FIELD_H + 2;
+            int widthBox = 90;
+            int lineHeight = 10;
+            int maxVisible = Math.min(searchResults.size(), 6);
+
+            for (int i = 0; i < maxVisible; i++) {
+                int yPos = startY + i * lineHeight;
+                if (mouseX >= startX && mouseX <= startX + widthBox && mouseY >= yPos && mouseY <= yPos + lineHeight) {
+                    CodexEntry selected = searchResults.get(i);
+                    this.selectedEntry = selected;
+                    this.selectedPage = 0;
+                    this.scrollOffset = 0;
+                    updateButtonVisibility();
+                    return true;
+                }
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
+
 
     @Override
     public boolean handleComponentClicked(Style p_98293_) {
@@ -573,6 +642,77 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().translate(x, y, z);
         guiGraphics.pose().scale(scale, scale, 1f);
         guiGraphics.renderItem(stack, 0, 0);
+        guiGraphics.pose().popPose();
+    }
+
+    private void updateSearchResults(String query) {
+        searchResults.clear();
+        if (query == null || query.isBlank()) return;
+
+        String lowerQuery = query.toLowerCase();
+        for (CodexEntry entry : entryList) {
+            if (entry.search_items == null) continue;
+            for (String tag : entry.search_items) {
+                if (tag.toLowerCase().contains(lowerQuery)) {
+                    searchResults.add(entry);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void renderSearchBar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        int barX = x + 158;
+        int barY = y + 180;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
+        guiGraphics.blit(BOOK_TEXTURE, barX, barY, SEARCH_TEX_X, SEARCH_TEX_Y, SEARCH_TEX_W, SEARCH_TEX_H);
+        guiGraphics.pose().popPose();
+
+        boolean mouseOver = MouseUtil.isMouseOver(mouseX, mouseY, barX, barY, SEARCH_TEX_W, SEARCH_TEX_H);
+        if (mouseOver) mouseWasOverSearch = true;
+
+        if (mouseWasOverSearch && !searchBox.isVisible()) {
+            searchBox.setVisible(true);
+            searchBox.setFocused(true);
+        }
+
+        searchBox.setX(x + (SEARCH_FIELD_X - 158));
+        searchBox.setY(y + (SEARCH_FIELD_Y - 180));
+        searchBox.render(guiGraphics, mouseX, mouseY, 0);
+
+        if (!searchResults.isEmpty()) {
+            renderSearchResults(guiGraphics, x, y, mouseX, mouseY);
+        }
+    }
+
+    private void renderSearchResults(GuiGraphics guiGraphics, int baseX, int baseY, int mouseX, int mouseY) {
+        int startX = baseX + SEARCH_FIELD_X - 158;
+        int startY = baseY + SEARCH_FIELD_Y - 180 + SEARCH_FIELD_H + 2;
+        int width = 90;
+        int lineHeight = 10;
+        int maxVisible = 6;
+
+        int shown = Math.min(searchResults.size(), maxVisible);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE + 50);
+
+        guiGraphics.fill(startX - 2, startY - 2, startX + width, startY + shown * lineHeight + 2, 0xCC000000);
+
+        for (int i = 0; i < shown; i++) {
+            CodexEntry entry = searchResults.get(i);
+            int yPos = startY + i * lineHeight;
+
+            boolean hover = mouseX >= startX && mouseX <= startX + width && mouseY >= yPos && mouseY <= yPos + lineHeight;
+            int color = hover ? 0xFFFFFF55 : 0xFFFFFFFF;
+
+            guiGraphics.drawString(font, entry.title, startX, yPos, color);
+        }
+
         guiGraphics.pose().popPose();
     }
 }

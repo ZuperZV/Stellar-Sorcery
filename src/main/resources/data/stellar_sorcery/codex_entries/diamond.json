@@ -3,7 +3,7 @@
   "title": "Diamond Block",
   "type": "item",
   "icon": "minecraft:diamond_block",
-  "search_items": ["minecraft:candle", "stellar_sorcery:soul_candle", "soul", "candle"],
+  "search_items": ["minecraft:diamond", "diamond", "gem", "block"],
   "right_side": [
     {
       "modules": [
