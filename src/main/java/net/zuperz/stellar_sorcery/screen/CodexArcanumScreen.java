@@ -8,10 +8,13 @@ import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +32,7 @@ import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +51,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected int imageWidth = 248;
     protected int imageHeight = 180;
     private int scrollOffset = 0;
+
+    private static final int Z_TOOLTIP = 1000;
+    private static final int Z_BOOK_EDGE = 600;
+    private static final int Z_BOOKMARK_ITEM = 400;
 
     private final List<String> playerBookmarks = new ArrayList<>();
     private final List<BookmarkButton> bookmarkButtons = new ArrayList<>();
@@ -281,10 +289,19 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int y = (height - imageHeight) / 2;
 
         renderBookmarks(guiGraphics);
+
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 600);
+        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
         guiGraphics.blit(BOOK_TEXTURE, x + 241, y, 241, 0, 7, 180);
         guiGraphics.pose().popPose();
+
+        if (hoveredStack != null && !hoveredStack.isEmpty()) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
+            guiGraphics.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
+            guiGraphics.pose().popPose();
+            hoveredStack = ItemStack.EMPTY;
+        }
 
         drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
         drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
@@ -379,17 +396,16 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         guiGraphics.disableScissor();
-
-        if (hoveredStack != null && !hoveredStack.isEmpty()) {
-            guiGraphics.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
-            hoveredStack = ItemStack.EMPTY;
-        }
     }
 
     private void renderItemWithTooltip(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int mouseX, int mouseY) {
         guiGraphics.fill(x, y, x + 16, y + 16, 0xFF555555);
         guiGraphics.renderItem(stack, x, y);
-        guiGraphics.renderItemDecorations(this.font, stack, x, y);
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 1000);
+        guiGraphics.renderItemDecorations(this.font, stack, x, y, null);
+        guiGraphics.pose().popPose();
 
         if (mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16 && !stack.isEmpty()) {
             hoveredStack = stack;
@@ -469,7 +485,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int x = baseX + col * 6;
             int y = baseY + row * 15;
 
-            int layerZ = col == 0 ? 400 : 100;
+            int layerZ = col == 0 ? Z_BOOKMARK_ITEM : Z_BOOKMARK_ITEM / 2;
 
             BookmarkButton b = new BookmarkButton(x, y, layerZ, btn -> {
                 // Delete bookmark if shift is down
@@ -503,7 +519,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int x = baseX + col * 6;
             int y = baseY + row * 15;
 
-            int layerZ = col == 0 ? 400 : 100;
+            int layerZ = col == 0 ? Z_BOOKMARK_ITEM : Z_BOOKMARK_ITEM / 2;
 
             setterButton = new BookmarkButton(x, y, layerZ, btn -> {
                 if (this.selectedEntry != null && this.minecraft.player != null && !playerBookmarks.contains(this.selectedEntry.id)) {
@@ -543,7 +559,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             if (!b.isHoveredOrFocused()) colx -= 5;
 
-            int layerZ = col == 0 ? 400 : 100;
+            int layerZ = col == 0 ? Z_BOOKMARK_ITEM : 100;
 
             renderScaledItem(guiGraphics, iconStack, colx, coly + 3, layerZ, 7);
         }
@@ -555,7 +571,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         float scale = size / 16.0f;
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, z);
-        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.pose().scale(scale, scale, 1f);
         guiGraphics.renderItem(stack, 0, 0);
         guiGraphics.pose().popPose();
     }
