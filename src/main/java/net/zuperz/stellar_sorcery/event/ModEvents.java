@@ -2,6 +2,7 @@ package net.zuperz.stellar_sorcery.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -11,9 +12,16 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
+import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
+import net.zuperz.stellar_sorcery.data.IModPlayerData;
+import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
+
+import java.util.ArrayList;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID)
 public class ModEvents {
@@ -50,6 +58,16 @@ public class ModEvents {
                 }
                 break;
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        if (player instanceof IModPlayerData data) {
+            ArrayList<String> bookmarks = data.stellarSorceryGetBookmarks();
+            PacketDistributor.sendToPlayer(player, new SyncBookmarksPacket(bookmarks));
         }
     }
 }

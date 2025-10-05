@@ -1,13 +1,12 @@
 package net.zuperz.stellar_sorcery.network;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.zuperz.stellar_sorcery.StellarSorcery;
-import net.zuperz.stellar_sorcery.data.IModPlayerData;
+import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
 
 import java.util.ArrayList;
 
@@ -34,10 +33,8 @@ public record SyncBookmarksPacket(ArrayList<String> bookmarks) implements Custom
 
     public static void handle(SyncBookmarksPacket msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            if (Minecraft.getInstance().player instanceof IModPlayerData data) {
-                data.stellarSorcerySetBookmarks(msg.bookmarks());
-                StellarSorcery.LOGGER.info("Klient modtog {} bogmærker", msg.bookmarks().size());
-            }
+            CodexBookmarksData.syncClientBookmarks(msg.bookmarks());
+            StellarSorcery.LOGGER.info("Klient modtog {} bogmærker", msg.bookmarks().size());
         });
     }
 }
