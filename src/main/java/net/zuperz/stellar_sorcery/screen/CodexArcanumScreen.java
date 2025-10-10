@@ -50,6 +50,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected int imageHeight = 180;
     private int scrollOffset = 0;
 
+    private float easedIconX = 0f;
+    private float easedIconY = 0f;
+
     private static final int Z_TOOLTIP = 1000;
     private static final int Z_BOOK_EDGE = 600;
     private static final int Z_BOOKMARK_ITEM = 400;
@@ -59,7 +62,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private BookmarkButton setterButton = null;
 
     private EditBox searchBox;
-    private boolean searchBarActive = false;
     private boolean mouseWasOverSearch = false;
     private List<CodexEntry> searchResults = new ArrayList<>();
 
@@ -69,7 +71,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private final int SEARCH_TEX_H_P = 16;
 
     private final int SEARCH_FIELD_X_P = 177;
-    private final int SEARCH_FIELD_Y_P = -15;
+    private final int SEARCH_FIELD_Y_P = -10;
     private final int SEARCH_FIELD_W_P = 56;
     private final int SEARCH_FIELD_H_P = 11;
 
@@ -113,6 +115,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         this.searchBox.setBordered(false);
         this.searchBox.setVisible(false);
         this.searchBox.setTextColor(0x000000);
+        this.searchBox.setTextShadow(false);
         this.searchBox.setMaxLength(30);
         this.searchBox.setResponder(this::updateSearchResults);
 
@@ -317,12 +320,31 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
         guiGraphics.blit(BOOK_TEXTURE, x + 241, y, 241, 0, 7, 180);
+        guiGraphics.blit(BOOK_TEXTURE, x + 124, y, 124, 0, 124, 12);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 5);
-        guiGraphics.blit(BOOK_TEXTURE, x + SEARCH_TEX_X_P, y + SEARCH_TEX_Y_P, 158, 180, 83, 16);
+        guiGraphics.pose().translate(0, 0, 0);
+
+        int searchy = 0;
+        if (!mouseWasOverSearch) {
+            searchy = 9;
+        }
+
+        guiGraphics.blit(BOOK_TEXTURE, x + SEARCH_TEX_X_P, y + SEARCH_TEX_Y_P + searchy, 158, 180, 83, 16);
+
+        int iconBaseX = x + SEARCH_TEX_X_P + 6;
+        int iconBaseY = y + SEARCH_TEX_Y_P + 5 + searchy;
+
+        float[] target = getMouseEasedOffset(iconBaseX, iconBaseY, mouseX, mouseY, 90f, 1f);
+
+        easedIconX += (target[0] - easedIconX) * 0.2f;
+        easedIconY += (target[1] - easedIconY) * 0.2f;
+
+        guiGraphics.blit(BOOK_TEXTURE, (int)(iconBaseX + easedIconX), (int)(iconBaseY + easedIconY), 145, 182, 12, 12);
+
         guiGraphics.pose().popPose();
+
 
         if (hoveredStack != null && !hoveredStack.isEmpty()) {
             guiGraphics.pose().pushPose();
@@ -712,7 +734,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         searchBox.setX(x + SEARCH_FIELD_X_P);
         searchBox.setY(y + SEARCH_FIELD_Y_P);
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, Z_TOOLTIP + Z_BOOKMARK_ITEM);
         searchBox.render(guiGraphics, mouseX, mouseY, 0);
+        guiGraphics.pose().popPose();
 
         if (!searchResults.isEmpty()) {
             renderSearchResults(guiGraphics, x, y, mouseX, mouseY);
@@ -722,7 +748,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private void renderSearchResults(GuiGraphics guiGraphics, int baseX, int baseY, int mouseX, int mouseY) {
         int startX = baseX + SEARCH_FIELD_X_P;
         int startY = baseY + SEARCH_FIELD_Y_P + SEARCH_FIELD_H_P + 2;
-        int width = 90;
+        int width = 0;
         int lineHeight = 10;
         int maxVisible = 6;
 
@@ -730,11 +756,21 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE + 50);
 
-        guiGraphics.fill(startX - 2, startY - 2, startX + width, startY + shown * lineHeight + 2, 0xCC000000);
+        for (int i = 0; i < shown; i++) {
+            CodexEntry entry = searchResults.get(i);
+
+            if (this.font.width(entry.title) > width) {
+                width = this.font.width(entry.title);
+            }
+        }
 
         for (int i = 0; i < shown; i++) {
             CodexEntry entry = searchResults.get(i);
             int yPos = startY + i * lineHeight;
+
+            if (this.font.width(entry.title) > width) {
+                width = this.font.width(entry.title);
+            }
 
             boolean hover = mouseX >= startX && mouseX <= startX + width && mouseY >= yPos && mouseY <= yPos + lineHeight;
             int color = hover ? 0xFFFFFF55 : 0xFFFFFFFF;
@@ -742,6 +778,26 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.drawString(font, entry.title, startX, yPos, color);
         }
 
+        guiGraphics.fill(startX - 2, startY - 2, startX + width, startY + shown * lineHeight + 2, 0xCC000000);
+
         guiGraphics.pose().popPose();
+    }
+
+    private float[] getMouseEasedOffset(float baseX, float baseY, double mouseX, double mouseY, float radius, float maxOffset) {
+        double dx = mouseX - baseX;
+        double dy = mouseY - baseY;
+        double dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > radius) return new float[]{0f, 0f};
+
+        float strength = (float) (1.0 - (dist / radius));
+
+        float dirX = (float) (dx / dist);
+        float dirY = (float) (dy / dist);
+
+        float offsetX = dirX * strength * maxOffset;
+        float offsetY = dirY * strength * maxOffset;
+
+        return new float[]{offsetX, offsetY};
     }
 }

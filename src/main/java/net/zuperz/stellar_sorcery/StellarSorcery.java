@@ -1,5 +1,9 @@
 package net.zuperz.stellar_sorcery;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.FastColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -171,6 +175,26 @@ public class StellarSorcery
                 }
                 return -1;
             }, ModItems.ESSENCE_AMULET.get());
+
+
+            event.register(
+                    (ItemStack stack, int tintIndex) -> {
+                        if (tintIndex != 0) {
+                            return -1;
+                        }
+
+                        DyedItemColor dyedColor = stack.get(DataComponents.DYED_COLOR);
+
+                        if (dyedColor == null) {
+                            return FastColor.ARGB32.opaque(0xCDBCD0);
+                        }
+
+                        int color = dyedColor.rgb();
+
+                        return FastColor.ARGB32.opaque(color);
+                    },
+                    ModItems.CODEX_ARCANUM.get()
+            );
         }
 
         @SubscribeEvent

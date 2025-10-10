@@ -16,6 +16,9 @@ public class ModItems {
 
     //properties -> new FuelItem(properties, 800)
 
+    public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
+            () -> new CodexArcanumItem(new Item.Properties()));
+
     public static final DeferredItem<Item> CELESTIAL_BLADE = ITEMS.register("celestial_blade",
             () -> new CelestialSwordItem(ModToolTiers.CELESTIAL,
                     new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.CELESTIAL, 3, -2.4f))));
@@ -116,9 +119,6 @@ public class ModItems {
 
     public static final DeferredItem<Item> WRAITH_STRING = ITEMS.register("wraith_string",
             () -> new Item(new Item.Properties()));
-
-    public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
-            () -> new CodexArcanumItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

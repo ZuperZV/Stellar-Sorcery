@@ -24,6 +24,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
+        this.tag(ItemTags.DYEABLE)
+                .add(ModItems.CODEX_ARCANUM.get());
+
         this.tag(Tags.Items.TOOLS_BRUSH)
                 .add(Items.BRUSH);
 
