@@ -2,11 +2,14 @@ package net.zuperz.stellar_sorcery.api.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.gui.handlers.IGuiProperties;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,8 +21,10 @@ import net.zuperz.stellar_sorcery.api.jei.subtypeInterpreter.EssenceBottleSubtyp
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.recipes.*;
+import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,6 +144,27 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "jei_plugin");
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration r) {
+        r.addGuiScreenHandler(CodexArcanumScreen.class, s -> {
+            int Ekstra = 20;
+            int left = s.getGuiLeft() - Ekstra;
+            int top = s.getGuiTop() - Ekstra;
+            int w = s.getXSize() + Ekstra * 2;
+            int h = s.getYSize() + Ekstra * 2;
+
+            return new IGuiProperties() {
+                public Class<? extends Screen> screenClass() { return s.getClass(); }
+                public int guiLeft() { return left; }
+                public int guiTop() { return top; }
+                public int guiXSize() { return w; }
+                public int guiYSize() { return h; }
+                public int screenWidth() { return s.width; }
+                public int screenHeight() { return s.height; }
+            };
+        });
     }
 
     @Override
