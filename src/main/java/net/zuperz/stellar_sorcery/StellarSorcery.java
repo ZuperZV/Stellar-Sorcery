@@ -186,11 +186,10 @@ public class StellarSorcery
                         DyedItemColor dyedColor = stack.get(DataComponents.DYED_COLOR);
 
                         if (dyedColor == null) {
-                            return FastColor.ARGB32.opaque(0xCDBCD0);
+                            return FastColor.ARGB32.opaque(0x4f4972);
                         }
 
                         int color = dyedColor.rgb();
-
                         return FastColor.ARGB32.opaque(color);
                     },
                     ModItems.CODEX_ARCANUM.get()

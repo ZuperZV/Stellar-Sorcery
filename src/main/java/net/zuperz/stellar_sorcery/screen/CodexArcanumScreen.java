@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocus;
@@ -15,17 +16,21 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
 import net.zuperz.stellar_sorcery.data.*;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
@@ -46,6 +51,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private ItemStack hoveredStack = ItemStack.EMPTY;
     private static final ResourceLocation BOOK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book.png");
+    private static final ResourceLocation BOOK_TEXTURE_GRAY =
+            ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book_gray.png");
     protected int imageWidth = 248;
     protected int imageHeight = 180;
     private int scrollOffset = 0;
@@ -320,7 +327,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
         guiGraphics.blit(BOOK_TEXTURE, x + 241, y, 241, 0, 7, 180);
+        drawColoredOverlay(guiGraphics, x + 241, y, 241, 0, 7, 180, Z_BOOK_EDGE - 1);
         guiGraphics.blit(BOOK_TEXTURE, x + 124, y, 124, 0, 124, 12);
+        drawColoredOverlay(guiGraphics, x + 124, y, 124, 0, 124, 12, Z_BOOK_EDGE - 1);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
@@ -332,6 +341,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         guiGraphics.blit(BOOK_TEXTURE, x + SEARCH_TEX_X_P, y + SEARCH_TEX_Y_P + searchy, 158, 180, 83, 16);
+        drawColoredOverlay(guiGraphics, x + SEARCH_TEX_X_P, y + SEARCH_TEX_Y_P + searchy, 158, 180, 83, 16, 0);
 
         int iconBaseX = x + SEARCH_TEX_X_P + 6;
         int iconBaseY = y + SEARCH_TEX_Y_P + 5 + searchy;
@@ -342,6 +352,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         easedIconY += (target[1] - easedIconY) * 0.2f;
 
         guiGraphics.blit(BOOK_TEXTURE, (int)(iconBaseX + easedIconX), (int)(iconBaseY + easedIconY), 145, 182, 12, 12);
+        drawColoredOverlay(guiGraphics, (int)(iconBaseX + easedIconX), (int)(iconBaseY + easedIconY), 145, 182, 12, 12, 0);
 
         guiGraphics.pose().popPose();
 
@@ -370,6 +381,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             ItemStack iconStack = RecipeHelper.parseItem(selectedEntry.icon.toString());
             renderItemWithTooltip(guiGraphics, iconStack, xIcon + 34, yIcon + 7, mouseX, mouseY);
             guiGraphics.blit(BOOK_TEXTURE, xIcon, yIcon, 0, 180, 84, 30);
+            drawColoredOverlay(guiGraphics, xIcon, yIcon, 0, 180, 84, 30, 0);
         }
     }
 
@@ -466,13 +478,19 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int p_296491_, int p_294260_, float p_296330_) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
         this.renderTransparentBackground(guiGraphics);
+
         guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        drawColoredOverlay(guiGraphics, x, y, 0, 0, imageWidth, imageHeight, 0);
+
+
+        drawColoredOverlay(guiGraphics, x, y, 0, 0, imageWidth, imageHeight, 0);
     }
+
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
@@ -722,7 +740,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE);
         guiGraphics.blit(BOOK_TEXTURE, barX, barY, SEARCH_TEX_X_P, SEARCH_TEX_Y_P, SEARCH_TEX_W_P, SEARCH_TEX_H_P);
+        drawColoredOverlay(guiGraphics, barX, barY, SEARCH_TEX_X_P, SEARCH_TEX_Y_P, SEARCH_TEX_W_P, SEARCH_TEX_H_P, Z_BOOK_EDGE);
         guiGraphics.pose().popPose();
+
+        drawColoredOverlay(guiGraphics, barX, barY, SEARCH_TEX_X_P, SEARCH_TEX_Y_P, SEARCH_TEX_W_P, SEARCH_TEX_H_P, Z_BOOK_EDGE);
 
         boolean mouseOver = MouseUtil.isMouseOver(mouseX, mouseY, barX, barY, SEARCH_TEX_W_P, SEARCH_TEX_H_P);
         if (mouseOver) mouseWasOverSearch = true;
@@ -754,7 +775,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         int shown = Math.min(searchResults.size(), maxVisible);
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE + 50);
+        guiGraphics.pose().translate(0, 0, Z_BOOK_EDGE + Z_BOOK_EDGE);
 
         for (int i = 0; i < shown; i++) {
             CodexEntry entry = searchResults.get(i);
@@ -799,5 +820,36 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         float offsetY = dirY * strength * maxOffset;
 
         return new float[]{offsetX, offsetY};
+    }
+
+    private void drawColoredOverlay(GuiGraphics guiGraphics, int x_p, int y_p, int x, int y, int width, int height, int z_Layer) {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+
+        ItemStack stack = this.minecraft.player.getMainHandItem();
+
+        if (stack.isEmpty()) stack = this.minecraft.player.getOffhandItem();
+
+        if (!stack.is(ModItems.CODEX_ARCANUM.get())) return;
+
+        DyedItemColor dyedColor = stack.get(DataComponents.DYED_COLOR);
+
+        int color = dyedColor != null
+                ? FastColor.ARGB32.opaque(dyedColor.rgb())
+                : FastColor.ARGB32.opaque(0x4f4972);
+
+        float r = ((color >> 16) & 0xFF) / 255.0f;
+        float g = ((color >> 8) & 0xFF) / 255.0f;
+        float b = (color & 0xFF) / 255.0f;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, z_Layer + 1);
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(r, g, b, 1.0f);
+
+        guiGraphics.blit(BOOK_TEXTURE_GRAY, x_p, y_p, x, y, width, height);
+
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.disableBlend();
+        guiGraphics.pose().popPose();
     }
 }

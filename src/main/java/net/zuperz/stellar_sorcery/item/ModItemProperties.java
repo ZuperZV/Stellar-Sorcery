@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery.item;
 
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
