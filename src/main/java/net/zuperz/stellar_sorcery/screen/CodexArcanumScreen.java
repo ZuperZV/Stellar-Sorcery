@@ -10,6 +10,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -29,6 +30,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
+import net.zuperz.stellar_sorcery.component.CodexTierData;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.decorator.CodexTooltip;
@@ -40,6 +43,8 @@ import net.zuperz.stellar_sorcery.util.MouseUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @OnlyIn(Dist.CLIENT)
 public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu> {
@@ -73,6 +78,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private boolean mouseWasOverSearch = false;
     private List<CodexEntry> searchResults = new ArrayList<>();
 
+    private List<CodexCategory> categories = new ArrayList<>();
+    private CodexCategory selectedCategory = null;
+    private boolean isInCategoryView = true;
+
     private final int SEARCH_TEX_X_P = 158;
     private final int SEARCH_TEX_Y_P = -16;
     private final int SEARCH_TEX_W_P = 83;
@@ -82,6 +91,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private final int SEARCH_FIELD_Y_P = -10;
     private final int SEARCH_FIELD_W_P = 56;
     private final int SEARCH_FIELD_H_P = 11;
+
+    private static final int SLOT_WIDTH = 97;
+    private static final int SLOT_HEIGHT = 20;
+    private static final int SLOT_SPACING = 2;
+    private static final int ITEM_SIZE = 16;
+    private static final int ITEM_PADDING = 2;
 
     public CodexArcanumScreen(CodexArcanumMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
@@ -111,6 +126,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected void init() {
         this.createMenuControls();
         this.createPageControlButtons();
+
+        this.categories = CodexDataLoader.getAllCategories();
+        this.isInCategoryView = true;
+        this.selectedCategory = null;
+        this.selectedEntry = null;
+        this.selectedPage = 0;
 
         this.playerBookmarks.clear();
         this.playerBookmarks.addAll(CodexBookmarksData.getBookmarks(this.minecraft.player));
@@ -258,6 +279,27 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         return drawY;
     }
 
+    private int getCategoryOverviewContentHeight() {
+        int spacingY = 50;
+        return categories.size() * spacingY;
+    }
+
+    private int getCategoryEntriesContentHeight() {
+        if (selectedCategory == null) return 0;
+        int spacingY = 20;
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
+        int count = 0;
+        Pattern tierPattern = Pattern.compile("tier_(\\d+)");
+        for (CodexEntry entry : selectedCategory.entries) {
+            Matcher matcher = tierPattern.matcher(entry.id);
+            int entryTier = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
+            if (entryTier <= playerTier) count++;
+        }
+        return count * spacingY;
+    }
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         int x = (width - imageWidth) / 2;
@@ -268,28 +310,36 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int areaH = 112;
 
         if (MouseUtil.isMouseOver(mouseX, mouseY, areaX, areaY, areaW, areaH)) {
-            int contentHeight = getCurrentPageContentHeight(areaW);
+            int contentHeight = 0;
+
+            if (isInCategoryView) {
+                contentHeight = getCategoryOverviewContentHeight();
+            } else if (!isInCategoryView && selectedCategory != null && selectedEntry == null) {
+                contentHeight = getCategoryEntriesContentHeight();
+            } else if (selectedEntry != null) {
+                contentHeight = getCurrentPageContentHeight(areaW);
+            }
 
             int maxScroll = Math.max(0, contentHeight - areaH);
-
             scrollOffset -= verticalAmount > 0 ? 10 : -10;
-
-            if (scrollOffset < 0) scrollOffset = 0;
-            if (scrollOffset > maxScroll) scrollOffset = maxScroll;
+            scrollOffset = Mth.clamp(scrollOffset, 0, maxScroll);
 
             return true;
         }
 
-        int entryIndex = entryList.indexOf(selectedEntry);
-        if ((verticalAmount > 0) && (this.selectedPage > 0 || entryIndex > 0)) {
-            this.pageBack();
-            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
-            return true;
-        } else if ((verticalAmount < 0) && (this.selectedPage < this.selectedEntry.right_side.size() - 1 || entryIndex < entryList.size() - 1)) {
-            this.pageForward();
-            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
-            return true;
+        if (selectedEntry != null) {
+            int entryIndex = entryList.indexOf(selectedEntry);
+            if ((verticalAmount > 0) && (this.selectedPage > 0 || entryIndex > 0)) {
+                this.pageBack();
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+                return true;
+            } else if ((verticalAmount < 0) && (this.selectedPage < this.selectedEntry.right_side.size() - 1 || entryIndex < entryList.size() - 1)) {
+                this.pageForward();
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+                return true;
+            }
         }
+
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
@@ -366,10 +416,104 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             hoveredStack = ItemStack.EMPTY;
         }
 
-        renderSearchBar(guiGraphics, mouseX, mouseY);
+        if ((isInCategoryView) || (selectedCategory != null && selectedEntry == null)) {
+            drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y, getBookItem());
+        }
 
-        drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
-        drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
+        if (isInCategoryView) {
+            renderCategoryOverview(guiGraphics, mouseX, mouseY);
+        } else if (selectedCategory != null && selectedEntry == null) {
+            renderCategoryEntries(guiGraphics, mouseX, mouseY);
+        } else {
+            drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
+            drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
+        }
+
+        renderSearchBar(guiGraphics, mouseX, mouseY);
+    }
+
+    private void renderCategoryOverview(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        int areaX = x + 138;
+        int areaY = y + 44;
+        int areaW = SLOT_WIDTH;
+        int areaH = 112;
+        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+        int drawY = areaY - scrollOffset;
+
+        for (CodexCategory cat : categories) {
+            boolean hovered = MouseUtil.isMouseOver(mouseX, mouseY, areaX, drawY, SLOT_WIDTH, SLOT_HEIGHT);
+
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, Z_TOOLTIP- 10);
+
+            guiGraphics.fill(areaX, drawY, areaX + SLOT_WIDTH, drawY + SLOT_HEIGHT, 0xAA202020);
+
+            if (hovered) {
+                guiGraphics.fill(areaX - 1, drawY - 1, areaX + SLOT_WIDTH + 1, drawY + SLOT_HEIGHT + 1, 0xAAFFFFFF);
+            }
+
+            guiGraphics.renderItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
+
+            guiGraphics.drawString(font, cat.id, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
+
+            guiGraphics.pose().popPose();
+
+            drawY += SLOT_HEIGHT + SLOT_SPACING;
+        }
+
+        guiGraphics.disableScissor();
+    }
+
+    private void renderCategoryEntries(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (selectedCategory == null) return;
+
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        int areaX = x + 138;
+        int areaY = y + 44;
+        int areaW = SLOT_WIDTH;
+        int areaH = 112;
+        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+        int drawY = areaY - scrollOffset;
+
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
+        Pattern tierPattern = Pattern.compile("tier_(\\d+)");
+
+        for (CodexEntry entry : selectedCategory.entries) {
+            Matcher matcher = tierPattern.matcher(entry.id);
+            int entryTier = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
+            if (entryTier > playerTier) continue;
+
+            boolean hovered = MouseUtil.isMouseOver(mouseX, mouseY, areaX, drawY, SLOT_WIDTH, SLOT_HEIGHT);
+
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, Z_TOOLTIP- 10);
+
+            guiGraphics.fill(areaX, drawY, areaX + SLOT_WIDTH, drawY + SLOT_HEIGHT, 0xAA202020);
+
+            if (hovered) {
+                guiGraphics.fill(areaX - 1, drawY - 1, areaX + SLOT_WIDTH + 1, drawY + SLOT_HEIGHT + 1, 0xAAFFFFFF);
+            }
+
+            guiGraphics.renderItem(RecipeHelper.parseItem(entry.icon), areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
+
+            guiGraphics.drawString(font, entry.title, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
+
+            guiGraphics.pose().popPose();
+
+
+            drawY += SLOT_HEIGHT + SLOT_SPACING;
+        }
+
+        guiGraphics.disableScissor();
     }
 
     private void drawIconAndTitle(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
@@ -384,6 +528,17 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.blit(BOOK_TEXTURE, xIcon, yIcon, 0, 180, 84, 30);
             drawColoredOverlay(guiGraphics, xIcon, yIcon, 0, 180, 84, 30, 0);
         }
+    }
+
+    private void drawIconAndTitle(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y, ItemStack iconStack) {
+        int yIcon = y + 11;
+        int xIcon = x + 146;
+
+        guiGraphics.drawString(this.font, Component.translatable(iconStack.getDescriptionId()), x + 14, y + 14, ChatFormatting.DARK_GRAY.getColor(), false);
+
+        renderItemWithTooltip(guiGraphics, iconStack, xIcon + 34, yIcon + 7, mouseX, mouseY);
+        guiGraphics.blit(BOOK_TEXTURE, xIcon, yIcon, 0, 180, 84, 30);
+        drawColoredOverlay(guiGraphics, xIcon, yIcon, 0, 180, 84, 30, 0);
     }
 
     private void drawSelectedPage(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
@@ -469,7 +624,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.renderItem(stack, x, y);
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 1000);
+        guiGraphics.pose().translate(0, 0, Z_TOOLTIP + 10);
         guiGraphics.renderItemDecorations(this.font, stack, x, y, null);
         guiGraphics.pose().popPose();
 
@@ -487,9 +642,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         guiGraphics.blit(BOOK_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         drawColoredOverlay(guiGraphics, x, y, 0, 0, imageWidth, imageHeight, 0);
-
-
-        drawColoredOverlay(guiGraphics, x, y, 0, 0, imageWidth, imageHeight, 0);
     }
 
 
@@ -499,9 +651,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
         if (!searchResults.isEmpty()) {
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
 
             int startX = x + SEARCH_FIELD_X_P;
             int startY = y + SEARCH_FIELD_Y_P + SEARCH_FIELD_H_P + 2;
@@ -536,8 +689,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         if (searchBox != null) {
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
 
             int fieldX = x + SEARCH_FIELD_X_P;
             int fieldY = y + SEARCH_FIELD_Y_P;
@@ -548,6 +699,49 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             if (!inField) {
                 searchBox.setFocused(false);
                 searchResults.clear();
+            }
+        }
+
+        int areaX = x + 138;
+        int areaY = y + 44;
+
+        if (isInCategoryView) {
+            int drawY = areaY - scrollOffset;
+
+            for (CodexCategory cat : categories) {
+                if (mouseX >= areaX && mouseX <= areaX + SLOT_WIDTH &&
+                        mouseY >= drawY && mouseY <= drawY + SLOT_HEIGHT) {
+
+                    this.selectedCategory = cat;
+                    this.isInCategoryView = false;
+                    scrollOffset = 0;
+                    return true;
+                }
+                drawY += SLOT_HEIGHT + SLOT_SPACING;
+            }
+        }
+
+        if (!isInCategoryView && selectedCategory != null && selectedEntry == null) {
+            int drawY = areaY - scrollOffset;
+
+            CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+            int playerTier = tierData != null ? tierData.getTier() : 0;
+            Pattern tierPattern = Pattern.compile("tier_(\\d+)");
+
+            for (CodexEntry entry : selectedCategory.entries) {
+                Matcher matcher = tierPattern.matcher(entry.id);
+                int entryTier = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
+                if (entryTier > playerTier) continue;
+
+                if (mouseX >= areaX && mouseX <= areaX + SLOT_WIDTH &&
+                        mouseY >= drawY && mouseY <= drawY + SLOT_HEIGHT) {
+
+                    this.selectedEntry = entry;
+                    this.selectedPage = 0;
+                    scrollOffset = 0;
+                    return true;
+                }
+                drawY += SLOT_HEIGHT + SLOT_SPACING;
             }
         }
 
@@ -859,5 +1053,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
         guiGraphics.pose().popPose();
+    }
+
+    private ItemStack getBookItem() {
+        return minecraft.player.getInventory().items.stream()
+                .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
+                .findFirst()
+                .orElse(ItemStack.EMPTY);
     }
 }
