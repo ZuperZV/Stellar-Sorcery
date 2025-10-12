@@ -58,6 +58,13 @@ public class BookmarkButton extends Button {
 
         if (stack.isEmpty()) stack = minecraft.player.getOffhandItem();
 
+        if (stack.isEmpty() || !stack.is(ModItems.CODEX_ARCANUM.get())) {
+            stack = minecraft.player.getInventory().items.stream()
+                    .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
+                    .findFirst()
+                    .orElse(ItemStack.EMPTY);
+        }
+
         if (!stack.is(ModItems.CODEX_ARCANUM.get())) return;
 
         DyedItemColor dyedColor = stack.get(DataComponents.DYED_COLOR);

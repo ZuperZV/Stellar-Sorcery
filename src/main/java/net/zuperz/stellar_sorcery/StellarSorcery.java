@@ -1,7 +1,10 @@
 package net.zuperz.stellar_sorcery;
 
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Blocks;
@@ -10,6 +13,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
@@ -29,14 +33,13 @@ import net.zuperz.stellar_sorcery.entity.custom.SigilOrbEntity;
 import net.zuperz.stellar_sorcery.item.ModCreativeModeTabs;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
-import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleClientTooltip;
-import net.zuperz.stellar_sorcery.item.custom.decorator.EssenceBottleTooltip;
-import net.zuperz.stellar_sorcery.item.custom.decorator.StarDustNumberBarDecorator;
+import net.zuperz.stellar_sorcery.item.custom.decorator.*;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import net.zuperz.stellar_sorcery.screen.ModMenuTypes;
+import net.zuperz.stellar_sorcery.util.KeyBinding;
 import org.slf4j.Logger;import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -135,6 +138,8 @@ public class StellarSorcery
 
         @SubscribeEvent
         public static void registerTooltipFactories(RegisterClientTooltipComponentFactoriesEvent event) {
+            event.register(CodexTooltip.class, CodexClientTooltip::new);
+
             event.register(EssenceBottleTooltip.class, EssenceBottleClientTooltip::new);
         }
 
@@ -194,6 +199,11 @@ public class StellarSorcery
                     },
                     ModItems.CODEX_ARCANUM.get()
             );
+        }
+
+        @SubscribeEvent
+        public static void onRegisterKeys(RegisterKeyMappingsEvent event) {
+            event.register(KeyBinding.OPEN_BOOK);
         }
 
         @SubscribeEvent

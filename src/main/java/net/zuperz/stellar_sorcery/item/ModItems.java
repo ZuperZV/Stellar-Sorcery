@@ -17,7 +17,7 @@ public class ModItems {
     //properties -> new FuelItem(properties, 800)
 
     public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
-            () -> new CodexArcanumItem(new Item.Properties()));
+            () -> new CodexArcanumItem(new Item.Properties().stacksTo(1).fireResistant()));
 
     public static final DeferredItem<Item> CELESTIAL_BLADE = ITEMS.register("celestial_blade",
             () -> new CelestialSwordItem(ModToolTiers.CELESTIAL,

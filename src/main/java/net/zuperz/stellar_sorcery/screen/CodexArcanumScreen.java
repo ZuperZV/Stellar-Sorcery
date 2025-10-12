@@ -9,10 +9,10 @@ import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -31,6 +31,7 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.JEIPlugin;
 import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.item.custom.decorator.CodexTooltip;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
@@ -42,8 +43,8 @@ import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu> {
-    private CodexEntry selectedEntry = null;
-    private int selectedPage = 0;
+    public CodexEntry selectedEntry = null;
+    public int selectedPage = 0;
     private PageButton forwardButton;
     private PageButton backButton;
     private final boolean playTurnSound;
@@ -375,7 +376,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int yIcon = y + 11;
         int xIcon = x + 146;
 
-        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, 0xa9a9a9);
+        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, ChatFormatting.DARK_GRAY.getColor(), false);
 
         if (selectedEntry.icon != null && !selectedEntry.icon.equals("")) {
             ItemStack iconStack = RecipeHelper.parseItem(selectedEntry.icon.toString());
@@ -828,6 +829,13 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         ItemStack stack = this.minecraft.player.getMainHandItem();
 
         if (stack.isEmpty()) stack = this.minecraft.player.getOffhandItem();
+
+        if (stack.isEmpty() || !stack.is(ModItems.CODEX_ARCANUM.get())) {
+            stack = minecraft.player.getInventory().items.stream()
+                    .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
+                    .findFirst()
+                    .orElse(ItemStack.EMPTY);
+        }
 
         if (!stack.is(ModItems.CODEX_ARCANUM.get())) return;
 

@@ -105,6 +105,9 @@
   "recipe_mods.stellar_sorcery.essence_infusion_boiler": "Essence Infusion Boiler",
   "recipe_mods.stellar_sorcery.astral_altar": "Astral Altar",
 
+  "key.category.stellar_sorcery": "Stellar Sorcery Keybinds",
+  "key.stellar_sorcery.open_codex_arcanum": "Open Codex Arcanum",
+
   "entity.stellar_sorcery.mob": "Mob",
 
 

@@ -7,7 +7,9 @@
   "mixins": [
     "ModPlayerDataSaverMixin"
   ],
-  "client": [],
+  "client": [
+    "ItemStackCodexTooltipMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
