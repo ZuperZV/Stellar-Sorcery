@@ -131,6 +131,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
                 .save(pWriter);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.CODEX_ARCANUM)
+                .requires(Items.IRON_INGOT)
+                .requires(Items.BOOK)
+                .requires(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS)
+                .unlockedBy("has_book", has(Items.BOOK))
+                .save(pWriter);
+
         // Furnaces
 
         SimpleCookingRecipeBuilder.blasting (Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC , ModItems.CLAY_JAR.get(), 0.20f , 100)

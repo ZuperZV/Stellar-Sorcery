@@ -9,12 +9,12 @@ public class CodexCategory {
     public final String id;
     public final ItemStack icon;
     public final List<CodexEntry> entries;
-    public final int tier;
+    public final List<Integer> tiers;
 
-    public CodexCategory(String id, ItemStack icon, List<CodexEntry> entries, int tier) {
+    public CodexCategory(String id, ItemStack icon, List<CodexEntry> entries, List<Integer> tiers) {
         this.id = id;
         this.icon = icon;
         this.entries = entries;
-        this.tier = tier;
+        this.tiers = tiers;
     }
 }

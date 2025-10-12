@@ -14,6 +14,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.component.CodexTierData;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
@@ -32,6 +33,14 @@ public class ModCreativeModeTabs {
                     .icon(() -> new ItemStack(ModItems.CELESTIAL_BLADE.get()))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.CODEX_ARCANUM.get());
+
+                        ItemStack tier2_codex_arcanum = new ItemStack(ModItems.CODEX_ARCANUM.get());
+                        tier2_codex_arcanum.set(ModDataComponentTypes.CODEX_TIER, new CodexTierData(2));
+                        pOutput.accept(tier2_codex_arcanum);
+
+                        ItemStack tier3_codex_arcanum = new ItemStack(ModItems.CODEX_ARCANUM.get());
+                        tier3_codex_arcanum.set(ModDataComponentTypes.CODEX_TIER, new CodexTierData(3));
+                        pOutput.accept(tier3_codex_arcanum);
 
                         pOutput.accept(ModItems.CELESTIAL_BLADE.get());
 

@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.api.jei.subtypeInterpreter.CodexArcanumSubtypeInterpreter;
 import net.zuperz.stellar_sorcery.api.jei.subtypeInterpreter.EssenceBottleSubtypeInterpreter;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
@@ -138,6 +139,11 @@ public class JEIPlugin implements IModPlugin {
         registration.registerSubtypeInterpreter(
                 ModItems.ESSENCE_AMULET.get(),
                 new EssenceBottleSubtypeInterpreter()
+        );
+
+        registration.registerSubtypeInterpreter(
+                ModItems.CODEX_ARCANUM.get(),
+                new CodexArcanumSubtypeInterpreter()
         );
     }
 

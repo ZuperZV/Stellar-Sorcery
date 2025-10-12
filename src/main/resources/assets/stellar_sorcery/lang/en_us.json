@@ -108,6 +108,10 @@
   "key.category.stellar_sorcery": "Stellar Sorcery Keybinds",
   "key.stellar_sorcery.open_codex_arcanum": "Open Codex Arcanum",
 
+  "codex_arcanum.stellar_sorcery.misc": "Misc",
+  "codex_arcanum.stellar_sorcery.mobs": "Mobs",
+  "codex_arcanum.stellar_sorcery.rituals": "Rituals",
+
   "entity.stellar_sorcery.mob": "Mob",
 
 

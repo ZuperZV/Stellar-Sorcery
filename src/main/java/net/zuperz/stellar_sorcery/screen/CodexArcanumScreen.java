@@ -10,7 +10,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -124,9 +123,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     protected void init() {
-        this.createMenuControls();
-        this.createPageControlButtons();
-
         this.categories = CodexDataLoader.getAllCategories();
         this.isInCategoryView = true;
         this.selectedCategory = null;
@@ -149,6 +145,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         this.searchBox.setResponder(this::updateSearchResults);
 
         this.addRenderableWidget(searchBox);
+
+        this.createMenuControls();
+        this.createPageControlButtons();
     }
 
     protected void createMenuControls() {
@@ -176,6 +175,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int index = this.entryList.indexOf(this.selectedEntry);
             if (index > 0) {
                 this.selectedEntry = this.entryList.get(index - 1);
+                this.isInCategoryView = false;
                 this.selectedPage = this.selectedEntry.right_side.size() - 1;
             }
         }
@@ -193,6 +193,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int index = this.entryList.indexOf(this.selectedEntry);
             if (index < this.entryList.size() - 1) {
                 this.selectedEntry = this.entryList.get(index + 1);
+                this.isInCategoryView = false;
                 this.selectedPage = 0;
             }
         }
@@ -202,7 +203,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     private void updateButtonVisibility() {
-        if (selectedEntry == null) {
+        if (selectedEntry == null || this.isInCategoryView) {
             this.forwardButton.visible = false;
             this.backButton.visible = false;
             return;
@@ -458,7 +459,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             guiGraphics.renderItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
 
-            guiGraphics.drawString(font, cat.id, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
+            //yte
+            Component message = Component.translatable("codex_arcanum.stellar_sorcery." + cat.id);
+
+            guiGraphics.drawString(font, message, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
 
             guiGraphics.pose().popPose();
 
@@ -485,30 +489,32 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
         int playerTier = tierData != null ? tierData.getTier() : 0;
 
-        Pattern tierPattern = Pattern.compile("tier_(\\d+)");
+        for (int i = 0; i < selectedCategory.entries.size(); i++) {
+            CodexEntry entry = selectedCategory.entries.get(i);
+            int entryTierValue = selectedCategory.tiers.get(i);
 
-        for (CodexEntry entry : selectedCategory.entries) {
-            Matcher matcher = tierPattern.matcher(entry.id);
-            int entryTier = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
-            if (entryTier > playerTier) continue;
+            if (entryTierValue > playerTier) continue;
 
             boolean hovered = MouseUtil.isMouseOver(mouseX, mouseY, areaX, drawY, SLOT_WIDTH, SLOT_HEIGHT);
 
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, Z_TOOLTIP- 10);
+            guiGraphics.pose().translate(0, 0, Z_TOOLTIP - 10);
 
             guiGraphics.fill(areaX, drawY, areaX + SLOT_WIDTH, drawY + SLOT_HEIGHT, 0xAA202020);
-
             if (hovered) {
                 guiGraphics.fill(areaX - 1, drawY - 1, areaX + SLOT_WIDTH + 1, drawY + SLOT_HEIGHT + 1, 0xAAFFFFFF);
             }
 
             guiGraphics.renderItem(RecipeHelper.parseItem(entry.icon), areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
 
+            ItemStack stack = getBookItem().copy();
+            stack.set(ModDataComponentTypes.CODEX_TIER.get(), new CodexTierData(entryTierValue));
+
+            renderScaledItem(guiGraphics, stack, areaX + ITEM_PADDING + 8, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2 + 8, Z_TOOLTIP - 5, 10);
+
             guiGraphics.drawString(font, entry.title, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
 
             guiGraphics.pose().popPose();
-
 
             drawY += SLOT_HEIGHT + SLOT_SPACING;
         }
@@ -624,7 +630,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.renderItem(stack, x, y);
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, Z_TOOLTIP + 10);
+        guiGraphics.pose().translate(0, 0, Z_TOOLTIP + 100);
         guiGraphics.renderItemDecorations(this.font, stack, x, y, null);
         guiGraphics.pose().popPose();
 
@@ -670,6 +676,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
                     CodexEntry selected = searchResults.get(i);
                     this.selectedEntry = selected;
+                    this.isInCategoryView = false;
                     this.selectedPage = 0;
                     this.scrollOffset = 0;
                     updateButtonVisibility();
@@ -714,7 +721,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
                     this.selectedCategory = cat;
                     this.isInCategoryView = false;
-                    scrollOffset = 0;
+                    this.updateButtonVisibility();
+                    this.selectedPage = 0;
+                    this.scrollOffset = 0;
                     return true;
                 }
                 drawY += SLOT_HEIGHT + SLOT_SPACING;
@@ -726,19 +735,24 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
             int playerTier = tierData != null ? tierData.getTier() : 0;
-            Pattern tierPattern = Pattern.compile("tier_(\\d+)");
 
-            for (CodexEntry entry : selectedCategory.entries) {
-                Matcher matcher = tierPattern.matcher(entry.id);
-                int entryTier = matcher.find() ? Integer.parseInt(matcher.group(1)) : 0;
-                if (entryTier > playerTier) continue;
+            for (int i = 0; i < selectedCategory.entries.size(); i++) {
+                CodexEntry entry = selectedCategory.entries.get(i);
+                int entryTierValue = selectedCategory.tiers.get(i);
+
+                if (entryTierValue > playerTier) continue;
 
                 if (mouseX >= areaX && mouseX <= areaX + SLOT_WIDTH &&
                         mouseY >= drawY && mouseY <= drawY + SLOT_HEIGHT) {
 
-                    this.selectedEntry = entry;
+                    CodexEntry codexEntry = entryList.stream().filter(e -> e.id.equals(entry.id)).findFirst().orElse(null);
+                    if (codexEntry == null) continue;
+
+                    this.selectedEntry = codexEntry;
                     this.selectedPage = 0;
-                    scrollOffset = 0;
+                    this.scrollOffset = 0;
+                    this.isInCategoryView = false;
+                    this.updateButtonVisibility();
                     return true;
                 }
                 drawY += SLOT_HEIGHT + SLOT_SPACING;
@@ -791,7 +805,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         this.minecraft.setScreen(null);
     }
 
-    // Bookmark
     private void createBookmarkButtons() {
         for (BookmarkButton b : bookmarkButtons) {
             try { this.removeWidget(b); } catch (Exception ignored) {}
@@ -821,7 +834,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int layerZ = col == 0 ? Z_BOOKMARK_ITEM : Z_BOOKMARK_ITEM / 2;
 
             BookmarkButton b = new BookmarkButton(x, y, layerZ, btn -> {
-                // Delete bookmark if shift is down
                 if (hasShiftDown()) {
                     net.neoforged.neoforge.network.PacketDistributor.sendToServer(
                             new SetBookmarksPacket(entryId, false)
@@ -831,11 +843,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                     this.createBookmarkButtons();
                     return;
                 }
-                // Else open entry
+
                 if (entry != null) {
                     this.selectedEntry = entry;
                     this.selectedPage = 0;
                     this.scrollOffset = 0;
+                    this.isInCategoryView = false;
                     this.updateButtonVisibility();
                 }
             });
@@ -844,7 +857,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             bookmarkButtons.add(b);
         }
 
-        // Add "add bookmark" button if there's space
         if (playerBookmarks.size() < 22) {
             int idx = playerBookmarks.size();
             int col = idx / 11;
@@ -1025,10 +1037,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         if (stack.isEmpty()) stack = this.minecraft.player.getOffhandItem();
 
         if (stack.isEmpty() || !stack.is(ModItems.CODEX_ARCANUM.get())) {
-            stack = minecraft.player.getInventory().items.stream()
-                    .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
-                    .findFirst()
-                    .orElse(ItemStack.EMPTY);
+            stack = getBookItem();
         }
 
         if (!stack.is(ModItems.CODEX_ARCANUM.get())) return;
@@ -1056,9 +1065,17 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     private ItemStack getBookItem() {
-        return minecraft.player.getInventory().items.stream()
-                .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
-                .findFirst()
-                .orElse(ItemStack.EMPTY);
+        ItemStack stack = minecraft.player.getMainHandItem();
+
+        if (stack.isEmpty()) stack = minecraft.player.getOffhandItem();
+
+        if (stack.isEmpty() || !stack.is(ModItems.CODEX_ARCANUM.get())) {
+            stack = minecraft.player.getInventory().items.stream()
+                    .filter(stackItem -> !stackItem.isEmpty() && stackItem.getItem() == ModItems.CODEX_ARCANUM.get())
+                    .findFirst()
+                    .orElse(ItemStack.EMPTY);
+        }
+
+        return stack;
     }
 }
