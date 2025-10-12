@@ -1,8 +1,12 @@
 package net.zuperz.stellar_sorcery.item;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 
@@ -19,5 +23,12 @@ public class ModItemProperties {
 
         ItemProperties.register(ModItems.WRAITH_CLOAK.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "on"),
                 (pStack, pLevel, pEntity, pSeed) -> pStack.get(ModDataComponentTypes.ACTIVE) != null && pStack.get(ModDataComponentTypes.ACTIVE).getActive() ? 1f : 0f);
+
+        ItemProperties.register(ModItems.CODEX_ARCANUM.get(), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "tier"),
+                (ItemStack stack, ClientLevel level, LivingEntity entity, int seed) -> {
+                    var data = stack.get(ModDataComponentTypes.CODEX_TIER);
+                    return data != null ? (float) data.getTier() : 0f;
+                }
+        );
     }
 }

@@ -4,5 +4,10 @@
     "layer0": "stellar_sorcery:item/codex_arcanum_cover_gray",
     "layer1": "stellar_sorcery:item/codex_arcanum_text_block",
     "layer2": "stellar_sorcery:item/codex_arcanum_chrome_spine"
-  }
+  },
+  "overrides": [
+    { "predicate": { "stellar_sorcery:tier": 1 }, "model": "stellar_sorcery:item/codex_arcanum_chrome" },
+    { "predicate": { "stellar_sorcery:tier": 2 }, "model": "stellar_sorcery:item/codex_arcanum_gold" },
+    { "predicate": { "stellar_sorcery:tier": 3 }, "model": "stellar_sorcery:item/codex_arcanum_cobolt" }
+  ]
 }

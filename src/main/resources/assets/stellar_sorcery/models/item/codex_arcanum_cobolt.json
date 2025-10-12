@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/codex_arcanum_cover_gray",
+    "layer1": "stellar_sorcery:item/codex_arcanum_text_block",
+    "layer2": "stellar_sorcery:item/codex_arcanum_cobolt_spine"
+  }
+}

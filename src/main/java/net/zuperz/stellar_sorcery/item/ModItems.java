@@ -4,6 +4,8 @@ import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.zuperz.stellar_sorcery.component.CodexTierData;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
@@ -17,7 +19,7 @@ public class ModItems {
     //properties -> new FuelItem(properties, 800)
 
     public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
-            () -> new CodexArcanumItem(new Item.Properties().stacksTo(1).fireResistant()));
+            () -> new CodexArcanumItem(new Item.Properties().stacksTo(1).fireResistant().component(ModDataComponentTypes.CODEX_TIER.get(), new CodexTierData(1))));
 
     public static final DeferredItem<Item> CELESTIAL_BLADE = ITEMS.register("celestial_blade",
             () -> new CelestialSwordItem(ModToolTiers.CELESTIAL,

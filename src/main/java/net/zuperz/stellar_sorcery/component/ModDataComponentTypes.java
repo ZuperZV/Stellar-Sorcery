@@ -19,6 +19,9 @@ public class ModDataComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<StarDustData>> STAR_DUST = register("star_dust",
             builder -> builder.persistent(StarDustData.CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CodexTierData>> CODEX_TIER = register("codex_tier",
+            builder -> builder.persistent(CodexTierData.CODEC));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CelestialData>> CELESTIAL = register("celestial",
             builder -> builder.persistent(CelestialData.CODEC));
 
