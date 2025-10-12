@@ -169,36 +169,86 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     protected void pageBack() {
         if (selectedEntry == null) return;
 
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
         if (this.selectedPage > 0) {
             this.selectedPage--;
         } else {
             int index = this.entryList.indexOf(this.selectedEntry);
             if (index > 0) {
-                this.selectedEntry = this.entryList.get(index - 1);
+                CodexEntry previousEntry = this.entryList.get(index - 1);
+
+                int previousTier = getTierForEntry(previousEntry);
+
+                if (previousTier == -1 && previousEntry != null && previousEntry.id != null) {
+                    try {
+                        java.util.regex.Matcher m = java.util.regex.Pattern.compile("tier_(\\d+)").matcher(previousEntry.id);
+                        if (m.find()) {
+                            previousTier = Integer.parseInt(m.group(1));
+                        }
+                    } catch (Exception ignored) { }
+                }
+
+                try {
+                    StellarSorcery.LOGGER.debug("pageBack: playerTier={}, previousEntryId={}, previousTier={}", playerTier, previousEntry.id, previousTier);
+                } catch (Exception ignored) {}
+
+                if (previousTier > playerTier) {
+                    this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1.0F));
+                    return;
+                }
+
+                this.selectedEntry = previousEntry;
                 this.isInCategoryView = false;
-                this.selectedPage = this.selectedEntry.right_side.size() - 1;
+                this.selectedPage = Math.max(0, this.selectedEntry.right_side.size() - 1);
             }
         }
-        scrollOffset = 0;
 
+        scrollOffset = 0;
         this.updateButtonVisibility();
     }
 
     protected void pageForward() {
         if (selectedEntry == null) return;
 
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
         if (this.selectedPage < this.selectedEntry.right_side.size() - 1) {
             this.selectedPage++;
         } else {
             int index = this.entryList.indexOf(this.selectedEntry);
             if (index < this.entryList.size() - 1) {
-                this.selectedEntry = this.entryList.get(index + 1);
+                CodexEntry nextEntry = this.entryList.get(index + 1);
+
+                int nextTier = getTierForEntry(nextEntry);
+
+                if (nextTier == -1 && nextEntry != null && nextEntry.id != null) {
+                    try {
+                        java.util.regex.Matcher m = java.util.regex.Pattern.compile("tier_(\\d+)").matcher(nextEntry.id);
+                        if (m.find()) {
+                            nextTier = Integer.parseInt(m.group(1));
+                        }
+                    } catch (Exception ignored) { }
+                }
+
+                try {
+                    StellarSorcery.LOGGER.debug("pageForward: playerTier={}, nextEntryId={}, nextTier={}", playerTier, nextEntry.id, nextTier);
+                } catch (Exception ignored) {}
+
+                if (nextTier > playerTier) {
+                    this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1.0F));
+                    return;
+                }
+
+                this.selectedEntry = nextEntry;
                 this.isInCategoryView = false;
                 this.selectedPage = 0;
             }
         }
-        scrollOffset = 0;
 
+        scrollOffset = 0;
         this.updateButtonVisibility();
     }
 
@@ -1077,5 +1127,28 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         return stack;
+    }
+
+    private int getTierForEntry(CodexEntry entry) {
+        if (entry == null || entry.id == null) return -1;
+        if (categories == null || categories.isEmpty()) return -1;
+
+        for (CodexCategory category : categories) {
+            if (category == null || category.entries == null) continue;
+
+            for (int i = 0; i < category.entries.size(); i++) {
+                CodexEntry e = category.entries.get(i);
+                if (e == null || e.id == null) continue;
+                if (e.id.equals(entry.id)) {
+                    if (category.tiers != null && i < category.tiers.size()) {
+                        return category.tiers.get(i);
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
 }
