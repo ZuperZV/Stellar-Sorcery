@@ -33,11 +33,12 @@ import net.zuperz.stellar_sorcery.component.CodexTierData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
-import net.zuperz.stellar_sorcery.item.custom.decorator.CodexTooltip;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
+import net.zuperz.stellar_sorcery.screen.Helpers.BackPageButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     public CodexEntry selectedEntry = null;
     public int selectedPage = 0;
     private PageButton forwardButton;
-    private PageButton backButton;
+    private PageButton backWardButton;
+    private BackPageButton backButton;
     private final boolean playTurnSound;
     private List<CodexEntry> entryList = List.of();
     private ItemStack hoveredStack = ItemStack.EMPTY;
@@ -65,9 +67,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private float easedIconX = 0f;
     private float easedIconY = 0f;
 
-    private static final int Z_TOOLTIP = 1000;
-    private static final int Z_BOOK_EDGE = 600;
-    private static final int Z_BOOKMARK_ITEM = 400;
+    public static final int Z_TOOLTIP = 1000;
+    public static final int Z_BOOK_EDGE = 600;
+    public static final int Z_BOOKMARK_ITEM = 400;
 
     private final List<String> playerBookmarks = new ArrayList<>();
     private final List<BookmarkButton> bookmarkButtons = new ArrayList<>();
@@ -151,14 +153,15 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     protected void createMenuControls() {
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).bounds(this.width / 2 - 100, (height - imageHeight) / 2 + 191, 200, 20).build());
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).bounds(this.width / 2 - 100, (height - imageHeight) / 2 + 194, 200, 20).build());
     }
 
     protected void createPageControlButtons() {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
         this.forwardButton = this.addRenderableWidget(new PageButton(x + 203, y + 156, true, button -> this.pageForward(), this.playTurnSound));
-        this.backButton = this.addRenderableWidget(new PageButton(x + 23, y + 156, false, button -> this.pageBack(), this.playTurnSound));
+        this.backWardButton = this.addRenderableWidget(new PageButton(x + 23, y + 156, false, button -> this.pageWardBack(), this.playTurnSound));
+        this.backButton = this.addRenderableWidget(new BackPageButton(x + 112, y + 180, button -> this.pageBack(), this.playTurnSound));
         this.updateButtonVisibility();
     }
 
@@ -167,6 +170,37 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     protected void pageBack() {
+        if (this.selectedEntry != null) {
+            this.selectedEntry = null;
+            this.scrollOffset = 0;
+            this.selectedPage = 0;
+
+            this.isInCategoryView = false;
+
+            this.updateButtonVisibility();
+
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+            return;
+        }
+
+        if (this.selectedCategory != null) {
+            this.isInCategoryView = true;
+            this.selectedCategory = null;
+            this.scrollOffset = 0;
+            this.selectedPage = 0;
+
+            this.updateButtonVisibility();
+
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+            return;
+        }
+
+        // Hvis vi allerede er helt tilbage i oversigten (intet selectedCategory, intet selectedEntry)
+        // så kan du vælge at lukke bogen eller blot ikke gøre noget.
+        // Her gør vi bare ingenting.
+    }
+
+    protected void pageWardBack() {
         if (selectedEntry == null) return;
 
         CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
@@ -253,15 +287,21 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     private void updateButtonVisibility() {
+        if (isInCategoryView) {
+            this.backButton.visible = false;
+        } else {
+            this.backButton.visible = true;
+        }
+
         if (selectedEntry == null || this.isInCategoryView) {
             this.forwardButton.visible = false;
-            this.backButton.visible = false;
+            this.backWardButton.visible = false;
             return;
         }
 
         int entryIndex = entryList.indexOf(selectedEntry);
 
-        this.backButton.visible = this.selectedPage > 0 || entryIndex > 0;
+        this.backWardButton.visible = this.selectedPage > 0 || entryIndex > 0;
 
         this.forwardButton.visible =
                 this.selectedPage < this.selectedEntry.right_side.size() - 1 ||
@@ -287,11 +327,14 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             }
 
             switch (keyCode) {
-                case 266:
-                    this.backButton.onPress();
+                case 266, GLFW.GLFW_KEY_LEFT:
+                    this.backWardButton.onPress();
                     return true;
-                case 267:
+                case 267, GLFW.GLFW_KEY_RIGHT:
                     this.forwardButton.onPress();
+                    return true;
+                case GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN:
+                    this.backButton.onPress();
                     return true;
                 default:
                     return false;
@@ -381,7 +424,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         if (selectedEntry != null) {
             int entryIndex = entryList.indexOf(selectedEntry);
             if ((verticalAmount > 0) && (this.selectedPage > 0 || entryIndex > 0)) {
-                this.pageBack();
+                this.pageWardBack();
                 this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
                 return true;
             } else if ((verticalAmount < 0) && (this.selectedPage < this.selectedEntry.right_side.size() - 1 || entryIndex < entryList.size() - 1)) {
