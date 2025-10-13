@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.multiplayer.ClientAdvancements;
@@ -41,12 +42,19 @@ import net.zuperz.stellar_sorcery.component.CodexTierData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.mixin.AdvancementsScreenMixin;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BackPageButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
+import net.zuperz.stellar_sorcery.screen.Helpers.CustomAdvancementRenderer;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.MouseUtil;
 import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.client.multiplayer.ClientAdvancements;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +96,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     public List<CodexCategory> categories = new ArrayList<>();
     public CodexCategory selectedCategory = null;
     public boolean isInCategoryView = true;
+
+    private AdvancementsScreen advancementsScreen;
+    private boolean showAdvancement = true;
+    public int advancementX = -36;
+    public int advancementY = 18;
 
     private final int SEARCH_TEX_X_P = 158;
     private final int SEARCH_TEX_Y_P = -16;
@@ -156,6 +169,13 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         this.createMenuControls();
         this.createPageControlButtons();
+
+        if (showAdvancement) {
+            ClientAdvancements clientAdvancements = Minecraft.getInstance().player.connection.getAdvancements();
+
+            advancementsScreen = new AdvancementsScreen(clientAdvancements, null);
+            advancementsScreen.init(minecraft, this.width, this.height);
+        }
     }
 
     protected void createMenuControls() {
@@ -466,7 +486,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        renderBg(guiGraphics, delta, mouseX, mouseY);
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
 
@@ -530,6 +549,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         renderSearchBar(guiGraphics, mouseX, mouseY);
+
+        renderBg(guiGraphics, delta, mouseX, mouseY);
     }
 
 
@@ -721,7 +742,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                         renderItemTooltip(guiGraphics, input, drawX, drawY, mouseX, mouseY);
                         guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
 
-                        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "gui/arrow.png"), drawX + 25, drawY + 4, 0, 0, 23, 15);
+                        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/arrow.png"), drawX + 25, drawY + 4, 0, 0, 23, 15);
 
                         renderItem(guiGraphics, output, drawX + 50, drawY);
 
@@ -786,7 +807,40 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        if (showAdvancement && advancementsScreen != null) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(advancementX, advancementY, 0);
+
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
+
+            int advGuiLeft = (this.width - AdvancementsScreen.WINDOW_WIDTH) / 2;
+            int advGuiTop  = (this.height - AdvancementsScreen.WINDOW_HEIGHT) / 2;
+
+            //((AdvancementsScreenMixin) advancementsScreen).callRenderInside(
+            //        guiGraphics,
+            //        mouseX - advancementX,
+            //        mouseY - advancementY,
+            //        advGuiLeft,
+            //        advGuiTop
+            //);
+
+            CustomAdvancementRenderer.renderTooltipsOnly(
+                    advancementsScreen,
+                    guiGraphics,
+                    mouseX - advancementX,
+                    mouseY - advancementY,
+                    (this.width - 252) / 2,
+                    (this.height - 140) / 2,
+                    x,
+                    y,
+                    this
+            );
+
+            guiGraphics.pose().popPose();
+        }
     }
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -892,7 +946,51 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             }
         }
 
+        if (showAdvancement && this.advancementsScreen != null) {
+
+            int relX = (int) (mouseX - x);
+            int relY = (int) (mouseY - y);
+
+            if (relX >= 16 && relY >= 22 && relX < 16 + 92 && relY < 22 + 138) {
+                double[] adj = mapToAdvancementCoords(mouseX, mouseY);
+                return this.advancementsScreen.mouseClicked(adj[0], adj[1], button);
+            }
+        }
+
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (showAdvancement && this.advancementsScreen != null) {
+
+            int imageWidth = 252;
+            int imageHeight = 140;
+            int x = (this.width - imageWidth) / 2;
+            int y = (this.height - imageHeight) / 2;
+
+            int relX = (int) (mouseX - x);
+            int relY = (int) (mouseY - y);
+
+            if (relX >= 16 && relY >= 22 && relX < 16 + 92 && relY < 22 + 138) {
+                double[] adj = mapToAdvancementCoords(mouseX, mouseY);
+                return this.advancementsScreen.mouseDragged(adj[0], adj[1], button, dragX, dragY);
+            }
+        }
+
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    private double[] mapToAdvancementCoords(double screenMouseX, double screenMouseY) {
+        int advGuiLeft = (this.width - 252) / 2;
+        int advGuiTop  = (this.height - 140) / 2;
+
+        double dx = this.advancementX - advGuiLeft;
+        double dy = this.advancementY - advGuiTop;
+
+        double adjustedX = screenMouseX - dx;
+        double adjustedY = screenMouseY - dy;
+        return new double[] { adjustedX, adjustedY };
     }
 
     private boolean isMouseOverSearchArea(double mouseX, double mouseY, int baseX, int baseY) {
@@ -1104,6 +1202,12 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         if (!searchResults.isEmpty()) {
             renderSearchResults(guiGraphics, x, y, mouseX, mouseY);
         }
+
+        if (showAdvancement && advancementsScreen != null) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(advancementX, advancementY, 200);
+            guiGraphics.pose().popPose();
+        }
     }
 
     private void renderSearchResults(GuiGraphics guiGraphics, int baseX, int baseY, int mouseX, int mouseY) {
@@ -1142,6 +1246,14 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.fill(startX - 2, startY - 2, startX + width, startY + shown * lineHeight + 2, 0xCC000000);
 
         guiGraphics.pose().popPose();
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 
     private float[] getMouseEasedOffset(float baseX, float baseY, double mouseX, double mouseY, float radius, float maxOffset) {
@@ -1237,21 +1349,15 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     public CodexCategory getCategoryForEntry(CodexEntry entry) {
         if (entry == null || entry.id == null) return null;
-        System.out.println("Text: test1");
         if (categories == null || categories.isEmpty()) return null;
-        System.out.println("Text: test2");
 
         for (CodexCategory category : categories) {
-            System.out.println("Text: test3");
             if (category == null || category.entries == null) continue;
-            System.out.println("Text: test4");
 
             for (CodexEntry e : category.entries) {
                 if (e == null || e.id == null) continue;
-                System.out.println("Text: test5");
 
                 if (e.id.equals(entry.id)) {
-                    System.out.println("Text: test6");
                     return category;
                 }
             }

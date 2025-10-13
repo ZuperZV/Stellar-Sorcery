@@ -8,7 +8,9 @@
     "ModPlayerDataSaverMixin"
   ],
   "client": [
-    "ItemStackCodexTooltipMixin"
+    "ItemStackCodexTooltipMixin",
+    "AdvancementsScreenMixin",
+    "AdvancementTabMixin"
   ],
   "injectors": {
     "defaultRequire": 1
