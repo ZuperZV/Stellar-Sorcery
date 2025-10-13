@@ -86,6 +86,10 @@ public class CodexClientEvents {
 
                     screen.selectedEntry = entry;
                     screen.selectedPage = 0;
+                    screen.categories = CodexDataLoader.getAllCategories();
+
+                    screen.selectedCategory = screen.getCategoryForEntry(entry);
+                    screen.isInCategoryView = false;
 
                     mc.setScreen(screen);
                 }
