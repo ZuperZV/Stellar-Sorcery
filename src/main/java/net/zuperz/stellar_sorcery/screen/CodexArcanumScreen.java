@@ -42,6 +42,7 @@ import net.zuperz.stellar_sorcery.component.CodexTierData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.mixin.AdvancementTabMixin;
 import net.zuperz.stellar_sorcery.mixin.AdvancementsScreenMixin;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BackPageButton;
@@ -72,9 +73,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private final boolean playTurnSound;
     private List<CodexEntry> entryList = List.of();
     private ItemStack hoveredStack = ItemStack.EMPTY;
-    private static final ResourceLocation BOOK_TEXTURE =
+    public static final ResourceLocation BOOK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book.png");
-    private static final ResourceLocation BOOK_TEXTURE_GRAY =
+    public static final ResourceLocation BOOK_TEXTURE_GRAY =
             ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book_gray.png");
     private int scrollOffset = 0;
 
@@ -98,8 +99,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     public boolean isInCategoryView = true;
 
     private AdvancementsScreen advancementsScreen;
-    private boolean showAdvancement = true;
-    public int advancementX = -36;
+    public boolean showAdvancement = true;
+    public int advancementX = 30;
     public int advancementY = 18;
 
     private final int SEARCH_TEX_X_P = 158;
@@ -175,7 +176,18 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             advancementsScreen = new AdvancementsScreen(clientAdvancements, null);
             advancementsScreen.init(minecraft, this.width, this.height);
+
+            AdvancementTab selected = CustomAdvancementRenderer.getSelectedTab(advancementsScreen);
+            AdvancementTabMixin tabMixin = (AdvancementTabMixin) selected;
         }
+    }
+
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
     }
 
     protected void createMenuControls() {
@@ -811,20 +823,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(advancementX, advancementY, 0);
 
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
-
-            int advGuiLeft = (this.width - AdvancementsScreen.WINDOW_WIDTH) / 2;
-            int advGuiTop  = (this.height - AdvancementsScreen.WINDOW_HEIGHT) / 2;
-
-            //((AdvancementsScreenMixin) advancementsScreen).callRenderInside(
-            //        guiGraphics,
-            //        mouseX - advancementX,
-            //        mouseY - advancementY,
-            //        advGuiLeft,
-            //        advGuiTop
-            //);
-
             CustomAdvancementRenderer.renderTooltipsOnly(
                     advancementsScreen,
                     guiGraphics,
@@ -832,15 +830,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                     mouseY - advancementY,
                     (this.width - 252) / 2,
                     (this.height - 140) / 2,
-                    x,
-                    y,
                     this
             );
-
-            guiGraphics.pose().popPose();
         }
     }
-
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -974,12 +967,53 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             if (relX >= 16 && relY >= 22 && relX < 16 + 92 && relY < 22 + 138) {
                 double[] adj = mapToAdvancementCoords(mouseX, mouseY);
-                return this.advancementsScreen.mouseDragged(adj[0], adj[1], button, dragX, dragY);
+                //return this.advancementsScreen.mouseDragged(adj[0], adj[1], button, dragX, dragY);
+
+                AdvancementTab selected = CustomAdvancementRenderer.getSelectedTab(advancementsScreen);
+                AdvancementsScreenMixin screenMixin = (AdvancementsScreenMixin) advancementsScreen;
+
+                if (button != 0) {
+                    screenMixin.setIsScrolling(false);
+                    return false;
+                } else {
+                    if (!screenMixin.getIsScrolling()) {
+                        screenMixin.setIsScrolling(true);
+                    } else if (selected != null) {
+                        scroll(dragX, dragY);
+                    }
+
+                    return true;
+                }
             }
         }
 
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
+
+    public void scroll(double deltaX, double deltaY) {
+        AdvancementTab selected = CustomAdvancementRenderer.getSelectedTab(advancementsScreen);
+        AdvancementTabMixin tabMixin = (AdvancementTabMixin) selected;
+
+        int viewWidth = 52;
+        int viewHeight = 82;
+
+        if (tabMixin.getMaxX() - tabMixin.getMinX() > viewWidth) {
+            tabMixin.setScrollX(Mth.clamp(
+                    tabMixin.getScrollX() + deltaX,
+                    -(tabMixin.getMaxX() - viewWidth),
+                    0.0
+            ));
+        }
+
+        if (tabMixin.getMaxY() - tabMixin.getMinY() > viewHeight) {
+            tabMixin.setScrollY(Mth.clamp(
+                    tabMixin.getScrollY() + deltaY,
+                    -(tabMixin.getMaxY() - viewHeight),
+                    0.0
+            ));
+        }
+    }
+
 
     private double[] mapToAdvancementCoords(double screenMouseX, double screenMouseY) {
         int advGuiLeft = (this.width - 252) / 2;
@@ -1208,6 +1242,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.pose().translate(advancementX, advancementY, 200);
             guiGraphics.pose().popPose();
         }
+
+
     }
 
     private void renderSearchResults(GuiGraphics guiGraphics, int baseX, int baseY, int mouseX, int mouseY) {

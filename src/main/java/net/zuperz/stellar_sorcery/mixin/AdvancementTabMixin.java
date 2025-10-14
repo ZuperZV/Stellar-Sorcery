@@ -4,7 +4,10 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import java.util.Map;
 
@@ -49,6 +52,22 @@ public interface AdvancementTabMixin {
 
     @Accessor("maxY")
     int getMaxY();
+
+    @Mutable
+    @Accessor("minX")
+    void setMinX(int value);
+
+    @Mutable
+    @Accessor("maxX")
+    void setMaxX(int value);
+
+    @Mutable
+    @Accessor("minY")
+    void setMinY(int value);
+
+    @Mutable
+    @Accessor("maxY")
+    void setMaxY(int value);
 
     @Accessor("display")
     DisplayInfo getDisplay();
