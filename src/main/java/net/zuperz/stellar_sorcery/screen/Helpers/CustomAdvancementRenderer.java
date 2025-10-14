@@ -95,7 +95,7 @@ public class CustomAdvancementRenderer {
 
         p_282892_.pose().pushPose();
 
-        p_282892_.pose().translate(29.0F, 18.0F, -200.0F);
+        p_282892_.pose().translate(30.0F, 18.0F, -200.0F);
 
         AdvancementTabMixin mixin = (AdvancementTabMixin) selected;
 

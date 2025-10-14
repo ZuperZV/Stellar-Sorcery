@@ -59,6 +59,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -173,12 +174,39 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         if (showAdvancement) {
             ClientAdvancements clientAdvancements = Minecraft.getInstance().player.connection.getAdvancements();
-
             advancementsScreen = new AdvancementsScreen(clientAdvancements, null);
             advancementsScreen.init(minecraft, this.width, this.height);
 
-            AdvancementTab selected = CustomAdvancementRenderer.getSelectedTab(advancementsScreen);
-            AdvancementTabMixin tabMixin = (AdvancementTabMixin) selected;
+            ResourceLocation netherRootId = ResourceLocation.parse("minecraft:nether/root");
+            var netherNode = clientAdvancements.getTree().get(netherRootId);
+
+            if (netherNode != null) {
+                try {
+                    var tabsField = AdvancementsScreen.class.getDeclaredField("tabs");
+                    var selectedField = AdvancementsScreen.class.getDeclaredField("selectedTab");
+                    tabsField.setAccessible(true);
+                    selectedField.setAccessible(true);
+
+                    @SuppressWarnings("unchecked")
+                    Map<AdvancementHolder, AdvancementTab> tabs =
+                            (Map<net.minecraft.advancements.AdvancementHolder, AdvancementTab>) tabsField.get(advancementsScreen);
+
+                    AdvancementTab createdTab = tabs.get(netherNode.holder());
+                    if (createdTab == null) {
+                        createdTab = AdvancementTab.create(Minecraft.getInstance(), advancementsScreen, tabs.size(), netherNode);
+                        tabs.put(netherNode.holder(), createdTab);
+                    }
+
+                    selectedField.set(advancementsScreen, createdTab);
+
+                    clientAdvancements.setSelectedTab(netherNode.holder(), true);
+
+                } catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("netherRootId = null");
+            }
         }
     }
 
@@ -232,10 +260,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
             return;
         }
-
-        // Hvis vi allerede er helt tilbage i oversigten (intet selectedCategory, intet selectedEntry)
-        // så kan du vælge at lukke bogen eller blot ikke gøre noget.
-        // Her gør vi bare ingenting.
     }
 
     protected void pageWardBack() {
