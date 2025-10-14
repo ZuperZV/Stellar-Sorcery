@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_light_infuser",
+  "criteria": {
+    "get_noctilume_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:noctilume_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.noctilume_bucket.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:noctilume_bucket"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.noctilume_bucket.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_noctilume_bucket"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

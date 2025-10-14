@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:codex_arcanum"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_clay_jar",
+  "criteria": {
+    "get_fire_clay_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:fire_clay_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.fire_clay_jar.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:fire_clay_jar"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.fire_clay_jar.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_fire_clay_jar"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

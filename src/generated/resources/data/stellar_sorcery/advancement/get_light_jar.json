@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_light_infuser",
+  "criteria": {
+    "get_light_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:light_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.light_jar.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:light_jar"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.light_jar.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_light_jar"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

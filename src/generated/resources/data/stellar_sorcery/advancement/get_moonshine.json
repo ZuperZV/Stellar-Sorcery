@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_moonshine_catalyst",
+  "criteria": {
+    "get_moonshine": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:moonshine_catalyst"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.moonshine.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:budding_moonshine"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.moonshine.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_moonshine"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

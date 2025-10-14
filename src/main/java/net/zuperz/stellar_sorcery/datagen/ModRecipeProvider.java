@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -121,7 +122,22 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_red_campion", has(ModBlocks.RED_CAMPION.asItem()))
                 .save(pWriter);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ESSENCE_BOILER)
+                .pattern("A A")
+                .pattern("AAA")
+                .pattern("ABA")
+                .define('A', Items.IRON_INGOT)
+                .define('B', Blocks.CAMPFIRE)
+                .unlockedBy("has_campfire", has(Blocks.CAMPFIRE))
+                .save(pWriter);
+
         // Crafting Shapeless
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.ESSENCE_BOILER.get())
+                .requires(Blocks.CAMPFIRE)
+                .requires(Blocks.CAULDRON)
+                .unlockedBy("has_campfire", has(Blocks.CAMPFIRE))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "cauldron_essence_boiler"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.STUMP)
                 .requires(ItemTags.LOGS)

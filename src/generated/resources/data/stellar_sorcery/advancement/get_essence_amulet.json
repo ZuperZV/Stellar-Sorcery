@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_essence_boiler",
+  "criteria": {
+    "get_essence_amulet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:essence_amulet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.essence_amulet.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:essence_amulet"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.essence_amulet.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_essence_amulet"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_flower",
+  "criteria": {
+    "get_codex_arcanum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:codex_arcanum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.codex_arcanum.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:codex_arcanum"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.codex_arcanum.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_codex_arcanum"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

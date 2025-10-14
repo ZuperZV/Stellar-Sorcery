@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_vital_stump",
+  "criteria": {
+    "get_fritillaria_meleagris_seeds": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:fritillaria_meleagris_seeds"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.fritillaria_meleagris_seeds.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:fritillaria_meleagris_seeds"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.fritillaria_meleagris_seeds.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_fritillaria_meleagris_seeds"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

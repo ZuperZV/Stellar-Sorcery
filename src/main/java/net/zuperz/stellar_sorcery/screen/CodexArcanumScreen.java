@@ -177,7 +177,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             advancementsScreen = new AdvancementsScreen(clientAdvancements, null);
             advancementsScreen.init(minecraft, this.width, this.height);
 
-            ResourceLocation netherRootId = ResourceLocation.parse("minecraft:nether/root");
+            ResourceLocation netherRootId = ResourceLocation.parse("stellar_sorcery:get_flower");
             var netherNode = clientAdvancements.getTree().get(netherRootId);
 
             if (netherNode != null) {

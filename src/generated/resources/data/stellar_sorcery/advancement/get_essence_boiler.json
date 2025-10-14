@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_flower",
+  "criteria": {
+    "get_essence_boiler": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:essence_boiler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.essence_boiler.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:essence_boiler"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.essence_boiler.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_essence_boiler"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

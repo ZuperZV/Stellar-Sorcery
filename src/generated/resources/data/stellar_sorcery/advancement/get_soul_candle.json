@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_light_jar",
+  "criteria": {
+    "get_soul_candle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:soul_candle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.soul_candle.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:soul_candle"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.soul_candle.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_soul_candle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

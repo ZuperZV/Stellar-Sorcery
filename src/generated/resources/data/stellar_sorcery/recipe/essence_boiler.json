@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:campfire"
+    }
+  },
+  "pattern": [
+    "A A",
+    "AAA",
+    "ABA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:essence_boiler"
+  }
+}

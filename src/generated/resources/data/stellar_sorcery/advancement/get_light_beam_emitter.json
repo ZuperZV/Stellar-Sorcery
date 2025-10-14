@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_light_infuser",
+  "criteria": {
+    "get_light_beam_emitter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:light_beam_emitter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.light_beam_emitter.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:light_beam_emitter"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.light_beam_emitter.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_light_beam_emitter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

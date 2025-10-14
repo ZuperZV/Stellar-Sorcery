@@ -1,0 +1,33 @@
+{
+  "criteria": {
+    "get_flower": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#stellar_sorcery:stellar_sorcery_flower_items"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "stellar_sorcery:textures/block/slate.png",
+    "description": {
+      "translate": "advancements.story.mine_stone.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:calendula"
+    },
+    "title": {
+      "translate": "advancements.story.mine_stone.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_flower"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

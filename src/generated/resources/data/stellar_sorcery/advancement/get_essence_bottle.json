@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_essence_boiler",
+  "criteria": {
+    "get_essence_bottle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:essence_bottle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.essence_bottle.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:essence_bottle"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.essence_bottle.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_essence_bottle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

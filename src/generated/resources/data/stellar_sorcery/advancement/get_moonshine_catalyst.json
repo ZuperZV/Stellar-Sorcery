@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_vital_stump",
+  "criteria": {
+    "get_moonshine_catalyst": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:moonshine_catalyst"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.moonshine_catalyst.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:moonshine_catalyst"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.moonshine_catalyst.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_moonshine_catalyst"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_flower",
+  "criteria": {
+    "get_vital_stump": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:vital_stump"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.vital_stump.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:vital_stump"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.vital_stump.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_vital_stump"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
