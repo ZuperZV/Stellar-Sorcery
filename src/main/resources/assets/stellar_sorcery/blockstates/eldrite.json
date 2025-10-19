@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "fylde=full":  { "model": "stellar_sorcery:block/eldrite_full" },
+    "fylde=half":  { "model": "stellar_sorcery:block/eldrite_half" },
+    "fylde=empty": { "model": "stellar_sorcery:block/eldrite_empty" }
+  }
+}

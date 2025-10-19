@@ -26,6 +26,8 @@ public class ModItemBlockRenderTypes {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LIGHT_JAR.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LIGHT_INFUSER.get(), RenderType.cutout());
 
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ELDRITE.get(), RenderType.cutout());
+
             ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_NOCTILUME.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_NOCTILUME.get(), RenderType.translucent());
         });

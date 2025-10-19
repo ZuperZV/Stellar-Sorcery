@@ -1,0 +1,14 @@
+{
+  "parent": "stellar_sorcery:block/layer_block",
+
+  "textures": {
+    "layer0_down": "stellar_sorcery:block/slate",
+    "layer0_up": "stellar_sorcery:block/slate",
+    "layer0_north": "stellar_sorcery:block/slate",
+    "layer0_south": "stellar_sorcery:block/slate",
+    "layer0_west": "stellar_sorcery:block/slate",
+    "layer0_east": "stellar_sorcery:block/slate",
+
+    "particle": "stellar_sorcery:block/slate"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "stellar_sorcery:block/layer_block",
+
+  "textures": {
+    "layer0_down": "stellar_sorcery:block/slate",
+    "layer0_up": "stellar_sorcery:block/slate",
+    "layer0_north": "stellar_sorcery:block/slate",
+    "layer0_south": "stellar_sorcery:block/slate",
+    "layer0_west": "stellar_sorcery:block/slate",
+    "layer0_east": "stellar_sorcery:block/slate",
+
+    "layer1_down": "stellar_sorcery:block/white_chalk_a",
+    "layer1_up": "stellar_sorcery:block/white_chalk_a",
+    "layer1_north": "stellar_sorcery:block/white_chalk_a",
+    "layer1_south": "stellar_sorcery:block/white_chalk_a",
+    "layer1_west": "stellar_sorcery:block/white_chalk_a",
+    "layer1_east": "stellar_sorcery:block/white_chalk_a",
+
+    "particle": "stellar_sorcery:block/slate"
+  }
+}

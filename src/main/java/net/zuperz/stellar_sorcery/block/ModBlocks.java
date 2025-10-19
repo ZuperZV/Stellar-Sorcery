@@ -148,6 +148,15 @@ public class ModBlocks {
             () -> new LightBeamEmitterBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+
+    public static final DeferredBlock<Block> ELDRITE = registerBlock("eldrite",
+            () -> new EldriteBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
+                    .sound(SoundType.TUFF).noOcclusion()));
+
+    public static final DeferredBlock<Block> MOON_SHARD_ELDRITE = registerBlock("moon_shard_eldrite",
+            () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF).noOcclusion()));
+
     private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
         return true;
     }
