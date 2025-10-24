@@ -2,19 +2,26 @@
   "parent": "stellar_sorcery:block/layer_block",
 
   "textures": {
-    "layer0_down": "stellar_sorcery:block/slate",
-    "layer0_up": "stellar_sorcery:block/slate",
-    "layer0_north": "stellar_sorcery:block/slate",
-    "layer0_south": "stellar_sorcery:block/slate",
-    "layer0_west": "stellar_sorcery:block/slate",
-    "layer0_east": "stellar_sorcery:block/slate",
+    "layer0_down": "stellar_sorcery:block/eldrite",
+    "layer0_up": "stellar_sorcery:block/eldrite",
+    "layer0_north": "stellar_sorcery:block/eldrite",
+    "layer0_south": "stellar_sorcery:block/eldrite",
+    "layer0_west": "stellar_sorcery:block/eldrite",
+    "layer0_east": "stellar_sorcery:block/eldrite",
 
-    "layer1_down": "stellar_sorcery:block/white_chalk_a",
-    "layer1_up": "stellar_sorcery:block/white_chalk_a",
-    "layer1_north": "stellar_sorcery:block/white_chalk_a",
-    "layer1_south": "stellar_sorcery:block/white_chalk_a",
-    "layer1_west": "stellar_sorcery:block/white_chalk_a",
-    "layer1_east": "stellar_sorcery:block/white_chalk_a",
+    "layer1_down": "stellar_sorcery:block/moon_shard_layer_1",
+    "layer1_up": "stellar_sorcery:block/moon_shard_layer_1",
+    "layer1_north": "stellar_sorcery:block/moon_shard_layer_1",
+    "layer1_south": "stellar_sorcery:block/moon_shard_layer_1",
+    "layer1_west": "stellar_sorcery:block/moon_shard_layer_1",
+    "layer1_east": "stellar_sorcery:block/moon_shard_layer_1",
+
+    "layer2_down": "stellar_sorcery:block/eldrite_empty",
+    "layer2_up": "stellar_sorcery:block/eldrite_empty",
+    "layer2_north": "stellar_sorcery:block/eldrite_empty",
+    "layer2_south": "stellar_sorcery:block/eldrite_empty",
+    "layer2_west": "stellar_sorcery:block/eldrite_empty",
+    "layer2_east": "stellar_sorcery:block/eldrite_empty",
 
     "particle": "stellar_sorcery:block/slate"
   }

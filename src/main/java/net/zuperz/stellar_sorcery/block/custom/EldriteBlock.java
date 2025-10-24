@@ -15,6 +15,7 @@ public class EldriteBlock extends Block {
 
     public EldriteBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FYLDE, FyldeTilstand.EMPTY));
     }
 
     @Override
@@ -22,15 +23,66 @@ public class EldriteBlock extends Block {
         builder.add(FYLDE);
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState()
-                .setValue(FYLDE, FyldeTilstand.EMPTY);
+        return this.defaultBlockState().setValue(FYLDE, FyldeTilstand.EMPTY);
     }
 
     @Override
-    protected void randomTick(BlockState p_222954_, ServerLevel p_222955_, BlockPos p_222956_, RandomSource p_222957_) {
-        super.randomTick(p_222954_, p_222955_, p_222956_, p_222957_);
+    protected void randomTick(BlockState blockState, ServerLevel level, BlockPos pos, RandomSource random) {
+        System.out.println("Tick test for " + pos);
+
+        if (hasValidBlockAbove(level, pos)) {
+            if (random.nextFloat() < 0.68688889F) {
+                addFylde(level, pos, blockState);
+            }
+        } else {
+            System.out.println("Ingen fyldt Eldrite over " + pos);
+        }
+    }
+
+    @Override
+    protected boolean isRandomlyTicking(BlockState blockState) {
+        return blockState.getValue(FYLDE) != FyldeTilstand.FULL;
+    }
+
+    private boolean hasValidBlockAbove(ServerLevel level, BlockPos pos) {
+        BlockPos above1 = pos.above(1);
+        BlockPos above2 = pos.above(2);
+
+        BlockState state1 = level.getBlockState(above1);
+        if (state1.getBlock() instanceof EldriteBlock eld1) {
+            FyldeTilstand fylde1 = state1.getValue(FYLDE);
+            if (fylde1 == FyldeTilstand.HALF || fylde1 == FyldeTilstand.FULL) {
+                return true;
+            }
+        }
+
+        BlockState state2 = level.getBlockState(above2);
+        if (state2.getBlock() instanceof EldriteBlock eld2) {
+            FyldeTilstand fylde2 = state2.getValue(FYLDE);
+            if (fylde2 == FyldeTilstand.FULL) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addFylde(ServerLevel level, BlockPos pos, BlockState blockState) {
+        FyldeTilstand current = blockState.getValue(FYLDE);
+        FyldeTilstand newFylde = current;
+
+        if (current == FyldeTilstand.EMPTY) {
+            newFylde = FyldeTilstand.HALF;
+        } else if (current == FyldeTilstand.HALF) {
+            newFylde = FyldeTilstand.FULL;
+        }
+
+        if (newFylde != current) {
+            BlockState newState = blockState.setValue(FYLDE, newFylde);
+            level.setBlock(pos, newState, 3);
+            System.out.println("EldriteBlock ved " + pos + " blev opgraderet til " + newFylde);
+        }
     }
 }
