@@ -122,6 +122,10 @@ public class ModItems {
     public static final DeferredItem<Item> WRAITH_STRING = ITEMS.register("wraith_string",
             () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> TEST_MAGIC = ITEMS.register("test_magic",
+            () -> new TestMagicItem(new Item.Properties()));
+
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

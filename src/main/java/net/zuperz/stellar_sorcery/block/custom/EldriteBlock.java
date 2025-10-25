@@ -12,38 +12,43 @@ import net.zuperz.stellar_sorcery.util.FyldeTilstand;
 
 public class EldriteBlock extends Block {
     public static final EnumProperty<FyldeTilstand> FYLDE = EnumProperty.create("fylde", FyldeTilstand.class);
+    public static final EnumProperty<FyldeTilstand> BEDROCK_FYLDE = EnumProperty.create("bedrock_fylde", FyldeTilstand.class);
 
     public EldriteBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FYLDE, FyldeTilstand.EMPTY));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FYLDE, FyldeTilstand.EMPTY).setValue(BEDROCK_FYLDE, FyldeTilstand.EMPTY));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FYLDE);
+        builder.add(FYLDE, BEDROCK_FYLDE);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(FYLDE, FyldeTilstand.EMPTY);
+        return this.defaultBlockState().setValue(FYLDE, FyldeTilstand.EMPTY).setValue(BEDROCK_FYLDE, FyldeTilstand.EMPTY);
     }
 
     @Override
     protected void randomTick(BlockState blockState, ServerLevel level, BlockPos pos, RandomSource random) {
         System.out.println("Tick test for " + pos);
 
-        if (hasValidBlockAbove(level, pos)) {
-            if (random.nextFloat() < 0.68688889F) {
-                addFylde(level, pos, blockState);
-            }
+        boolean validAbove = hasValidBlockAbove(level, pos);
+        boolean validBelow = hasValidBlockBelow(level, pos);
+
+        if (validAbove && random.nextFloat() < 0.68688889F) {
+            addFylde(level, pos, blockState);
+        } else if (validBelow && random.nextFloat() < 0.68688889F) {
+            addBedrockFylde(level, pos, blockState);
         } else {
-            System.out.println("Ingen fyldt Eldrite over " + pos);
+            System.out.println("Ingen fyldt Eldrite over eller under " + pos);
         }
     }
 
     @Override
     protected boolean isRandomlyTicking(BlockState blockState) {
-        return blockState.getValue(FYLDE) != FyldeTilstand.FULL;
+        return blockState.getValue(FYLDE) != FyldeTilstand.FULL
+                || blockState.getValue(BEDROCK_FYLDE) != FyldeTilstand.FULL;
     }
 
     private boolean hasValidBlockAbove(ServerLevel level, BlockPos pos) {
@@ -69,6 +74,24 @@ public class EldriteBlock extends Block {
         return false;
     }
 
+    private boolean hasValidBlockBelow(ServerLevel level, BlockPos pos) {
+        BlockPos below = pos.below();
+        BlockState belowState = level.getBlockState(below);
+
+        if (belowState.is(net.minecraft.world.level.block.Blocks.BEDROCK)) {
+            return true;
+        }
+
+        if (belowState.getBlock() instanceof EldriteBlock) {
+            FyldeTilstand fylde = belowState.getValue(BEDROCK_FYLDE);
+            if (fylde == FyldeTilstand.HALF || fylde == FyldeTilstand.FULL) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void addFylde(ServerLevel level, BlockPos pos, BlockState blockState) {
         FyldeTilstand current = blockState.getValue(FYLDE);
         FyldeTilstand newFylde = current;
@@ -84,5 +107,22 @@ public class EldriteBlock extends Block {
             level.setBlock(pos, newState, 3);
             System.out.println("EldriteBlock ved " + pos + " blev opgraderet til " + newFylde);
         }
+    }
+
+    public void addBedrockFylde(ServerLevel level, BlockPos pos, BlockState blockState) {
+        FyldeTilstand current = blockState.getValue(BEDROCK_FYLDE);
+        FyldeTilstand newFylde = nextFylde(current);
+
+        if (newFylde != current) {
+            BlockState newState = blockState.setValue(BEDROCK_FYLDE, newFylde);
+            level.setBlock(pos, newState, 3);
+            System.out.println("EldriteBlock ved " + pos + " blev opgraderet til BEDROCK_FYLDE = " + newFylde);
+        }
+    }
+
+    private FyldeTilstand nextFylde(FyldeTilstand current) {
+        if (current == FyldeTilstand.EMPTY) return FyldeTilstand.HALF;
+        if (current == FyldeTilstand.HALF) return FyldeTilstand.FULL;
+        return current;
     }
 }
