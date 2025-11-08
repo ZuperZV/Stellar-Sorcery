@@ -148,6 +148,10 @@ public class ModBlocks {
             () -> new LightBeamEmitterBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+    public static final DeferredBlock<Block> AUGMENT_FORGE = registerBlock("augment_forge",
+            () -> new AugmentForgeBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
+                    .sound(SoundType.TUFF_BRICKS).noOcclusion()));
+
 
     public static final DeferredBlock<Block> ELDRITE = registerBlock("eldrite",
             () -> new EldriteBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)

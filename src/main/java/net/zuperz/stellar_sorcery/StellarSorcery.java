@@ -129,6 +129,8 @@ public class StellarSorcery
 
             event.registerBlockEntityRenderer(ModBlockEntities.ALTER_BE.get(), SoulCandleBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.ARCFORGE_BE.get(), ArcForgeBlockEntityRenderer::new);
+
+            event.registerBlockEntityRenderer(ModBlockEntities.AUGMENT_FORGE_BE.get(), AugmentForgeBlockEntityRenderer::new);
         }
 
         @SubscribeEvent

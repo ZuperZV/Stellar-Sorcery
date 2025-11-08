@@ -11,7 +11,7 @@ import net.zuperz.stellar_sorcery.spell.ISpell;
 
 public class TestMagicItem extends Item {
 
-    private final ISpell spell = new FireboltSpell(); // midlertidigt hardcoded spell
+    private final ISpell spell = new FireboltSpell();
 
     public TestMagicItem(Properties properties) {
         super(properties);

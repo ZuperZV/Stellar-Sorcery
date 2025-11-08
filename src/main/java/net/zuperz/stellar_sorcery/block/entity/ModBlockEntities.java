@@ -66,6 +66,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("lunar_light_beam_emitter_be", () -> BlockEntityType.Builder.of(
                     LightBeamEmitterBlockEntity::new, ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get()).build(null));
 
+    public static final Supplier<BlockEntityType<AugmentForgeBlockEntity>> AUGMENT_FORGE_BE =
+            BLOCK_ENTITIES.register("augment_forge_be", () -> BlockEntityType.Builder.of(
+                    AugmentForgeBlockEntity::new, ModBlocks.AUGMENT_FORGE.get()).build(null));
+
 
 
     public static void register(IEventBus eventBus) {
