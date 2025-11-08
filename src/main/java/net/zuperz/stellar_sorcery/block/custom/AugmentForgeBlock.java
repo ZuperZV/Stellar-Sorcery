@@ -1,11 +1,14 @@
 package net.zuperz.stellar_sorcery.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,18 +16,28 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.zuperz.stellar_sorcery.block.entity.custom.AugmentForgeBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AugmentForgeBlockEntity;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.component.SigilData;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class AugmentForgeBlock extends BaseEntityBlock {
 
@@ -97,50 +110,135 @@ public static final MapCodec<AstralNexusBlock> CODEC = simpleCodec(AstralNexusBl
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if (pLevel.getBlockEntity(pPos) instanceof AugmentForgeBlockEntity nexus) {
+        if (!pLevel.isClientSide) {
+            if (isLookingAtFilterPlane(pPos, pPlayer) &&
+                    pLevel.getBlockEntity(pPos) instanceof AugmentForgeBlockEntity forgeBE) {
 
-            if (nexus.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
-                nexus.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
-                pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
-                return ItemInteractionResult.SUCCESS;
-            }
+                ItemStack stack = forgeBE.getInputItems().getStackInSlot(0);
 
-            else if (pStack.isEmpty() || !pStack.isEmpty() && !nexus.inventory.getStackInSlot(0).isEmpty()) {
-                ItemStack extracted = nexus.inventory.extractItem(0, 1, true);
+                if (!stack.isEmpty()) {
+                    SigilData data = stack.get(ModDataComponentTypes.SIGIL.get());
+                    if (data == null) {
+                        data = new SigilData(new ArrayList<>(), 1);
+                        stack.set(ModDataComponentTypes.SIGIL.get(), data);
+                    }
 
-                if (!extracted.isEmpty()) {
-                    boolean addedToInventory = false;
+                    if (!data.getSigils().isEmpty()) {
+                        pPlayer.displayClientMessage(Component.literal("TEST - Har allerede sigils!"), true);
 
-                    for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
-                        ItemStack playerStack = pPlayer.getInventory().items.get(i);
+                        boolean addedToInventory = false;
 
-                        if (!playerStack.isEmpty()
-                                && ItemStack.isSameItem(playerStack, extracted)
-                                && playerStack.getCount() < playerStack.getMaxStackSize()) {
+                        for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
+                            ItemStack playerStack = pPlayer.getInventory().items.get(i);
 
-                            playerStack.grow(1);
-                            addedToInventory = true;
-                            break;
+                            if (!playerStack.isEmpty()
+                                    && ItemStack.isSameItem(playerStack, data.getSigils().get(0))
+                                    && playerStack.getCount() < playerStack.getMaxStackSize()) {
+
+                                playerStack.grow(1);
+                                addedToInventory = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (!addedToInventory && pStack.isEmpty()) {
-                        pPlayer.setItemInHand(InteractionHand.MAIN_HAND, extracted);
-                        addedToInventory = true;
-                    }
+                        if (!addedToInventory && pStack.isEmpty()) {
+                            pPlayer.setItemInHand(InteractionHand.MAIN_HAND, data.getSigils().get(0));
+                            addedToInventory = true;
+                        }
 
-                    if (addedToInventory) {
-                        nexus.clearContents();
-                        nexus.inventory.extractItem(0, 1, false);
-                        pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                        if (addedToInventory) {
+                            data.removeSigil(0);
+                            pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                        }
+
+                        forgeBE.setChanged();
+
+                        pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
+
+                        return ItemInteractionResult.SUCCESS;
+                    } else {
+                        pPlayer.displayClientMessage(Component.literal("Ingen sigils - tilføjer nyt!"), true);
+
+                        ItemStack newSigil = new ItemStack(pStack.getItem());
+
+                        pStack.shrink(1);
+
+                        data.addSigil(newSigil);
+
+                        stack.set(ModDataComponentTypes.SIGIL.get(), data);
+
+                        forgeBE.getInputItems().setStackInSlot(0, stack);
+
+                        forgeBE.setChanged();
+
+                        pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
+
+                        pPlayer.displayClientMessage(Component.literal("Tilføjede sigil: " +
+                                newSigil.getHoverName().getString()), true);
+
+                        return ItemInteractionResult.SUCCESS;
                     }
+                }
+            } else if (pLevel.getBlockEntity(pPos) instanceof AugmentForgeBlockEntity nexus) {
+
+                if (nexus.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
+                    nexus.inventory.insertItem(0, pStack.copy(), false);
+                    pStack.shrink(1);
+                    pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
                     return ItemInteractionResult.SUCCESS;
+                }
+
+                else if (pStack.isEmpty() || !pStack.isEmpty() && !nexus.inventory.getStackInSlot(0).isEmpty()) {
+                    ItemStack extracted = nexus.inventory.extractItem(0, 1, true);
+
+                    if (!extracted.isEmpty()) {
+                        boolean addedToInventory = false;
+
+                        for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
+                            ItemStack playerStack = pPlayer.getInventory().items.get(i);
+
+                            if (!playerStack.isEmpty()
+                                    && ItemStack.isSameItem(playerStack, extracted)
+                                    && playerStack.getCount() < playerStack.getMaxStackSize()) {
+
+                                playerStack.grow(1);
+                                addedToInventory = true;
+                                break;
+                            }
+                        }
+
+                        if (!addedToInventory && pStack.isEmpty()) {
+                            pPlayer.setItemInHand(InteractionHand.MAIN_HAND, extracted);
+                            addedToInventory = true;
+                        }
+
+                        if (addedToInventory) {
+                            nexus.clearContents();
+                            nexus.inventory.extractItem(0, 1, false);
+                            pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                        }
+                        return ItemInteractionResult.SUCCESS;
+                    }
                 }
             }
         }
 
         return ItemInteractionResult.SUCCESS;
+    }
+
+    private boolean isLookingAtFilterPlane(BlockPos pos, Player player) {
+        Vec3 start = player.getEyePosition(1.0f);
+        Vec3 lookVec = player.getLookAngle();
+        Vec3 end = start.add(lookVec.scale(5.0));
+
+        AABB filterArea = new AABB(
+                pos.getX() + 0.3, pos.getY() + 0.3, pos.getZ() + 0.3,
+                pos.getX() + 0.7, pos.getY() + 0.35, pos.getZ() + 0.7
+        );
+
+        Vec3 hitResult = filterArea.clip(start, end).orElse(null);
+
+        return hitResult != null;
     }
 
     @Override

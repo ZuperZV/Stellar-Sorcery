@@ -37,6 +37,9 @@ public class ModDataComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ActiveData>> ACTIVE = register("active",
             builder -> builder.persistent(ActiveData.CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SigilData>> SIGIL = register("sigil",
+            builder -> builder.persistent(SigilData.CODEC));
+
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());

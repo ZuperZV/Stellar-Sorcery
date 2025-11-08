@@ -1,33 +1,56 @@
 package net.zuperz.stellar_sorcery.block.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock;
 import net.zuperz.stellar_sorcery.block.entity.custom.AugmentForgeBlockEntity;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.component.SigilData;
 
 public class AugmentForgeBlockEntityRenderer implements BlockEntityRenderer<AugmentForgeBlockEntity> {
+    public AugmentForgeBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.filterPlane = context.bakeLayer(FILTER_LAYER).getChild("plane");
+    }
 
-    public AugmentForgeBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+    public static final ModelLayerLocation FILTER_LAYER =
+            new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "filter"), "main");
+
+    private final ModelPart filterPlane;
+
+    private Item lastRenderedItem = Items.AIR;
+    private int fadeTicks = 0;
+
 
     private Vec3 currentOffset = Vec3.ZERO;
     private Vec3 targetOffset = Vec3.ZERO;
@@ -46,6 +69,20 @@ public class AugmentForgeBlockEntityRenderer implements BlockEntityRenderer<Augm
         Vec3 min = new Vec3(pos.getX() - 3, pos.getY() - 3, pos.getZ() - 3);
         Vec3 max = new Vec3(pos.getX() + 4, pos.getY() + 4, pos.getZ() + 4);
         return new AABB(min, max);
+    }
+
+    public static LayerDefinition createFilterLayer() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+
+        root.addOrReplaceChild("plane",
+                CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-2.0F, 0.0F, -2.0F, 4.0F, -0.0001F, 4.0F),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
+        );
+
+        return LayerDefinition.create(mesh, 4, 4);
     }
 
     @Override
@@ -98,6 +135,72 @@ public class AugmentForgeBlockEntityRenderer implements BlockEntityRenderer<Augm
 
         RenderItem(blockEntity, partialTick, poseStack, bufferSource, level,
                 currentBaseY + (float) bob, baseScale, player);
+
+
+
+        ItemStack input = blockEntity.getItem(0);
+        Item currentItem = blockEntity.getItem(0).getItem();
+
+        if (currentItem != lastRenderedItem) {
+            fadeTicks = 0;
+            lastRenderedItem = currentItem;
+        } else if (!input.isEmpty()) {
+            fadeTicks++;
+        }
+
+        float fadeAlpha = Mth.clamp((fadeTicks + partialTick) / 240.0f, 0.0f, 1.0f);
+
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/filter.png");
+
+        if (texture != null && fadeAlpha > 0.01f) {
+
+            poseStack.pushPose();
+
+            RenderType renderType = RenderType.entityTranslucent(texture);
+            VertexConsumer buffer = bufferSource.getBuffer(renderType);
+
+            int light = getLightLevel(level, blockEntity.getBlockPos().above());
+
+            poseStack.translate(0.5, 0.65, 0.5);
+
+            if (player != null) {
+                Vec3 playerPos = player.position();
+                Vec3 blockCenter = Vec3.atCenterOf(blockEntity.getBlockPos());
+                Vec3 dir = playerPos.subtract(blockCenter).normalize();
+
+                Direction facing = Direction.getNearest(dir.x, 0, dir.z);
+                float playerDirection = switch (facing) {
+                    case SOUTH -> 0f;
+                    case WEST -> 270f;
+                    case NORTH -> 180f;
+                    case EAST -> 90f;
+                    default -> 0f;
+                };
+
+                poseStack.mulPose(Axis.YP.rotationDegrees((playerDirection)));
+            }
+
+            poseStack.translate(0, 0, 0.47);
+            poseStack.mulPose(Axis.XN.rotationDegrees((90f)));
+
+            filterPlane.render(poseStack, buffer, light, OverlayTexture.NO_OVERLAY);
+
+            poseStack.translate(0, 0.015, -0.04);
+            poseStack.scale(baseScale + 0.3f, baseScale + 0.3f, baseScale + 0.3f);
+
+            poseStack.mulPose(Axis.XN.rotationDegrees((-90f)));
+
+            if (!input.isEmpty()) {
+                SigilData data = input.get(ModDataComponentTypes.SIGIL.get());
+
+                if (data != null && !data.getSigils().isEmpty()) {
+                    Minecraft.getInstance().getItemRenderer().renderStatic(data.getSigils().getFirst(), ItemDisplayContext.GROUND, light,
+                            OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, 0);
+                }
+            }
+
+            poseStack.popPose();
+        }
     }
 
     private void RenderItem(AugmentForgeBlockEntity blockEntity, float partialTick, PoseStack poseStack,

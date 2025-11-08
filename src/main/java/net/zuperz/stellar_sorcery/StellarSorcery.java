@@ -158,6 +158,11 @@ public class StellarSorcery
                     AstralAltarBlockEntityRenderer.MAGIC_AURA_LAYER,
                     AstralAltarBlockEntityRenderer::createMagicAuraLayer
             );
+
+            event.registerLayerDefinition(
+                    AugmentForgeBlockEntityRenderer.FILTER_LAYER,
+                    AugmentForgeBlockEntityRenderer::createFilterLayer
+            );
         }
 
         @SubscribeEvent
