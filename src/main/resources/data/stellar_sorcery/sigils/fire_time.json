@@ -6,7 +6,16 @@
     { "id": "minecraft:strength", "duration": 300, "amplifier": 1 }
   ],
   "shader": {
-    "id": "stellar_sorcery:shaders/post/dark.json",
+    "id": "stellar_sorcery:shaders/post/fire.json",
     "duration": 250
-  }
+  },
+  "color": "#e42525",
+  "armor": "chestplate",
+  "commands": [
+    {
+      "command": "/execute as %player% run data merge entity @s {Fire:200}",
+      "target": "PLAYER_CLOSEST",
+      "trigger": "EACH_TICK"
+    }
+  ]
 }

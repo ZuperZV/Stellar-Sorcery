@@ -1,7 +1,9 @@
 package net.zuperz.stellar_sorcery.event;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -26,6 +28,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
 import net.zuperz.stellar_sorcery.data.IModPlayerData;
@@ -116,7 +119,75 @@ public class ModEvents {
                             sigil.shader().durationTicks
                     );
                 }
+
+                for (SoulCandleCommand cmd : sigil.commands()) {
+                    switch (cmd.getTrigger()) {
+                        case EACH_TICK -> runSigilCommand(player, cmd);
+                        default -> {}
+                    }
+                }
             }
         });
+    }
+
+    private static void runSigilCommand(Player player, SoulCandleCommand cmd) {
+        MinecraftServer server = player.getServer();
+        if (server == null) return;
+
+        String baseCommand = cmd.getCommand()
+                .replace("%player%", player.getName().getString())
+                .replace("%x%", String.valueOf(player.getX()))
+                .replace("%y%", String.valueOf(player.getY()))
+                .replace("%z%", String.valueOf(player.getZ()));
+
+        switch (cmd.getTarget()) {
+            case SOUL_CANDLE -> {
+                server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), baseCommand);
+            }
+
+            case PLAYER_CLOSEST -> {
+                Player target = player.level().getNearestPlayer(player, 5);
+                if (target != null) {
+                    String replaced = baseCommand
+                            .replace("%player%", target.getName().getString())
+                            .replace("%x%", String.valueOf(target.getX()))
+                            .replace("%y%", String.valueOf(target.getY()))
+                            .replace("%z%", String.valueOf(target.getZ()));
+
+                    boolean isExecuteCommand = replaced.trim().startsWith("/execute")
+                            || replaced.trim().startsWith("execute ");
+
+                    CommandSourceStack sourceStack = isExecuteCommand
+                            ? player.createCommandSourceStack()
+                            : server.createCommandSourceStack();
+
+                    server.getCommands().performPrefixedCommand(sourceStack, replaced);
+                }
+            }
+
+            case ALL_PLAYERS -> {
+                for (Player p : server.getPlayerList().getPlayers()) {
+                    String replaced = baseCommand
+                            .replace("%player%", p.getName().getString())
+                            .replace("%x%", String.valueOf(p.getX()))
+                            .replace("%y%", String.valueOf(p.getY()))
+                            .replace("%z%", String.valueOf(p.getZ()));
+
+                    server.getCommands().performPrefixedCommand(p.createCommandSourceStack(), replaced);
+                }
+            }
+
+            case PLAYERS_IN_5_BLOCKS -> {
+                for (Player p : player.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(5))) {
+                    String replaced = baseCommand
+                            .replace("%player%", p.getName().getString())
+                            .replace("%x%", String.valueOf(p.getX()))
+                            .replace("%y%", String.valueOf(p.getY()))
+                            .replace("%z%", String.valueOf(p.getZ()));
+
+                    server.getCommands().performPrefixedCommand(p.createCommandSourceStack(), replaced);
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,38 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/base_sigil"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "stellar_sorcery:tier": 1
+      },
+      "model": "stellar_sorcery:item/base_sigil_rune_any"
+    },
+    {
+      "predicate": {
+        "stellar_sorcery:tier": 2
+      },
+      "model": "stellar_sorcery:item/base_sigil_rune_helmet"
+    },
+    {
+      "predicate": {
+        "stellar_sorcery:tier": 3
+      },
+      "model": "stellar_sorcery:item/base_sigil_rune_chestplate"
+    },
+    {
+      "predicate": {
+        "stellar_sorcery:tier": 4
+      },
+      "model": "stellar_sorcery:item/base_sigil_rune_leggings"
+    },
+    {
+      "predicate": {
+        "stellar_sorcery:tier": 5
+      },
+      "model": "stellar_sorcery:item/base_sigil_rune_boots"
+    }
+  ]
+}

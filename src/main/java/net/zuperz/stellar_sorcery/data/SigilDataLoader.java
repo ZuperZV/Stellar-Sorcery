@@ -10,6 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 
 import java.io.InputStreamReader;
 import java.util.*;
@@ -44,6 +45,9 @@ public class SigilDataLoader {
                 String name = obj.has("name") ? obj.get("name").getAsString() : id.toString();
                 String description = obj.has("description") ? obj.get("description").getAsString() : "";
 
+                String color = obj.has("color") ? obj.get("color").getAsString() : "#FFFFFF";
+                String armor = obj.has("armor") ? obj.get("armor").getAsString().toLowerCase(Locale.ROOT) : "none";
+
                 List<MobEffectInstance> effects = new ArrayList<>();
                 if (obj.has("effects")) {
                     for (JsonElement el : obj.getAsJsonArray("effects")) {
@@ -57,6 +61,29 @@ public class SigilDataLoader {
                             effects.add(new MobEffectInstance(mobEffect, duration, amplifier));
                         } else {
                             System.err.println("[SigilLoader] Effekt ikke fundet: " + effId);
+                        }
+                    }
+                }
+
+                List<SoulCandleCommand> commands = new ArrayList<>();
+                if (obj.has("commands")) {
+                    for (JsonElement el : obj.getAsJsonArray("commands")) {
+                        try {
+                            JsonObject cmdObj = el.getAsJsonObject();
+                            String command = cmdObj.get("command").getAsString();
+
+                            SoulCandleCommand.Target target = SoulCandleCommand.Target.valueOf(
+                                    cmdObj.get("target").getAsString().toUpperCase(Locale.ROOT)
+                            );
+
+                            SoulCandleCommand.Trigger trigger = SoulCandleCommand.Trigger.valueOf(
+                                    cmdObj.get("trigger").getAsString().toUpperCase(Locale.ROOT)
+                            );
+
+                            commands.add(new SoulCandleCommand(command, target, trigger));
+
+                        } catch (Exception ex) {
+                            System.err.println("[SigilLoader] Fejl ved parsing af command i " + id + ": " + ex.getMessage());
                         }
                     }
                 }
@@ -76,7 +103,7 @@ public class SigilDataLoader {
                     }
                 }
 
-                SIGIL_DATA.put(id, new SigilDefinition(name, description, effects, shaderData));
+                SIGIL_DATA.put(id, new SigilDefinition(name, description, effects, shaderData, commands, color, armor));
                 String simpleKey = id.getPath()
                         .replace("sigils/", "")
                         .replace(".json", "")
@@ -123,6 +150,16 @@ public class SigilDataLoader {
                 .toList();
     }
 
+    public static String getColorByName(String name) {
+        SigilDefinition def = getByName(name);
+        return def != null ? def.color() : "#FFFFFF";
+    }
+
+    public static String getArmorByName(String name) {
+        SigilDefinition def = getByName(name);
+        return def != null ? def.armor() : "none";
+    }
+
     public static String getRandomName(Random random) {
         if (NAME_TO_ID.isEmpty()) {
             System.err.println("[SigilLoader] Ingen sigils indlæst - kan ikke vælge tilfældigt navn!");
@@ -137,7 +174,10 @@ public class SigilDataLoader {
             String name,
             String description,
             List<MobEffectInstance> effects,
-            ShaderData shader
+            ShaderData shader,
+            List<SoulCandleCommand> commands,
+            String color,
+            String armor
     ) {}
 
     public static class ShaderData {

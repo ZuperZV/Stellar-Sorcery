@@ -8,5 +8,7 @@
   "shader": {
     "id": "stellar_sorcery:shaders/post/spider.json",
     "duration": 300
-  }
+  },
+  "color": "#60e1be",
+  "armor": "leggings"
 }
