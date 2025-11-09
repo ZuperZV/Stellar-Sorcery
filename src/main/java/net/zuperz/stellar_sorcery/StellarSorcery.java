@@ -34,6 +34,7 @@ import net.zuperz.stellar_sorcery.entity.custom.SigilOrbEntity;
 import net.zuperz.stellar_sorcery.item.ModCreativeModeTabs;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
+import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.item.custom.decorator.*;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
@@ -189,6 +190,14 @@ public class StellarSorcery
                 }
                 return -1;
             }, ModItems.ESSENCE_AMULET.get());
+
+
+            event.register((stack, tintIndex) -> {
+                if (stack.getItem() instanceof SigilItem sigilItem) {
+                    return sigilItem.getColor(stack, tintIndex);
+                }
+                return -1;
+            }, ModItems.SIGIL.get());
 
 
             event.register(

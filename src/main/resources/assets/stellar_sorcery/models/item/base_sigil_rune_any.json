@@ -2,6 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "stellar_sorcery:item/base_sigil",
-    "layer1": "stellar_sorcery:item/base_sigil_rune_any"
+    "layer1": "stellar_sorcery:item/base_sigil_rune_any",
+    "layer2": "stellar_sorcery:item/gray_base_sigil_rune_any"
   }
 }

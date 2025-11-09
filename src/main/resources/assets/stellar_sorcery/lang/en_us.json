@@ -17,6 +17,8 @@
   "tooltip.stellar_sorcery.with": " with ",
   "tooltip.stellar_sorcery.amulet": "Amulet",
 
+  "tooltip.stellar_sorcery.sigil_upgrade:": "Sigil Upgrade:",
+
   "item.stellar_sorcery.codex_arcanum": "Codex Arcanum",
 
   "item.stellar_sorcery.empty_essence_bottle": "Empty Essence Bottle",
@@ -58,6 +60,9 @@
 
   "item.stellar_sorcery.chalk_canister": "Chalk Canister",
   "item.stellar_sorcery.white_chalk_stick": "White Chalk Stick",
+
+  "item.stellar_sorcery.sigil_of": "Sigil of",
+  "item.stellar_sorcery.sigil": "Sigil",
 
 
   "block.stellar_sorcery.white_chalk": "White Chalk",
@@ -141,5 +146,10 @@
   "stellar_sorcery:shaders/post/spider.json": "Chaotic Web",
   "stellar_sorcery:shaders/post/invert.json": "Inverted Knowledge",
   "stellar_sorcery:shaders/post/diamond_time.json": "Diamond Power",
-  "stellar_sorcery:shaders/post/fire.json": "Emberflame Vision"
+  "stellar_sorcery:shaders/post/fire.json": "Emberflame Vision",
+
+  "item.stellar_sorcery.fire_time": "Fire Time",
+  "item.stellar_sorcery.swiftness": "Swiftness",
+
+  "/execute as %player% run data merge entity @s {Fire:200}": "Set player on fire (00:10)"
 }

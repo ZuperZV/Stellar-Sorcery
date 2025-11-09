@@ -160,6 +160,11 @@ public class SigilDataLoader {
         return def != null ? def.armor() : "none";
     }
 
+    public static List<SoulCandleCommand> getCommandsByName(String name) {
+        SigilDefinition def = getByName(name);
+        return def != null ? def.commands() : Collections.emptyList();
+    }
+
     public static String getRandomName(Random random) {
         if (NAME_TO_ID.isEmpty()) {
             System.err.println("[SigilLoader] Ingen sigils indlæst - kan ikke vælge tilfældigt navn!");
