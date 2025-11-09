@@ -156,10 +156,10 @@ public static final MapCodec<AstralNexusBlock> CODEC = simpleCodec(AstralNexusBl
                         pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
 
                         return ItemInteractionResult.SUCCESS;
-                    } else {
+                    } else if (!pStack.isEmpty()){
                         pPlayer.displayClientMessage(Component.literal("Ingen sigils - tilføjer nyt!"), true);
 
-                        ItemStack newSigil = new ItemStack(pStack.getItem());
+                        ItemStack newSigil = pStack.copy();
 
                         pStack.shrink(1);
 

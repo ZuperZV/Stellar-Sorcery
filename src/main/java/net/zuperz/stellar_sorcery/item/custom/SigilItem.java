@@ -63,6 +63,6 @@ public class SigilItem extends Item {
 
     public static String getActiveSigil(ItemStack stack) {
         SigilNameData data = stack.get(ModDataComponentTypes.SIGIL_NAME.get());
-        return data != null ? data.name() : "swiftness";
+        return data != null ? data.name() : "";
     }
 }
