@@ -1,0 +1,12 @@
+{
+  "name": "Swiftness Sigil",
+  "description": "Giver hurtighed og en flot shader.",
+  "effects": [
+    { "id": "minecraft:speed", "duration": 200, "amplifier": 1 },
+    { "id": "minecraft:jump_boost", "duration": 200, "amplifier": 0 }
+  ],
+  "shader": {
+    "id": "stellar_sorcery:shaders/post/spider.json",
+    "duration": 300
+  }
+}

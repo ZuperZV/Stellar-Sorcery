@@ -1,0 +1,12 @@
+{
+  "name": "Fire Time",
+  "description": "Ignites the user’s aura with burning power.",
+  "effects": [
+    { "id": "minecraft:fire_resistance", "duration": 400, "amplifier": 1 },
+    { "id": "minecraft:strength", "duration": 300, "amplifier": 1 }
+  ],
+  "shader": {
+    "id": "stellar_sorcery:shaders/post/dark.json",
+    "duration": 250
+  }
+}

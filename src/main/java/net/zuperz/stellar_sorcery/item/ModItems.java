@@ -125,6 +125,12 @@ public class ModItems {
     public static final DeferredItem<Item> TEST_MAGIC = ITEMS.register("test_magic",
             () -> new TestMagicItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> BASE_SIGIL = ITEMS.register("base_sigil",
+            () -> new Item(new Item.Properties().stacksTo(16)));
+
+    public static final DeferredItem<Item> SIGIL = ITEMS.register("sigil",
+            () -> new SigilItem(new Item.Properties().stacksTo(1)));
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
