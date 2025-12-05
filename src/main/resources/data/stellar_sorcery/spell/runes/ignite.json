@@ -1,0 +1,9 @@
+{
+  "id": "ignite_rune",
+  "type": "rune",
+  "effect_type": "status_effect",
+  "status": "fire",
+  "duration": 80,
+  "tick_damage": 1,
+  "description": "Sets the target on fire for a short duration."
+}

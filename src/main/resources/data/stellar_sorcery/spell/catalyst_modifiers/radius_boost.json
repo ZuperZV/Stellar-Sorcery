@@ -1,0 +1,9 @@
+{
+  "id": "radius_boost_small",
+  "type": "modifier",
+  "category": "area",
+  "effects": {
+    "radius_bonus": 2
+  },
+  "description": "Increases spell radius by 2 blocks."
+}

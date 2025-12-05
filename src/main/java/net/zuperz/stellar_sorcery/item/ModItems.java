@@ -132,6 +132,10 @@ public class ModItems {
             () -> new SigilItem(new Item.Properties().stacksTo(1)));
 
 
+    public static final DeferredItem<Item> SPELL_ITEM = ITEMS.register("spell_item",
+            () -> new SpellItem(new Item.Properties().stacksTo(1)));
+
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

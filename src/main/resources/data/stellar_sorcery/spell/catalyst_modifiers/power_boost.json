@@ -1,0 +1,10 @@
+{
+  "id": "power_boost_1",
+  "type": "modifier",
+  "category": "power",
+  "effects": {
+    "damage_multiplier": 1.2,
+    "self_damage_multiplier": 1.2
+  },
+  "description": "Increases total damage by 20%. but the caster also takes 20% more damage from your self."
+}

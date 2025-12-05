@@ -20,6 +20,7 @@ import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.block.entity.renderer.*;
 import net.zuperz.stellar_sorcery.data.CodexDataLoader;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
+import net.zuperz.stellar_sorcery.data.SpellDataLoader;
 import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
 import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
@@ -102,6 +103,7 @@ public class StellarSorcery
     public void onServerStarted(ServerStartedEvent event) {
         CodexDataLoader.load();
         SigilDataLoader.load();
+        SpellDataLoader.load();
     }
 
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

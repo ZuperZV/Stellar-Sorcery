@@ -5,7 +5,8 @@
   "refmap": "stellar_sorcery.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ModPlayerDataSaverMixin"
+    "ModPlayerDataSaverMixin",
+    "SwordItemSigilMixin"
   ],
   "client": [
     "AdvancementsScreenMixin",

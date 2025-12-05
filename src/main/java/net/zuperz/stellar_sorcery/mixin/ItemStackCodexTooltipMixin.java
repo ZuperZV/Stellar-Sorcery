@@ -20,6 +20,7 @@ import java.util.Optional;
 public class ItemStackCodexTooltipMixin {
 
     @Inject(method = "getTooltipImage", at = @At("HEAD"), cancellable = true)
+
     private void injectCodexTooltip(CallbackInfoReturnable<Optional<TooltipComponent>> cir) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;

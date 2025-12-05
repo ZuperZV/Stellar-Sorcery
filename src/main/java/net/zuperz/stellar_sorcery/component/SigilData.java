@@ -2,14 +2,26 @@ package net.zuperz.stellar_sorcery.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
+import net.zuperz.stellar_sorcery.data.SigilDataLoader;
+import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 
 import java.util.*;
+import java.util.function.Consumer;
 
-public class SigilData {
+public class SigilData implements TooltipProvider {
 
     private final List<ItemStack> sigils;
 
@@ -87,4 +99,90 @@ public class SigilData {
             ItemStack.CODEC.listOf().optionalFieldOf("sigils", Collections.emptyList()).forGetter(SigilData::getSigils),
             Codec.INT.optionalFieldOf("capacity", 3).forGetter(SigilData::getCapacity)
     ).apply(instance, SigilData::new));
+
+
+    @Override
+    public void addToTooltip(Item.TooltipContext ctx, Consumer<Component> tooltip, TooltipFlag flag) {
+        if (sigils.isEmpty())
+            return;
+
+        tooltip.accept(CommonComponents.EMPTY);
+        tooltip.accept(
+                Component.translatable("tooltip.stellar_sorcery.sigil_upgrade:")
+                        .withStyle(ChatFormatting.GRAY)
+        );
+
+        System.out.println("Test1");
+
+        for (ItemStack sigilStack : sigils) {
+
+            String activeName = SigilItem.getActiveSigil(sigilStack);
+
+            int color;
+            try {
+                color = SigilItem.getColor(sigilStack, 2);
+            } catch (Exception e) {
+                color = 0xFFFFFF;
+            }
+
+            tooltip.accept(
+                    Component.literal("  ").append(
+                            Component.translatable(activeName)
+                                    .withColor(color)
+                    )
+            );
+            System.out.println("Test2");
+
+            List<MobEffectInstance> effects =
+                    SigilDataLoader.getEffectsByName(activeName);
+
+            for (MobEffectInstance e : effects) {
+
+                MutableComponent line = Component.translatable(e.getDescriptionId());
+
+                if (e.getAmplifier() > 0) {
+                    line = line.append(" ")
+                            .append(Component.translatable("potion.potency." + e.getAmplifier()));
+                }
+
+                if (e.getDuration() > 20) {
+                    line = line.append(" (")
+                            .append(MobEffectUtil.formatDuration(e, 1.0F, 20.0F))
+                            .append(")");
+                }
+
+                tooltip.accept(
+                        line.withStyle(e.getEffect().value().getCategory().getTooltipFormatting())
+                );
+                System.out.println("Test3");
+            }
+
+            SigilDataLoader.ShaderData shader = SigilDataLoader.getShaderByName(activeName);
+
+            if (shader != null) {
+                MutableComponent line =
+                        Component.literal("" + shader.shaderId);
+
+                if (shader.durationTicks > 20) {
+                    line = line.append(" (")
+                            .append(SigilItem.formatShaderDuration(shader, 1.0F, 20.0F))
+                            .append(")");
+                }
+
+                tooltip.accept(line.withStyle(ChatFormatting.DARK_PURPLE));
+                System.out.println("Test4");
+            }
+
+            List<SoulCandleCommand> commands =
+                    SigilDataLoader.getCommandsByName(activeName);
+
+            for (SoulCandleCommand cmd : commands) {
+                tooltip.accept(
+                        Component.translatable(cmd.getCommand())
+                                .withStyle(ChatFormatting.GOLD)
+                );
+                System.out.println("Test5");
+            }
+        }
+    }
 }

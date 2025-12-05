@@ -1,0 +1,7 @@
+{
+  "id": "single_target",
+  "type": "area",
+  "shape": "single",
+  "range": 20,
+  "description": "A spell that affects the first entity hit."
+}

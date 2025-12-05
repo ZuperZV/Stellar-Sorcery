@@ -1,0 +1,9 @@
+{
+  "id": "projectile_speed_down",
+  "type": "modifier",
+  "category": "projectile",
+  "effects": {
+    "projectile_speed_multiplier": -1.5
+  },
+  "description": "Makes projectiles fly 50% faster."
+}

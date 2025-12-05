@@ -151,5 +151,61 @@
   "item.stellar_sorcery.fire_time": "Fire Time",
   "item.stellar_sorcery.swiftness": "Swiftness",
 
-  "/execute as %player% run data merge entity @s {Fire:200}": "Set player on fire (00:10)"
+  "/execute as %player% run data merge entity @s {Fire:200}": "Set player on fire (00:10)",
+
+
+
+  "advancements.story.mine_stone.root.title": "Welcome, Budding Witch!",
+  "advancements.story.mine_stone.root.description": "Pick a magical flower. Accidentally summon a forest spirit. Standard procedure.",
+
+  "advancements.codex_sorcery.codex_arcanum.title": "The Forbidden Booklet",
+  "advancements.codex_sorcery.codex_arcanum.description": "You found the Codex Arcanum. Don't read page 42. Trust me.",
+
+  "advancements.codex_sorcery.vital_stump.title": "Stump of Unusual Vibes",
+  "advancements.codex_sorcery.vital_stump.description": "This stump is alive. Or sentient. Or hungry. Probably fine.",
+
+  "advancements.codex_sorcery.fritillaria_meleagris_seeds.title": "Checkered Sorcery Seeds",
+  "advancements.codex_sorcery.fritillaria_meleagris_seeds.description": "These seeds are magical. And stylish. Magic but make it fashion.",
+
+  "advancements.codex_sorcery.moonshine_catalyst.title": "Moon Juice Catalyst",
+  "advancements.codex_sorcery.moonshine_catalyst.description": "For when the moon just isn’t shiny enough.",
+
+  "advancements.codex_sorcery.clay_jar.title": "Jar Acquisition Technology",
+  "advancements.codex_sorcery.clay_jar.description": "You crafted a jar. A jar! Truly a master wizard now.",
+
+  "advancements.codex_sorcery.fire_clay_jar.title": "Spicy Jar",
+  "advancements.codex_sorcery.fire_clay_jar.description": "It's like a normal jar, but with a burning desire to be impressive.",
+
+  "advancements.codex_sorcery.twig_clay_jar.title": "Twig-Enhanced Jar",
+  "advancements.codex_sorcery.twig_clay_jar.description": "You added a twig. This counts as crafting, probably.",
+
+  "advancements.codex_sorcery.moonshine.title": "Certified Moonshine Grower",
+  "advancements.codex_sorcery.moonshine.description": "You’re basically gardening the moon. This is fine.",
+
+  "advancements.codex_sorcery.light_infuser.title": "Light Juicer 3000",
+  "advancements.codex_sorcery.light_infuser.description": "Squeezing pure light for your convenience!",
+
+  "advancements.codex_sorcery.light_beam_emitter.title": "Laser Pointer for Giants",
+  "advancements.codex_sorcery.light_beam_emitter.description": "Now with 37% more blinding power!",
+
+  "advancements.codex_sorcery.light_jar.title": "Captured Sunlight",
+  "advancements.codex_sorcery.light_jar.description": "You caught light in a jar. Not weird at all.",
+
+  "advancements.codex_sorcery.noctilume_bucket.title": "Bucket of Fancy Glow-Goop",
+  "advancements.codex_sorcery.noctilume_bucket.description": "Glows softly. Judges you loudly.",
+
+  "advancements.codex_sorcery.soul_candle.title": "Haunted Candle",
+  "advancements.codex_sorcery.soul_candle.description": "Perfect for rituals, ambience, and terrifying your neighbors.",
+
+  "advancements.codex_sorcery.chalk_canister.title": "Portable Scribble Device",
+  "advancements.codex_sorcery.chalk_canister.description": "For drawing circles you definitely shouldn’t stand inside.",
+
+  "advancements.codex_sorcery.essence_boiler.title": "Witchy Soup Machine",
+  "advancements.codex_sorcery.essence_boiler.description": "Boils magic. Not recommended for noodles.",
+
+  "advancements.codex_sorcery.essence_bottle.title": "Bottled Mystery Juice",
+  "advancements.codex_sorcery.essence_bottle.description": "Shake well before unleashing arcane chaos.",
+
+  "advancements.codex_sorcery.essence_amulet.title": "Arcane Bling",
+  "advancements.codex_sorcery.essence_amulet.description": "Fashion AND danger. A stunning combination."
 }

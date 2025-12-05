@@ -81,7 +81,7 @@ public class SigilItem extends Item {
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
-    public int getColor(ItemStack stack, int tintIndex) {
+    public static int getColor(ItemStack stack, int tintIndex) {
         if (tintIndex != 2) return 0xFFFFFFFF;
 
         String sigilName = getActiveSigil(stack);
@@ -115,6 +115,11 @@ public class SigilItem extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
         SigilNameData nameData = pStack.get(ModDataComponentTypes.SIGIL_NAME.get());
+
+        if (nameData == null) {
+            super.appendHoverText(pStack, (TooltipContext) pContext, pTooltipComponents, pTooltipFlag);
+            return;
+        }
 
         List<MobEffectInstance> effects = SigilDataLoader.getEffectsByName(nameData.name());
         List<MobEffectInstance> toolTipEffects = new ArrayList<>();
@@ -167,31 +172,6 @@ public class SigilItem extends Item {
             }
         }
 
-
-
-
-        SigilData data = pStack.get(ModDataComponentTypes.SIGIL.get());
-        if (data != null) {
-
-            pTooltipComponents.add(CommonComponents.EMPTY);
-            pTooltipComponents.add(Component.translatable("tooltip.stellar_sorcery.sigil_upgrade:").withStyle(style -> style.withColor(ChatFormatting.GRAY)));
-
-
-            for (int i = 0; i < data.getSigils().size(); i++) {
-                ItemStack stack = data.getSigils().get(i);
-                String activeSigilName = getActiveSigil(stack);
-
-                int color;
-                try {
-                    color = getColor(stack, 2);
-                } catch (Exception e) {
-                    color = 0xFFFFFF;
-                }
-
-                int finalColor = color;
-                pTooltipComponents.add(Component.translatable(activeSigilName).withStyle(style -> style.withColor(finalColor)));
-            }
-        }
         super.appendHoverText(pStack, (TooltipContext) pContext, pTooltipComponents, pTooltipFlag);
     }
 

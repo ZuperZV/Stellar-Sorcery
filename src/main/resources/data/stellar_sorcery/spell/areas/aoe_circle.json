@@ -1,0 +1,8 @@
+{
+  "id": "aoe_circle_small",
+  "type": "area",
+  "shape": "circle",
+  "radius": 4,
+  "max_targets": 8,
+  "description": "A small circular area around the hit point."
+}

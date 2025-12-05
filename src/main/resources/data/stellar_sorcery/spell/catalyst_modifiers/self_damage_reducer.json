@@ -1,0 +1,10 @@
+{
+  "id": "self_damage_reducer_1",
+  "type": "modifier",
+  "category": "cost",
+  "effects": {
+    "damage_multiplier": -1.2,
+    "self_damage_multiplier": -1.2
+  },
+  "description": "Reduces mana cost by 15%."
+}

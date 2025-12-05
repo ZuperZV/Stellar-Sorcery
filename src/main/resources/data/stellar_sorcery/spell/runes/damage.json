@@ -1,0 +1,10 @@
+{
+  "id": "damage_basic",
+  "type": "rune",
+  "effect_type": "damage",
+  "amount": 6,
+  "element": "none",
+  "duration": 0,
+  "scalable": true,
+  "description": "Deals basic magic damage to the target."
+}

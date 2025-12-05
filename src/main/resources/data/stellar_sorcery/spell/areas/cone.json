@@ -1,0 +1,8 @@
+{
+  "id": "cone_small",
+  "type": "area",
+  "shape": "cone",
+  "range": 6,
+  "angle": 60,
+  "description": "A short forward cone."
+}

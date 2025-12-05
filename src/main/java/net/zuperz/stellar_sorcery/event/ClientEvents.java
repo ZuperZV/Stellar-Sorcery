@@ -1,47 +1,41 @@
 package net.zuperz.stellar_sorcery.event;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Camera;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.component.SigilData;
 import net.zuperz.stellar_sorcery.data.CodexDataLoader;
 import net.zuperz.stellar_sorcery.data.CodexEntry;
+import net.zuperz.stellar_sorcery.data.SigilDataLoader;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumMenu;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
 import net.zuperz.stellar_sorcery.util.KeyBinding;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
-import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 import static net.zuperz.stellar_sorcery.StellarSorcery.MOD_ID;
 
 @OnlyIn(Dist.CLIENT)
-public class CodexClientEvents {
+public class ClientEvents {
 
     @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
     public static class ClientForgeEvents {
@@ -107,6 +101,84 @@ public class CodexClientEvents {
                     screen.isInCategoryView = false;
 
                     mc.setScreen(screen);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onItemTooltip(ItemTooltipEvent event) {
+            ItemStack stack = event.getItemStack();
+
+            SigilData sigilData = stack.get(ModDataComponentTypes.SIGIL);
+            if (sigilData == null || sigilData.getSigils().isEmpty()) {
+                return;
+            }
+
+            List<Component> tooltip = event.getToolTip();
+
+            tooltip.add(CommonComponents.EMPTY);
+
+            tooltip.add(
+                    Component.translatable("tooltip.stellar_sorcery.sigil_upgrade:")
+                            .withStyle(ChatFormatting.GRAY)
+            );
+
+            for (ItemStack sigilStack : sigilData.getSigils()) {
+
+                String name = SigilItem.getActiveSigil(sigilStack);
+
+                int color;
+                try {
+                    color = SigilItem.getColor(sigilStack, 2);
+                } catch (Exception e) {
+                    color = 0xFFFFFF;
+                }
+
+                MutableComponent sigilLine = Component.literal("  ")
+                        .append(Component.translatable("item.stellar_sorcery." + name).withColor(color));
+
+                tooltip.add(sigilLine);
+
+                for (MobEffectInstance effect : SigilDataLoader.getEffectsByName(name)) {
+
+                    MutableComponent line = Component.literal("  -").append(Component.translatable(effect.getDescriptionId()));
+
+                    if (effect.getAmplifier() > 0) {
+                        line.append("  ")
+                                .append(
+                                        Component.translatable("potion.potency." + effect.getAmplifier())
+                                );
+                    }
+
+                    if (effect.getDuration() > 20) {
+                        line.append(" (")
+                                .append(MobEffectUtil.formatDuration(effect, 1.0F, 20.0F))
+                                .append(")");
+                    }
+
+                    tooltip.add(line.withStyle(effect.getEffect().value().getCategory().getTooltipFormatting()));
+                }
+
+                SigilDataLoader.ShaderData shader = SigilDataLoader.getShaderByName(name);
+
+                if (shader != null) {
+
+                    MutableComponent shaderText = Component.literal("  -").append(Component.translatable(String.valueOf(shader.shaderId)));
+
+                    if (shader.durationTicks > 20) {
+                        shaderText.append(" (")
+                                .append(SigilItem.formatShaderDuration(shader, 1.0F, 20.0F))
+                                .append(")");
+                    }
+
+                    tooltip.add(shaderText.withStyle(ChatFormatting.DARK_PURPLE));
+                }
+
+                for (SoulCandleCommand cmd : SigilDataLoader.getCommandsByName(name)) {
+                    tooltip.add(
+                            Component.literal("  -").withStyle(ChatFormatting.GOLD).append(Component.translatable(cmd.getCommand())
+                                    .withStyle(ChatFormatting.GOLD))
+                    );
                 }
             }
         }
