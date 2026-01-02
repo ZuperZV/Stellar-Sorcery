@@ -1,0 +1,9 @@
+{
+  "texture": "stellar_sorcery:textures/sky/lunareth.png",
+  "orbitRadius": 320.0,
+  "size": 14.0,
+  "speed": 0.03,
+  "startAngle": 16.0,
+  "tilt": 46.0,
+  "dimension": "minecraft:overworld"
+}

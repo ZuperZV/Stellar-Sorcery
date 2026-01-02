@@ -1,0 +1,9 @@
+{
+  "texture": "stellar_sorcery:textures/sky/aurion.png",
+  "orbitRadius": 320.0,
+  "size": 12.0,
+  "speed": 0.01,
+  "startAngle": 72.0,
+  "tilt": 25.0,
+  "dimension": "minecraft:overworld"
+}

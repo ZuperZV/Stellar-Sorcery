@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.client.Planet;
+package net.zuperz.stellar_sorcery.planet;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,25 +16,11 @@ import java.util.List;
 
 public class PlanetRenderer {
 
-    private static final List<PlanetData> PLANETS = List.of(
-            new PlanetData(
-                    ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/sky/planet.png"),
-                    320.0f,
-                    18.0f,
-                    0.01f,
-                    156.0f,
-                    14.0f,
-                    ResourceLocation.fromNamespaceAndPath("minecraft", "overworld")
-            ),
-            new PlanetData(
-                    ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/sky/planet.png"),
-                    320.0f,
-                    13.0f,
-                    0.02f,
-                    14.0f,
-                    5.0f,
-                    ResourceLocation.fromNamespaceAndPath("minecraft", "overworld"))
-    );
+    private static final List<PlanetData> PLANETS = List.of();
+
+    public static void registerPlanet(PlanetData planet) {
+        PLANETS.add(planet);
+    }
 
     public static void render(
             PoseStack poseStack,
@@ -51,6 +37,7 @@ public class PlanetRenderer {
 
         for (PlanetData planet : PLANETS) {
             renderPlanet(poseStack, planet, time, partialTick);
+            System.out.println("PlanetRenderer: " + PLANETS);
         }
 
         RenderSystem.disableBlend();

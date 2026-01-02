@@ -1,4 +1,4 @@
-package net.zuperz.stellar_sorcery.client.Planet;
+package net.zuperz.stellar_sorcery.planet;
 
 import net.minecraft.resources.ResourceLocation;
 

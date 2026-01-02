@@ -19,7 +19,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
-import net.zuperz.stellar_sorcery.client.Planet.PlanetRenderer;
+import net.zuperz.stellar_sorcery.planet.PlanetRenderer;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.component.SigilData;
 import net.zuperz.stellar_sorcery.data.CodexDataLoader;
