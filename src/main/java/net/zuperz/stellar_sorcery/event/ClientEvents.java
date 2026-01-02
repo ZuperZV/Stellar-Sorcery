@@ -46,7 +46,7 @@ public class ClientEvents {
         @SubscribeEvent
         public static void onRenderLevel(RenderLevelStageEvent event) {
 
-            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
                 return;
             }
 

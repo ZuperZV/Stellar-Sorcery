@@ -4,9 +4,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import org.joml.Quaternionf;
 
@@ -17,7 +19,7 @@ public class PlanetRenderer {
     private static final List<PlanetData> PLANETS = List.of(
             new PlanetData(
                     ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/sky/planet.png"),
-                    120.0f,
+                    320.0f,
                     18.0f,
                     0.01f,
                     156.0f,
@@ -26,8 +28,8 @@ public class PlanetRenderer {
             ),
             new PlanetData(
                     ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/sky/planet.png"),
-                    240.0f,
-                    14.0f,
+                    320.0f,
+                    13.0f,
                     0.02f,
                     14.0f,
                     5.0f,
@@ -61,44 +63,54 @@ public class PlanetRenderer {
             long time,
             float partialTick
     ) {
-        poseStack.pushPose();
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
 
-        float angletilt = (time + partialTick) * planet.speed + planet.startAngle;
-        Quaternionf tiltQuat = Axis.XP.rotationDegrees(planet.tilt);
-        Quaternionf spinQuat = Axis.YP.rotationDegrees(angletilt);
-        tiltQuat.mul(spinQuat);
-        poseStack.mulPose(tiltQuat);
+        if (player != null) {
+            if (player.level().dimension().location().toString().equals(planet.dimension.toString())) {
+                poseStack.pushPose();
 
-        poseStack.translate(0.0D, 0.0D, -planet.orbitRadius);
+                float angletilt = (time + partialTick) * planet.speed + planet.startAngle;
+                Quaternionf tiltQuat = Axis.XP.rotationDegrees(planet.tilt);
+                Quaternionf spinQuat = Axis.YP.rotationDegrees(angletilt);
+                tiltQuat.mul(spinQuat);
+                poseStack.mulPose(tiltQuat);
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
+                poseStack.translate(0.0D, 0.0D, -planet.orbitRadius);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, planet.texture);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableCull();
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, planet.texture);
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        BufferBuilder buffer = Tesselator.getInstance()
-                .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthMask(true);
+                RenderSystem.disableCull();
 
-        float s = planet.size;
-        PoseStack.Pose pose = poseStack.last();
-        var matrix = pose.pose();
+                BufferBuilder buffer = Tesselator.getInstance()
+                        .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        buffer.addVertex(matrix, -s, -s, 0).setUv(0, 1);
-        buffer.addVertex(matrix,  s, -s, 0).setUv(1, 1);
-        buffer.addVertex(matrix,  s,  s, 0).setUv(1, 0);
-        buffer.addVertex(matrix, -s,  s, 0).setUv(0, 0);
+                float s = planet.size;
+                PoseStack.Pose pose = poseStack.last();
+                var matrix = pose.pose();
 
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+                buffer.addVertex(matrix, -s, -s, 0).setUv(0, 1);
+                buffer.addVertex(matrix,  s, -s, 0).setUv(1, 1);
+                buffer.addVertex(matrix,  s,  s, 0).setUv(1, 0);
+                buffer.addVertex(matrix, -s,  s, 0).setUv(0, 0);
 
-        RenderSystem.enableCull();
-        RenderSystem.depthMask(true);
+                BufferUploader.drawWithShader(buffer.buildOrThrow());
 
-        poseStack.popPose();
+                RenderSystem.enableCull();
+                RenderSystem.depthMask(true);
+
+                poseStack.popPose();
+            }
+            else {
+                System.out.println(("Skipping planet render, wrong dimension: " + player.level().dimension().location() + " " + planet.dimension));
+            }
+        }
     }
 }
