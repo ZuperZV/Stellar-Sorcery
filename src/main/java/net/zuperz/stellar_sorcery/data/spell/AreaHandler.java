@@ -1,9 +1,14 @@
 package net.zuperz.stellar_sorcery.data.spell;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -11,9 +16,6 @@ import java.util.List;
 
 public class AreaHandler {
 
-    /**
-     * Returnerer en liste af targets baseret på area type
-     */
     public static List<Entity> getTargets(Player player, AreaFile area) {
 
         List<Entity> result = new ArrayList<>();
@@ -37,9 +39,47 @@ public class AreaHandler {
 
             case "projectile" -> result;
 
+            case "beam" -> getBeamTargets(player, area);
+
             default -> result;
         };
     }
+
+    private static List<Entity> getBeamTargets(Player player, AreaFile area) {
+
+        List<Entity> result = new ArrayList<>();
+
+        Vec3 start = player.getEyePosition();
+        Vec3 look = player.getLookAngle();
+        Vec3 end = start.add(look.scale(area.range));
+
+        HitResult hit = player.level().clip(
+                new ClipContext(start, end,
+                        ClipContext.Block.OUTLINE,
+                        ClipContext.Fluid.NONE, player));
+
+        Vec3 hitPos = hit.getLocation();
+
+        float useTime = player.getUseItemRemainingTicks() / 20f;
+        float size = Math.min(area.max_size, 0.3f + area.grow_speed * useTime);
+
+        for (Entity e : player.level().getEntities(player, new AABB(start, hitPos).inflate(size))) {
+            if (!(e instanceof LivingEntity)) continue;
+
+            double dist = e.position().distanceTo(lineClosestPoint(start, hitPos, e.position()));
+
+            if (dist <= size) {
+                result.add(e);
+            }
+        }
+
+        if (player.level() instanceof ServerLevel sl) {
+            SpellParticles.spawnBeamParticles(sl, start, hitPos, size);
+        }
+
+        return result;
+    }
+
 
     private static Entity getSingleTarget(Player player, float range) {
         Vec3 start = player.getEyePosition();
@@ -92,5 +132,36 @@ public class AreaHandler {
             }
         }
         return result;
+    }
+
+    public static BlockPos getAreaPos(Player player, AreaFile area) {
+        Vec3 start = player.getEyePosition();
+        Vec3 end = start.add(player.getLookAngle().scale(area.range));
+
+        return new BlockPos(
+                (int) end.x,
+                (int) end.y,
+                (int) end.z
+        );
+    }
+
+    public static List<BlockPos> getAllBlocksInArea(BlockPos center, float range) {
+        List<BlockPos> list = new ArrayList<>();
+
+        for (float x = -range; x <= range; x++) {
+            for (float y = -range; y <= range; y++) {
+                for (float z = -range; z <= range; z++) {
+                    list.add(center.offset((int) x, (int) y, (int) z));
+                }
+            }
+        }
+        return list;
+    }
+
+    private static Vec3 lineClosestPoint(Vec3 a, Vec3 b, Vec3 p) {
+        Vec3 ab = b.subtract(a);
+        double t = (p.subtract(a)).dot(ab) / ab.lengthSqr();
+        t = Math.max(0, Math.min(1, t));
+        return a.add(ab.scale(t));
     }
 }

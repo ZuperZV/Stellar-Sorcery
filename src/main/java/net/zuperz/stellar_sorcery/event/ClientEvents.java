@@ -3,6 +3,7 @@ package net.zuperz.stellar_sorcery.event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,9 +15,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
+import net.zuperz.stellar_sorcery.client.Planet.PlanetRenderer;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.component.SigilData;
 import net.zuperz.stellar_sorcery.data.CodexDataLoader;
@@ -39,6 +42,27 @@ public class ClientEvents {
 
     @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
     public static class ClientForgeEvents {
+
+        @SubscribeEvent
+        public static void onRenderLevel(RenderLevelStageEvent event) {
+
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+                return;
+            }
+
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level == null) return;
+
+            float partialTick =
+                    event.getPartialTick()
+                            .getGameTimeDeltaPartialTick(false);
+
+            PlanetRenderer.render(
+                    event.getPoseStack(),
+                    level,
+                    partialTick
+            );
+        }
 
         @SubscribeEvent
         public static void onScreenKeyPressed(ScreenEvent.KeyPressed.Post event) {

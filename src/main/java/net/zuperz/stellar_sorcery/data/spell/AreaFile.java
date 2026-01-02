@@ -8,5 +8,8 @@ public class AreaFile {
     public float range;
     public float angle;
     public int max_targets;
+    public float grow_speed;
+    public float max_size;
+    public boolean normal_particles = true;
     public String description;
 }

@@ -1,10 +1,11 @@
 package net.zuperz.stellar_sorcery;
 
-import com.mojang.datafixers.util.Either;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Blocks;
@@ -13,7 +14,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;

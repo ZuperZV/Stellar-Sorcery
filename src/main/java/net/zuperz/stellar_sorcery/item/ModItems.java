@@ -131,9 +131,8 @@ public class ModItems {
     public static final DeferredItem<Item> SIGIL = ITEMS.register("sigil",
             () -> new SigilItem(new Item.Properties().stacksTo(1)));
 
-
-    public static final DeferredItem<Item> SPELL_ITEM = ITEMS.register("spell_item",
-            () -> new SpellItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> SCROLL_CONSTRUCT = ITEMS.register("scroll_construct",
+            () -> new SpellItem(new Item.Properties().stacksTo(1).fireResistant()));
 
 
     public static void register(IEventBus eventBus) {

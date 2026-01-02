@@ -1,0 +1,10 @@
+{
+  "id": "beam_grow",
+  "type": "area",
+  "shape": "beam",
+  "range": 40,
+  "grow_speed": 0.6,
+  "max_size": 3.5,
+  "normal_particles": false,
+  "description": "A growing magical beam cast from the player's hand toward where they are looking."
+}
