@@ -26,6 +26,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.FRITILLARIA_MELEAGRIS.get());
         basicItem(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
 
+        basicItem(ModItems.SOUL_BLOOMS.get());
+        basicItem(ModItems.SOUL_BLOOM_SEEDS.get());
+
         basicItem(ModItems.ROOT.get());
         basicItem(ModItems.EMPTY_ESSENCE_BOTTLE.get());
         basicItem(ModItems.EMPTY_ESSENCE_AMULET.get());

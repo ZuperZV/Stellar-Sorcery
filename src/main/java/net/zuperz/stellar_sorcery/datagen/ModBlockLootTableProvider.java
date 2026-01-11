@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.custom.FritillariaMeleagrisCropBlock;
+import net.zuperz.stellar_sorcery.block.custom.SoulBloomCropBlock;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 import java.util.Set;
@@ -55,12 +56,21 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.LIGHT_JAR.get());
         dropSelf(ModBlocks.LIGHT_BEAM_EMITTER.get());
 
+        dropSelf(ModBlocks.AUGMENT_FORGE.get());
+        dropSelf(ModBlocks.ELDRITE.get());
+        dropSelf(ModBlocks.MOON_SHARD_ELDRITE.get());
+
         this.add(ModBlocks.WHITE_CHALK.get(), noDrop());
 
-        LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
+        LootItemCondition.Builder fritillariaMeleagrisLootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(FritillariaMeleagrisCropBlock.AGE, 5));
         this.add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get(), this.createCropDrops(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get(),
-                ModItems.FRITILLARIA_MELEAGRIS.get(), ModItems.FRITILLARIA_MELEAGRIS_SEEDS.asItem(), lootItemConditionBuilder));
+                ModItems.FRITILLARIA_MELEAGRIS.get(), ModItems.FRITILLARIA_MELEAGRIS_SEEDS.asItem(), fritillariaMeleagrisLootItemConditionBuilder));
+
+        LootItemCondition.Builder soulBloomLootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.SOUL_BLOOM_CROP.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SoulBloomCropBlock.AGE, 6));
+        this.add(ModBlocks.SOUL_BLOOM_CROP.get(), this.createCropDrops(ModBlocks.SOUL_BLOOM_CROP.get(),
+                ModItems.FRITILLARIA_MELEAGRIS.get(), ModItems.FRITILLARIA_MELEAGRIS_SEEDS.asItem(), soulBloomLootItemConditionBuilder));
 
         this.dropSelf(ModBlocks.RED_CAMPION.get());
         this.add(ModBlocks.POTTED_RED_CAMPION.get(), createPotFlowerItemTable(ModBlocks.RED_CAMPION));

@@ -1,0 +1,41 @@
+{
+  "type": "stellar_sorcery:altar",
+  "blockMapping": {
+    "A": "stellar_sorcery:soul_candle",
+    "O": "stellar_sorcery:white_chalk"
+  },
+  "command": "spawn triyara minecraft:overworld 220 24 0.008 18",
+  "fake_time_of_day": "NIGHT",
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:moonshine_catalyst"
+    },
+    {
+      "item": "stellar_sorcery:root"
+    },
+    {
+      "item": "minecraft:pitcher_pod"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    }
+  ],
+  "output": {
+    "item": "stellar_sorcery:moonshine_shard"
+  },
+  "pattern": [
+    "__OOOOO__",
+    "_O_____O_",
+    "O__OOO__O",
+    "O_O___O_O",
+    "O_O_A_O_O",
+    "O_O___O_O",
+    "O__OOO__O",
+    "_O_____O_",
+    "__OOOOO__"
+  ],
+  "target": "PLANET",
+  "time": 100,
+  "time_of_day": "NIGHT",
+  "trigger": "ON_END"
+}

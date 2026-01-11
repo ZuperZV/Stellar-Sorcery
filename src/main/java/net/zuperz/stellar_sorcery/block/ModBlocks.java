@@ -68,6 +68,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> FRITILLARIA_MELEAGRIS_CROP = BLOCKS.register("fritillaria_meleagris_crop",
             () -> new FritillariaMeleagrisCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 
+    public static final DeferredBlock<Block> SOUL_BLOOM_CROP = BLOCKS.register("soul_bloom_crop",
+            () -> new SoulBloomCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
+
     public static final DeferredBlock<Block> RED_CAMPION = registerBlock("red_campion",
             () -> new FlowerBlock(MobEffects.HARM, 2, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
     public static final DeferredBlock<Block> POTTED_RED_CAMPION = BLOCKS.register("potted_red_campion",

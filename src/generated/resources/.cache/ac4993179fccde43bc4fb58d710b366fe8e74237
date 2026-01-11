@@ -1,9 +1,9 @@
-// 1.21	2025-10-11T00:05:15.2284382	Tags for minecraft:item mod id stellar_sorcery
-a4a6672e5bb3fe269b036960e8a2dd2107014711 data/c/tags/item/foods/food_poisoning.json
-7da55c9eeca31484a47d464415e3e6d8d69140d7 data/c/tags/item/seeds.json
+// 1.21	2026-01-11T23:51:11.4864922	Tags for minecraft:item mod id stellar_sorcery
+d3a81a926f33214944685d3fac746a24f6ce12cb data/c/tags/item/foods/food_poisoning.json
+ecc05eb75fbc387dac9c96a350862ad31a0e9041 data/c/tags/item/seeds.json
 c55926aed5c1a08b4213a82c87157d41c236524b data/c/tags/item/tools/brush.json
 d2c81092c9543df58d378a40c7633e013e524ee9 data/c/tags/item/tools/melee_weapon.json
 29f5adf121658c6d7dd3a492c84982d3c066b4d3 data/minecraft/tags/item/dyeable.json
-7da55c9eeca31484a47d464415e3e6d8d69140d7 data/minecraft/tags/item/villager_plantable_seeds.json
+ecc05eb75fbc387dac9c96a350862ad31a0e9041 data/minecraft/tags/item/villager_plantable_seeds.json
 5b7ea2ec996ded1ed746d106da42d9ac09e6e99e data/stellar_sorcery/tags/item/chalk_stick_blocks.json
 9540b664c31bd76dba2d8682c9375d7651490aae data/stellar_sorcery/tags/item/stellar_sorcery_flower_items.json

@@ -1,5 +1,8 @@
 {
   "values": {
+    "minecraft:rooted_dirt": {
+      "chance": 1.0
+    },
     "stellar_sorcery:calendula": {
       "chance": 0.65
     },
@@ -14,6 +17,12 @@
     },
     "stellar_sorcery:red_campion": {
       "chance": 0.65
+    },
+    "stellar_sorcery:soul_bloom_seeds": {
+      "chance": 0.5
+    },
+    "stellar_sorcery:soul_blooms": {
+      "chance": 0.3
     }
   }
 }

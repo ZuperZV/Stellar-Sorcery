@@ -1,0 +1,25 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "fluid_input": {
+    "amount": 1500,
+    "fluid": "stellar_sorcery:source_noctilume"
+  },
+  "ingredient": {
+    "item": "stellar_sorcery:soul_bloom_seeds"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "stellar_sorcery:red_campion"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:soul_blooms"
+  },
+  "time": 90,
+  "time_of_day": "NIGHT"
+}

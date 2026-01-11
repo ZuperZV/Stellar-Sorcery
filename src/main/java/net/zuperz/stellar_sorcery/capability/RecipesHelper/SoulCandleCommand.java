@@ -5,7 +5,8 @@ public class SoulCandleCommand {
         SOUL_CANDLE,
         PLAYER_CLOSEST,
         ALL_PLAYERS,
-        PLAYERS_IN_5_BLOCKS
+        PLAYERS_IN_5_BLOCKS,
+        PLANET
     }
 
     public enum Trigger {

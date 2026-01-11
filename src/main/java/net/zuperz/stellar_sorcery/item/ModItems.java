@@ -88,6 +88,13 @@ public class ModItems {
     public static final DeferredItem<Item> FRITILLARIA_MELEAGRIS = ITEMS.registerItem("fritillaria_meleagris",
             Item::new, new Item.Properties().food(ModFoodProperties.FRITILLARIA_MELEAGRIS));
 
+
+    public static final DeferredItem<Item> SOUL_BLOOM_SEEDS = ITEMS.register("soul_bloom_seeds",
+            () -> new ItemNameBlockItem(ModBlocks.SOUL_BLOOM_CROP.get(), new Item.Properties()));
+
+    public static final DeferredItem<Item> SOUL_BLOOMS = ITEMS.registerItem("soul_blooms",
+            Item::new, new Item.Properties().food(ModFoodProperties.SOUL_BLOOMS));
+
     public static final DeferredItem<Item> MOONSHINE_CATALYST = ITEMS.register("moonshine_catalyst",
             () -> new MoonshineCatalystItem(new Item.Properties()));
 

@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "stellar_sorcery:block/soul_bloom_stag0"
+    },
+    "age=1": {
+      "model": "stellar_sorcery:block/soul_bloom_stag1"
+    },
+    "age=2": {
+      "model": "stellar_sorcery:block/soul_bloom_stag2"
+    },
+    "age=3": {
+      "model": "stellar_sorcery:block/soul_bloom_stag3"
+    },
+    "age=4": {
+      "model": "stellar_sorcery:block/soul_bloom_stag4"
+    },
+    "age=5": {
+      "model": "stellar_sorcery:block/soul_bloom_stag5"
+    },
+    "age=6": {
+      "model": "stellar_sorcery:block/soul_bloom_stag6"
+    }
+  }
+}

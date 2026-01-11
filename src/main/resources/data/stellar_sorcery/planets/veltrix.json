@@ -1,8 +1,8 @@
 {
   "texture": "stellar_sorcery:textures/sky/veltrix.png",
-  "orbitRadius": 320.0,
+  "orbitRadius": 312.0,
   "size": 14.0,
-  "speed": 0.02,
+  "speed": 0.01,
   "startAngle": 162.0,
   "tilt": 54.0,
   "dimension": "minecraft:overworld"

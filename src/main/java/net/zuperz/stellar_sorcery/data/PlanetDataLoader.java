@@ -51,6 +51,7 @@ public class PlanetDataLoader {
                 float startAngle = obj.get("startAngle").getAsFloat();
                 float tilt = obj.get("tilt").getAsFloat();
                 ResourceLocation dimension = ResourceLocation.parse(obj.get("dimension").getAsString());
+                boolean startSpawned = obj.has("startSpawned") && obj.get("startSpawned").getAsBoolean();
 
                 PlanetData planetData = new PlanetData(
                         texture,
@@ -59,13 +60,17 @@ public class PlanetDataLoader {
                         speed,
                         startAngle,
                         tilt,
-                        dimension
+                        dimension,
+                        startSpawned
                 );
 
                 System.out.println("planet: " + planetData.texture);
 
                 PLANET_DATA.put(id, planetData);
                 PlanetRenderer.registerPlanet(planetData);
+                if (startSpawned) {
+                    PlanetRenderer.registerPlanetToRender(planetData);
+                }
                 PlanetManager.registerPlanet(planetData);
 
                 String simpleName = id.getPath()

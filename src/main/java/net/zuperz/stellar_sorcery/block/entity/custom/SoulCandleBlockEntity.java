@@ -37,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
+import net.zuperz.stellar_sorcery.planet.PlanetCommandHandler;
 import net.zuperz.stellar_sorcery.recipes.SoulCandleRecipe;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import org.jetbrains.annotations.Nullable;
@@ -250,6 +251,11 @@ public class SoulCandleBlockEntity extends BlockEntity {
 
                         System.out.println("PLAYERS_IN_5_BLOCKS command for " + player.getName().getString() + ": " + cmdForPlayer);
                     }
+                }
+
+                case PLANET -> {
+                    if (!(level instanceof ServerLevel serverLevel)) return;
+                    PlanetCommandHandler.execute(serverLevel, executedCommand);
                 }
             }
 

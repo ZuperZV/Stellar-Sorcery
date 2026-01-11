@@ -1,0 +1,26 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "minecraft:wheat",
+  "block_output": "stellar_sorcery:soul_bloom_crop",
+  "block_state": {
+    "age": "7"
+  },
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:red_campion"
+    },
+    {
+      "item": "minecraft:wheat"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:soul_bloom_seeds"
+  },
+  "time": 90,
+  "time_of_day": "DAY"
+}

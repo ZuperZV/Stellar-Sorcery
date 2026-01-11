@@ -55,7 +55,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BUDDING_MOONSHINE.get());
 
         this.tag(BlockTags.CROPS)
-                .add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get());
+                .add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
+                .add(ModBlocks.SOUL_BLOOM_CROP.get());
 
         this.tag(ModTags.Blocks.STELLER_SORCERY_FLOWERS_BLOCKS)
                 .add(ModBlocks.RED_CAMPION.get())

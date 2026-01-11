@@ -179,6 +179,20 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
                 .save(pWriter);
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SOUL_BLOOM_SEEDS.get()),
+                        Ingredient.of(Items.WHEAT_SEEDS),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
+                        Ingredient.of(Items.WHEAT)
+                )
+                .withBlock(Blocks.WHEAT)
+                .withBlockState(Map.of("age", "7"))
+                .needsBlock(false)
+                .blockOutput(ModBlocks.SOUL_BLOOM_CROP.get())
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(90)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.RED_CAMPION.asItem()),
                         Ingredient.of(Blocks.POPPY),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
@@ -403,6 +417,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(pWriter);
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SOUL_BLOOMS.get()),
+                        Ingredient.of(ModItems.SOUL_BLOOM_SEEDS),
+                        Ingredient.of(Items.LAPIS_LAZULI),
+                        Ingredient.of(ModBlocks.RED_CAMPION.asItem())
+                )
+                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 1500))
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(90)
+                .unlockedBy("has_stick", has(Items.STICK))
+                .save(pWriter);
+
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.BLUESTONE_DUST.get()),
                         Ingredient.of(Items.GLOWSTONE_DUST),
@@ -583,6 +608,34 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .block('O', ModBlocks.WHITE_CHALK.get())
 
                 .timeOfDay(TimeOfDay.BOTH)
+                .recipeTime(100)
+                .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
+                .save(pWriter);
+
+
+        SoulCandleRecipeBuilder.soulCandle(RecipeCategory.MISC, new ItemStack(ModItems.MOONSHINE_SHARD.get()),
+                        Ingredient.of(ModItems.MOONSHINE_CATALYST),
+                        Ingredient.of(ModItems.ROOT),
+                        Ingredient.of(Items.PITCHER_POD),
+                        Ingredient.of(Items.ENDER_PEARL)
+                )
+                .patternLine("__OOOOO__")
+                .patternLine("_O_____O_")
+                .patternLine("O__OOO__O")
+                .patternLine("O_O___O_O")
+                .patternLine("O_O_A_O_O")
+                .patternLine("O_O___O_O")
+                .patternLine("O__OOO__O")
+                .patternLine("_O_____O_")
+                .patternLine("__OOOOO__")
+
+                .block('A', ModBlocks.SOUL_CANDLE.get())
+                .block('O', ModBlocks.WHITE_CHALK.get())
+
+                .addCommand("spawn aurion minecraft:overworld 220 24 0.008 18",
+                        SoulCandleCommand.Target.PLANET,
+                        SoulCandleCommand.Trigger.ON_END)
+                .timeOfDay(TimeOfDay.NIGHT)
                 .recipeTime(100)
                 .unlockedBy("has_white_chalk", has(ModBlocks.WHITE_CHALK.get()))
                 .save(pWriter);

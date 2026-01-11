@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.custom.FritillariaMeleagrisCropBlock;
+import net.zuperz.stellar_sorcery.block.custom.SoulBloomCropBlock;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -38,6 +40,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         makeCrop(((FritillariaMeleagrisCropBlock) ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get()), "fritillaria_meleagris_stage","fritillaria_meleagris_stage");
+        makeCrop(((SoulBloomCropBlock) ModBlocks.SOUL_BLOOM_CROP.get()), "soul_bloom_stag","soul_bloom_stag");
 
         flowerWithPot(ModBlocks.RED_CAMPION, ModBlocks.POTTED_RED_CAMPION, "red_campion", "flower_pot_cross");
         flowerWithPot(ModBlocks.CALENDULA, ModBlocks.POTTED_CALENDULA, "calendula", "flower_pot_cross");
@@ -105,19 +108,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     public void makeCrop(CropBlock block, String modelName, String textureName) {
-        Function<BlockState, ConfiguredModel[]> function = state -> states(state, block, modelName, textureName);
+        getVariantBuilder(block).forAllStates(state -> {
+            IntegerProperty ageProp = getAgeProperty(state);
+            int age = state.getValue(ageProp);
 
-        getVariantBuilder(block).forAllStates(function);
+            return ConfiguredModel.builder()
+                    .modelFile(models().crop(
+                            modelName + age,
+                            modLoc("block/" + textureName + age)
+                    ).renderType("cutout"))
+                    .build();
+        });
     }
 
-    private ConfiguredModel[] states(BlockState state, CropBlock block, String modelName, String textureName) {
-        ConfiguredModel[] models = new ConfiguredModel[1];
-        models[0] = new ConfiguredModel(models().crop(modelName + state.getValue(((FritillariaMeleagrisCropBlock) block).getAgeProperty()),
-                ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "block/" + textureName +
-                        state.getValue(((FritillariaMeleagrisCropBlock) block).getAgeProperty()))).renderType("cutout"));
-
-        return models;
+    private static IntegerProperty getAgeProperty(BlockState state) {
+        return state.getProperties().stream()
+                .filter(p -> p instanceof IntegerProperty ip && p.getName().equals("age"))
+                .map(p -> (IntegerProperty) p)
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException("Crop block has no age property")
+                );
     }
+
 
     private void flowerWithPot(DeferredBlock<Block> flowerBlock, DeferredBlock<Block> pottedBlock, String name, String flowerPotShape) {
         simpleBlock(flowerBlock.get(),

@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.api.jei.custom.EntityDrawable;
+import net.zuperz.stellar_sorcery.api.jei.custom.PlanetDrawable;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.recipes.SoulCandleRecipe;
@@ -239,12 +240,12 @@ public class SoulCandleRecipeCategory implements IRecipeCategory<SoulCandleRecip
         }
 
         // Time of Day
-        if (recipe.timeOfDay.isPresent()) {
+        if (recipe.fakeTimeOfDay.isPresent()) {
 
             int iconX = width - 17;
             int iconY = 0;
 
-            switch (recipe.timeOfDay.get()) {
+            switch (recipe.fakeTimeOfDay.get()) {
                 case DAY -> dayIcon.draw(guiGraphics, iconX, iconY);
                 case NIGHT -> nightIcon.draw(guiGraphics, iconX, iconY);
                 case BOTH -> bothIcon.draw(guiGraphics, iconX, iconY);
@@ -252,7 +253,7 @@ public class SoulCandleRecipeCategory implements IRecipeCategory<SoulCandleRecip
 
             if (mouseX >= iconX && mouseX <= iconX + 16 && mouseY >= iconY && mouseY <= iconY + 16) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font,
-                        Component.literal("Works at: " + recipe.timeOfDay.get().name()),
+                        Component.literal("Works at: " + recipe.fakeTimeOfDay.get().name()),
                         (int) mouseX, (int) mouseY);
             }
         }
@@ -273,13 +274,13 @@ public class SoulCandleRecipeCategory implements IRecipeCategory<SoulCandleRecip
             }
         });
 
-        // Entity
         for (SoulCandleCommand cmd : recipe.commands) {
             String executedCommand = cmd.getCommand();
 
             int commandSlotX = width - 17;
             int commandSlotY = height - slotSize;
 
+            // Entity
             if (executedCommand.startsWith("/summon ")) {
                 String[] parts = executedCommand.split(" ");
                 if (parts.length >= 2) {
@@ -296,6 +297,39 @@ public class SoulCandleRecipeCategory implements IRecipeCategory<SoulCandleRecip
                                     (int) mouseX, (int) mouseY
                             );
                         }
+                    }
+                }
+            } else if (executedCommand.startsWith("/setblock ")) {
+                String[] parts = executedCommand.split(" ");
+                if (parts.length >= 4) {
+                    String blockId = parts[4];
+                    ResourceLocation blockRL = ResourceLocation.tryParse(blockId);
+                    if (blockRL != null && BuiltInRegistries.BLOCK.containsKey(blockRL)) {
+                        Block block = BuiltInRegistries.BLOCK.get(blockRL);
+                        if (block != null) {
+                            slotDrawable.draw(guiGraphics, commandSlotX- 1, commandSlotY + 1);
+
+                            if (mouseX >= commandSlotX && mouseX <= commandSlotX + 16 && mouseY >= commandSlotY && mouseY <= commandSlotY + 16) {
+                                guiGraphics.renderTooltip(
+                                        Minecraft.getInstance().font,
+                                        Component.translatable(block.getName().getString()),
+                                        (int) mouseX, (int) mouseY
+                                );
+                            }
+                        }
+                    }
+                }
+            } else if (executedCommand.startsWith("spawn ")) {
+                String[] parts = executedCommand.split(" ");
+                if (parts.length >= 2) {
+                    slotDrawable.draw(guiGraphics, commandSlotX- 1, commandSlotY + 1);
+
+                    if (mouseX >= commandSlotX && mouseX <= commandSlotX + 16 && mouseY >= commandSlotY && mouseY <= commandSlotY + 16) {
+                        guiGraphics.renderTooltip(
+                                Minecraft.getInstance().font,
+                                Component.literal("Planet: " + parts[1]),
+                                (int) mouseX, (int) mouseY
+                        );
                     }
                 }
             }
@@ -431,6 +465,18 @@ public class SoulCandleRecipeCategory implements IRecipeCategory<SoulCandleRecip
                                     .addItemStack(new ItemStack(block));
                         }
                     }
+                }
+            }
+
+            else if (executedCommand.startsWith("spawn ")) {
+                String[] parts = executedCommand.split(" ");
+                if (parts.length >= 2) {
+                    System.out.println("Test fromNamespaceAndPath: " + "textures/sky/" + parts[1] + ".png");
+                            builder.addSlot(RecipeIngredientRole.OUTPUT, commandSlotX, commandSlotY)
+                                    .setOverlay(
+                                            new PlanetDrawable(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/sky/" + parts[1] + ".png"),
+                                                    14, 32, 8),
+                                            1, 1);
                 }
             }
         }

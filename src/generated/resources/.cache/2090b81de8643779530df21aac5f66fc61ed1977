@@ -1,4 +1,4 @@
-// 1.21	2025-09-25T09:37:59.3583587	Item Models: stellar_sorcery
+// 1.21	2026-01-11T23:51:11.4912179	Item Models: stellar_sorcery
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
 a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay_jar.json
@@ -22,6 +22,8 @@ b8548e4f9e3ed07149ee3acc79021b5626999219 assets/stellar_sorcery/models/item/red_
 ab886abd328a6fb7fb0dac837bba781917e8ecf2 assets/stellar_sorcery/models/item/root.json
 1262d036adab1536d7c8f136bb106f687dbcf151 assets/stellar_sorcery/models/item/shadow_clay_jar.json
 21e118bd6b58875c8be8ca306ad81d6f92159e3a assets/stellar_sorcery/models/item/soft_clay_jar.json
+265398e5dfa46ce6060da468b1a0bd3da9cedcf6 assets/stellar_sorcery/models/item/soul_blooms.json
+57d6a45233d04fb8bd415c9922240c193e98b152 assets/stellar_sorcery/models/item/soul_bloom_seeds.json
 91d45bbb857ba0e3c44fd8c83a4b0d6788607134 assets/stellar_sorcery/models/item/stone_clay_jar.json
 81860b9b1892cd4b773c95d9ff732eea3151d4aa assets/stellar_sorcery/models/item/storm_clay_jar.json
 7d30d796ad3e297db33065fe72a47d6f3b467c4d assets/stellar_sorcery/models/item/sun_clay_jar.json

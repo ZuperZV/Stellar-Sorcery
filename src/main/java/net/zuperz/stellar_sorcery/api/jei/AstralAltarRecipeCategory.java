@@ -188,9 +188,9 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
         // Entity Type
         recipe.entityType.ifPresent(needs -> {
             int iconX = 76 - 2;
-            int iconY = centerY - 20;
+            int iconY = centerY - 19;
 
-            slotDrawable.draw(guiGraphics, iconX- 1, iconY + 1);
+            slotDrawable.draw(guiGraphics, iconX- 1, iconY - 1);
 
             if (mouseX >= iconX && mouseX <= iconX + 16 && mouseY >= iconY && mouseY <= iconY + 16) {
                 guiGraphics.renderTooltip(
@@ -302,7 +302,7 @@ public class AstralAltarRecipeCategory implements IRecipeCategory<AstralAltarRec
                 int slotSize = 16;
                 float scaleFloat = slotSize / maxSize;
 
-                builder.addSlot(RecipeIngredientRole.INPUT, 76 - 2, centerY - 20)
+                builder.addSlot(RecipeIngredientRole.INPUT, 76 - 2, centerY - 19)
                         .setOverlay(
                                 new EntityDrawable(slotSize, slotSize,
                                         (EntityType<? extends LivingEntity>) entityType,

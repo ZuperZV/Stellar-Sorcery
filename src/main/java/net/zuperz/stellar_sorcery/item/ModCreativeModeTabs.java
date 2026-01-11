@@ -118,6 +118,9 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
 
+                        pOutput.accept(ModItems.SOUL_BLOOMS.get());
+                        pOutput.accept(ModItems.SOUL_BLOOM_SEEDS.get());
+
                         pOutput.accept(ModBlocks.RED_CAMPION.get());
                         pOutput.accept(ModBlocks.CALENDULA.get());
                         pOutput.accept(ModBlocks.NIGELLA_DAMASCENA.get());
