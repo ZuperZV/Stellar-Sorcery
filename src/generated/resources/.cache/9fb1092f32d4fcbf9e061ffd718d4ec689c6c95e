@@ -1,4 +1,4 @@
-// 1.21	2026-01-11T23:51:11.4938825	Recipes
+// 1.21	2026-01-12T17:13:40.343917	Recipes
 1cbf3bf1bb75677be898fec8e936cbf90d971988 data/minecraft/advancement/recipes/misc/calcite.json
 6fdacc99dad05300d69402d39fc23f719e621077 data/minecraft/recipe/calcite.json
 d3747469a9e4d2883c7d240b64560b806091fb68 data/stellar_sorcery/advancement/recipes/misc/astral_altar/dirt.json
@@ -24,6 +24,7 @@ f6a6e7e1313b3ad043d005b9d18c41825a07a34f data/stellar_sorcery/advancement/recipe
 90f8d6b7073f00377f06640da1ed7fdd15cafc90 data/stellar_sorcery/advancement/recipes/misc/essence_amulet/bottle_essence_of_radiance.json
 5975f2b4dcd6c37a5c7edb808565c4c2c06429f1 data/stellar_sorcery/advancement/recipes/misc/essence_amulet/bottle_essence_of_wrath.json
 8e3b97172b00d0dfab85c1536c1c7b0ad0dd342c data/stellar_sorcery/advancement/recipes/misc/essence_boiler.json
+418a6ad3341520603c0d8e32bc0f11688bf4ca64 data/stellar_sorcery/advancement/recipes/misc/fritillaria_meleagris_seeds.json
 a6909233ee9ce0ae1368cda609591ebb54adacc8 data/stellar_sorcery/advancement/recipes/misc/light_beam_emitter.json
 4735c6dc43cd7e2e1ca4c86af67e3b799302513b data/stellar_sorcery/advancement/recipes/misc/light_infuser.json
 c0413087d9d3295500eb7c15db2f2193d81f4276 data/stellar_sorcery/advancement/recipes/misc/light_jar.json
@@ -87,6 +88,7 @@ aa71d9361f9bcb18d9759230e76c07064adf4b50 data/stellar_sorcery/recipe/essence_amu
 8a9975e525427779417f5e3398ffdf3faa62a3a0 data/stellar_sorcery/recipe/essence_amulet/bottle_essence_of_radiance.json
 bc206a621259394e0e01de9ad7f6efbbe2333f19 data/stellar_sorcery/recipe/essence_amulet/bottle_essence_of_wrath.json
 17179f9155c9aff87896d8fd56de8b0717e5b394 data/stellar_sorcery/recipe/essence_boiler.json
+b8a453e20e57bee5cf0d03d6e427f46eb7db13b7 data/stellar_sorcery/recipe/fritillaria_meleagris_seeds.json
 7d5c046c5f6b110fbb6b726ed0385432848e48bb data/stellar_sorcery/recipe/light_beam_emitter.json
 bec70dba2fdb663dc41f4ea3542471cb32b696a7 data/stellar_sorcery/recipe/light_infuser.json
 3c0944b8f4dccc65c1b43500ba773e918feecff0 data/stellar_sorcery/recipe/light_jar.json

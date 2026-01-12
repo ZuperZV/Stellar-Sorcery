@@ -62,6 +62,7 @@ public class FritillariaMeleagrisCropBlock extends CropBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
         if (state.getValue(getAgeProperty()) == MAX_AGE) {
+            if (random.nextInt(99) != 0) return;
             double x = pos.getX() + 0.5D + (random.nextDouble() - 0.5D);
             double y = pos.getY() + 1.0D;
             double z = pos.getZ() + 0.5D + (random.nextDouble() - 0.5D);

@@ -66,6 +66,8 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.LUNAR_JAR.get());
                         pOutput.accept(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get());
 
+                        pOutput.accept(ModBlocks.ITEM_EMITTER.get());
+
                         pOutput.accept(ModItems.ROOT.get());
                         pOutput.accept(ModItems.BLUESTONE_DUST.get());
 

@@ -133,6 +133,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         // Crafting Shapeless
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get(), 2)
+                .requires(ModItems.FRITILLARIA_MELEAGRIS)
+                .unlockedBy("has_fritillaria_meleagris", has(ModItems.FRITILLARIA_MELEAGRIS))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "fritillaria_meleagris_seeds"));
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.ESSENCE_BOILER.get())
                 .requires(Blocks.CAMPFIRE)
                 .requires(Blocks.CAULDRON)

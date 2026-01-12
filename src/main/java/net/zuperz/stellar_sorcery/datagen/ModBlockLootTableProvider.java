@@ -52,6 +52,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.LUNAR_INFUSER.get());
         dropSelf(ModBlocks.LUNAR_JAR.get());
         dropSelf(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get());
+        dropSelf(ModBlocks.ITEM_EMITTER.get());
         dropSelf(ModBlocks.LIGHT_INFUSER.get());
         dropSelf(ModBlocks.LIGHT_JAR.get());
         dropSelf(ModBlocks.LIGHT_BEAM_EMITTER.get());

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=north,on=false": { "model": "stellar_sorcery:block/item_emitter" },
+    "facing=north,on=true":  { "model": "stellar_sorcery:block/item_emitter_on" },
+
+    "facing=south,on=false": { "model": "stellar_sorcery:block/item_emitter", "y": 180 },
+    "facing=south,on=true":  { "model": "stellar_sorcery:block/item_emitter_on", "y": 180 },
+
+    "facing=east,on=false":  { "model": "stellar_sorcery:block/item_emitter", "y": 90 },
+    "facing=east,on=true":   { "model": "stellar_sorcery:block/item_emitter_on", "y": 90 },
+
+    "facing=west,on=false":  { "model": "stellar_sorcery:block/item_emitter", "y": 270 },
+    "facing=west,on=true":   { "model": "stellar_sorcery:block/item_emitter_on", "y": 270 },
+
+    "facing=up,on=false":  { "model": "stellar_sorcery:block/item_emitter", "x": -90 },
+    "facing=up,on=true":   { "model": "stellar_sorcery:block/item_emitter_on", "x": -90 },
+
+    "facing=down,on=false":  { "model": "stellar_sorcery:block/item_emitter", "x": 90 },
+    "facing=down,on=true":   { "model": "stellar_sorcery:block/item_emitter_on", "x": 90 }
+  }
+}

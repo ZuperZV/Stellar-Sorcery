@@ -19,8 +19,8 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 public class SoulBloomCropBlock extends CropBlock {
-    public static final int MAX_AGE = 7;
-    public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 7);
+    public static final int MAX_AGE = 6;
+    public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 6);
 
     public SoulBloomCropBlock(Properties properties) {
         super(properties);
@@ -60,6 +60,7 @@ public class SoulBloomCropBlock extends CropBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
         if (state.getValue(getAgeProperty()) == MAX_AGE) {
+            if (random.nextInt(99) != 0) return;
             double x = pos.getX() + 0.5D + (random.nextDouble() - 0.5D);
             double y = pos.getY() + 1.0D;
             double z = pos.getZ() + 0.5D + (random.nextDouble() - 0.5D);
