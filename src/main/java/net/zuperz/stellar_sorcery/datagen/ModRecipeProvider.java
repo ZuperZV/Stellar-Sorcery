@@ -102,7 +102,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_stellar_sorcery_flower_items", has(ModTags.Items.STELLAR_SORCERY_FLOWER_ITEMS))
                 .save(pWriter);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LIGHT_BEAM_EMITTER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LIGHT_BEAM_EMITTER.get(), 3)
+                .pattern(" A ")
+                .pattern(" D ")
+                .pattern("BCB")
+                .define('A', Items.SPIDER_EYE)
+                .define('B', Items.AMETHYST_SHARD)
+                .define('C', ItemTags.LOGS)
+                .define('D', Items.BUCKET)
+                .unlockedBy("has_spider_eye", has(Items.SPIDER_EYE))
+                .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ITEM_EMITTER.get(), 3)
                 .pattern(" A ")
                 .pattern("BCB")
                 .define('A', Items.SPIDER_EYE)
@@ -196,6 +207,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .timeOfDay(TimeOfDay.DAY)
                 .recipeTime(90)
                 .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.POPPY),
+                        Ingredient.of(Blocks.ROSE_BUSH)
+                )
+                .withBlock(Blocks.ROSE_BUSH)
+                .needsBlock(false)
+                .blockOutput(Blocks.POPPY)
+                .fluidInput(new FluidStack(ModFluids.SOURCE_NOCTILUME.get(), 500))
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(80)
+                .unlockedBy("has_rose", has(Blocks.ROSE_BUSH))
                 .save(pWriter);
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.RED_CAMPION.asItem()),

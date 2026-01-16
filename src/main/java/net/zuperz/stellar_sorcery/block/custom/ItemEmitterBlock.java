@@ -2,8 +2,11 @@ package net.zuperz.stellar_sorcery.block.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -98,8 +101,20 @@ public class ItemEmitterBlock extends Block implements EntityBlock {
             p_60503_ = p_60503_.setValue(ON, !p_60503_.getValue(ON));
             p_60504_.setBlock(p_60505_, p_60503_, 3);
             return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
         }
-        return super.useWithoutItem(p_60503_, p_60504_, p_60505_, p_60506_, p_60508_);
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack p_316304_, BlockState p_316362_, Level p_316459_, BlockPos p_316366_, Player p_316132_, InteractionHand p_316595_, BlockHitResult p_316140_) {
+        if (!p_316459_.isClientSide) {
+            p_316362_ = p_316362_.setValue(ON, !p_316362_.getValue(ON));
+            p_316459_.setBlock(p_316366_, p_316362_, 3);
+            return ItemInteractionResult.SUCCESS;
+        } else {
+            return ItemInteractionResult.FAIL;
+        }
     }
 
     @Override

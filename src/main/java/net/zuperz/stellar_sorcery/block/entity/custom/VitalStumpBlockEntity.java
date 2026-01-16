@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static net.zuperz.stellar_sorcery.block.custom.SoulCandleBlock.CRAFTING;
 import static net.zuperz.stellar_sorcery.block.custom.VitalStumpBlock.DONE;
 
 public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContainer {
@@ -72,9 +73,10 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, VitalStumpBlockEntity altar) {
-        BlockState oldState = level.getBlockState(pos);
+        BlockState oldState = state;
 
         oldState = oldState.setValue(DONE, false);
+        oldState = oldState.setValue(VitalStumpBlock.CRAFTING, altar.progress > 0);
 
         altar.prevProgress = altar.progress;
         if (altar.hasRecipe()) {
@@ -89,8 +91,6 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
             altar.progress = 0;
             altar.setChanged();
         }
-
-        oldState = oldState.setValue(VitalStumpBlock.CRAFTING, altar.progress > 0);
 
         level.setBlockAndUpdate(pos, oldState);
 
@@ -365,11 +365,12 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
 
     @Override
     public int[] getSlotsForFace(Direction p_58363_) {
-        if (p_58363_ == Direction.DOWN) {
-            return new int[]{0};
-        } else {
-            return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
-        }
+        return new int[]{0};
+        //if (p_58363_ == Direction.DOWN) {
+        //    return new int[]{0};
+        //} else {
+        //    return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
+        //}
     }
 
     @Override
@@ -382,7 +383,7 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
-        return direction == Direction.DOWN && slot == 0 && progress >= maxProgress;
+        return slot == 0 && progress <= 0 && !hasRecipe();
     }
 
     @Override
@@ -434,13 +435,12 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
     @Override
     public ItemStack removeItem(int slotIndex, int count) {
         if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            if (progress >= maxProgress) {
+            if (progress <= 0 && !hasRecipe()) {
                 return inventory.extractItem(slotIndex, count, false);
             }
         }
         return ItemStack.EMPTY;
     }
-
 
     @Override
     public ItemStack removeItemNoUpdate(int slotIndex) {

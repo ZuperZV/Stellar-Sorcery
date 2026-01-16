@@ -25,7 +25,6 @@ public class ItemEmitterBlockEntity extends BlockEntity {
 
     public static void tick(Level level, BlockPos pos, BlockState state, ItemEmitterBlockEntity self) {
         if (level.isClientSide) return;
-
         if (state.getValue(ItemEmitterBlock.ON)) return;
 
         if (self.beamTicksRemaining-- > 0) return;
@@ -33,106 +32,174 @@ public class ItemEmitterBlockEntity extends BlockEntity {
 
         Direction facing = state.getValue(ItemEmitterBlock.FACING);
 
-        ItemStack extracted = extractOneItem(level, pos, facing);
-        if (extracted.isEmpty()) return;
+        SourceSlot source = findValidSource(level, pos, facing);
+        if (source == null) return;
 
-        boolean success = sendToTarget(level, pos, facing, extracted);
+        if (!sendToTarget(level, pos, facing, source)) return;
 
-        if (!success) {
-            returnToSource(level, pos, facing, extracted);
-        }
+        source.container.removeItem(source.slot, 1);
+        markChanged(source.be);
     }
 
-    private static ItemStack extractOneItem(Level level, BlockPos pos, Direction facing) {
-        BlockEntity sourceBE = level.getBlockEntity(pos.relative(facing.getOpposite()));
-        if (sourceBE instanceof Container container) {
-            for (int i = 0; i < container.getContainerSize(); i++) {
-                ItemStack stack = container.getItem(i);
-                if (!stack.isEmpty()) {
-                    ItemStack oneItem = stack.split(1);
-                    container.setItem(i, stack);
-                    markChanged(sourceBE);
-                    return oneItem;
-                }
+    private static SourceSlot findValidSource(Level level, BlockPos pos, Direction facing) {
+        BlockEntity be = level.getBlockEntity(pos.relative(facing.getOpposite()));
+        if (!(be instanceof Container container)) return null;
+
+        Direction side = facing;
+        int[] slots = getSlots(container, side);
+
+        for (int slot : slots) {
+            ItemStack stack = container.getItem(slot);
+            if (stack.isEmpty()) continue;
+
+            if (!canTakeItem(container, slot, stack, side)) continue;
+
+            ItemStack preview = stack.copy();
+            preview.setCount(1);
+
+            if (canInsertAnywhere(level, pos, facing, preview)) {
+                return new SourceSlot(container, be, slot, preview);
             }
         }
-        return ItemStack.EMPTY;
+        return null;
     }
 
-    private static boolean sendToTarget(Level level, BlockPos pos, Direction facing, ItemStack stack) {
+    private static boolean canInsertAnywhere(Level level, BlockPos pos, Direction facing, ItemStack stack) {
         BlockPos.MutableBlockPos cursor = pos.mutable();
 
         for (int i = 1; i <= MAX_BEAM_LENGTH; i++) {
             cursor.move(facing);
-            BlockEntity targetBE = level.getBlockEntity(cursor);
-            if (targetBE == null) continue;
+            BlockEntity be = level.getBlockEntity(cursor);
+            if (be == null) continue;
 
             Container container = null;
+            Direction side = facing.getOpposite();
 
-
-            if (targetBE instanceof ItemEmitterBlockEntity emitter) {
+            if (be instanceof ItemEmitterBlockEntity emitter) {
                 if (!emitter.getBlockState().getValue(ItemEmitterBlock.ON)) continue;
 
-                Direction targetDirection = emitter.getBlockState().getValue(ItemEmitterBlock.FACING);
-                BlockPos newTargetPos = emitter.getBlockPos().relative(targetDirection);
-                BlockEntity targetContainerBE = level.getBlockEntity(newTargetPos);
-
-                if (targetContainerBE instanceof Container c) {
+                Direction newFacing = emitter.getBlockState().getValue(ItemEmitterBlock.FACING);
+                BlockEntity next = level.getBlockEntity(emitter.getBlockPos().relative(newFacing));
+                if (next instanceof Container c) {
                     container = c;
-                    targetBE = targetContainerBE;
+                    side = newFacing.getOpposite();
                 }
-            } else if (targetBE instanceof Container c) {
+            } else if (be instanceof Container c) {
                 container = c;
             }
 
-            if (container != null) {
-                for (int slot = 0; slot < container.getContainerSize(); slot++) {
-                    ItemStack slotStack = container.getItem(slot);
-
-                    if (slotStack.isEmpty()) {
-                        container.setItem(slot, stack);
-                        markChanged(targetBE);
-                        return true;
-                    }
-
-                    if (ItemStack.isSameItemSameComponents(slotStack, stack)
-                            && slotStack.getCount() < slotStack.getMaxStackSize()) {
-                        slotStack.grow(1);
-                        markChanged(targetBE);
-                        return true;
-                    }
-                }
+            if (container != null && canInsert(container, stack, side)) {
+                return true;
             }
         }
-
         return false;
     }
 
-    private static void returnToSource(Level level, BlockPos pos, Direction facing, ItemStack stack) {
-        BlockEntity sourceBE = level.getBlockEntity(pos.relative(facing.getOpposite()));
-        if (sourceBE instanceof Container container) {
-            for (int slot = 0; slot < container.getContainerSize(); slot++) {
-                ItemStack slotStack = container.getItem(slot);
+    private static boolean sendToTarget(Level level, BlockPos pos, Direction facing, SourceSlot source) {
+        BlockPos.MutableBlockPos cursor = pos.mutable();
 
-                if (slotStack.isEmpty()) {
-                    container.setItem(slot, stack);
-                    markChanged(sourceBE);
-                    return;
-                }
+        for (int i = 1; i <= MAX_BEAM_LENGTH; i++) {
+            cursor.move(facing);
+            BlockEntity be = level.getBlockEntity(cursor);
+            if (be == null) continue;
 
-                if (ItemStack.isSameItemSameComponents(slotStack, stack)
-                        && slotStack.getCount() < slotStack.getMaxStackSize()) {
-                    slotStack.grow(1);
-                    markChanged(sourceBE);
-                    return;
+            Container container = null;
+            Direction side = facing.getOpposite();
+
+            if (be instanceof ItemEmitterBlockEntity emitter) {
+                if (!emitter.getBlockState().getValue(ItemEmitterBlock.ON)) continue;
+
+                Direction newFacing = emitter.getBlockState().getValue(ItemEmitterBlock.FACING);
+                BlockEntity next = level.getBlockEntity(emitter.getBlockPos().relative(newFacing));
+                if (next instanceof Container c) {
+                    container = c;
+                    be = next;
+                    side = newFacing.getOpposite();
                 }
+            } else if (be instanceof Container c) {
+                container = c;
+            }
+
+            if (container != null && tryInsert(container, be, source.stack.copy(), side)) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private static boolean canInsert(Container container, ItemStack stack, Direction side) {
+        int[] slots = getSlots(container, side);
+        for (int slot : slots) {
+            if (!canPlaceItem(container, stack, slot, side)) continue;
+
+            ItemStack existing = container.getItem(slot);
+            int max = Math.min(container.getMaxStackSize(stack), stack.getMaxStackSize());
+
+            if (existing.isEmpty()) return true;
+            if (ItemStack.isSameItemSameComponents(existing, stack)
+                    && existing.getCount() < max) return true;
+        }
+        return false;
+    }
+
+    private static boolean tryInsert(Container container, BlockEntity be, ItemStack stack, Direction side) {
+        int[] slots = getSlots(container, side);
+
+        for (int slot : slots) {
+            if (!canPlaceItem(container, stack, slot, side)) continue;
+
+            ItemStack existing = container.getItem(slot);
+            int max = Math.min(container.getMaxStackSize(stack), stack.getMaxStackSize());
+
+            if (existing.isEmpty()) {
+                container.setItem(slot, stack);
+                markChanged(be);
+                return true;
+            }
+
+            if (ItemStack.isSameItemSameComponents(existing, stack)
+                    && existing.getCount() < max) {
+                existing.grow(1);
+                markChanged(be);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int[] getSlots(Container container, Direction side) {
+        if (container instanceof WorldlyContainer wc) {
+            return wc.getSlotsForFace(side);
+        }
+        int size = container.getContainerSize();
+        int[] slots = new int[size];
+        for (int i = 0; i < size; i++) slots[i] = i;
+        return slots;
+    }
+
+    private static boolean canPlaceItem(Container container, ItemStack stack, int slot, Direction side) {
+        if (!container.canPlaceItem(slot, stack)) return false;
+        return !(container instanceof WorldlyContainer wc)
+                || wc.canPlaceItemThroughFace(slot, stack, side);
+    }
+
+    private static boolean canTakeItem(Container container, int slot, ItemStack stack, Direction side) {
+        return !(container instanceof WorldlyContainer wc)
+                || wc.canTakeItemThroughFace(slot, stack, side);
     }
 
     private static void markChanged(BlockEntity be) {
-        if (be instanceof RandomizableContainerBlockEntity r) {
-            r.setChanged();
+        be.setChanged();
+
+        if (be.getLevel() != null) {
+            be.getLevel().sendBlockUpdated(
+                    be.getBlockPos(),
+                    be.getBlockState(),
+                    be.getBlockState(),
+                    3
+            );
         }
     }
+
+    private record SourceSlot(Container container, BlockEntity be, int slot, ItemStack stack) {}
 }

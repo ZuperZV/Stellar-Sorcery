@@ -414,11 +414,12 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
     @Override
     public int[] getSlotsForFace(Direction p_58363_) {
-        if (p_58363_ == Direction.DOWN) {
-            return new int[]{0};
-        } else {
-            return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
-        }
+        return new int[]{0};
+        //if (p_58363_ == Direction.DOWN) {
+        //    return new int[]{0};
+        //} else {
+        //    return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
+        //}
     }
 
     @Override
@@ -431,7 +432,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
-        return direction == Direction.DOWN && slot == 0 && progress >= maxProgress;
+        return slot == 0 && progress <= 0 && !hasRecipe();
     }
 
     @Override
@@ -483,13 +484,12 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
     @Override
     public ItemStack removeItem(int slotIndex, int count) {
         if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            if (progress >= maxProgress) {
+            if (progress <= 0 && !hasRecipe()) {
                 return inventory.extractItem(slotIndex, count, false);
             }
         }
         return ItemStack.EMPTY;
     }
-
 
     @Override
     public ItemStack removeItemNoUpdate(int slotIndex) {

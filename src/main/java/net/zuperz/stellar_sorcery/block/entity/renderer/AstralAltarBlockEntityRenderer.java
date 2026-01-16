@@ -47,10 +47,7 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "magic_aura"), "main");
 
     private final ModelPart magicPlane;
-
-    private Item lastRenderedItem = Items.AIR;
     private int progress = 0;
-
 
     public Entity entity = null;
 
@@ -94,30 +91,50 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
     @Override
     public void render(AstralAltarBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+
         ResourceLocation texture = null;
 
         if (pBlockEntity.getBlockState().getValue(CRAFTING)) {
+            texture = ResourceLocation.fromNamespaceAndPath(
+                    StellarSorcery.MOD_ID,
+                    "textures/entity/magic_aura.png"
+            );
             progress++;
         } else {
             progress = 0;
         }
 
-        float fadeAlpha = Mth.clamp((float) progress / (pBlockEntity.maxProgress * 5), 0f, 1f);
+        float fadeAlpha = Mth.clamp(
+                (float) progress / (pBlockEntity.maxProgress * 5),
+                0f,
+                1f
+        );
 
         if (texture != null) {
             pPoseStack.pushPose();
 
             pPoseStack.translate(0.5, 1.01, 0.5);
-            pPoseStack.mulPose(Axis.YP.rotationDegrees((pBlockEntity.getLevel().getGameTime() + pPartialTick) % 360));
+            pPoseStack.mulPose(
+                    Axis.YP.rotationDegrees(
+                            (pBlockEntity.getLevel().getGameTime() + pPartialTick) % 360
+                    )
+            );
 
             RenderType renderType = RenderType.entityTranslucent(texture);
             VertexConsumer buffer = pBufferSource.getBuffer(renderType);
 
             RenderSystem.enableBlend();
-            int alpha = (int)(fadeAlpha * 255.0f) & 0xFF;
+
+            int alpha = (int) (fadeAlpha * 255.0f) & 0xFF;
             int color = (alpha << 24) | 0xFFFFFF;
 
-            magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY, color);
+            magicPlane.render(
+                    pPoseStack,
+                    buffer,
+                    pPackedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    color
+            );
 
             RenderSystem.disableBlend();
             pPoseStack.popPose();

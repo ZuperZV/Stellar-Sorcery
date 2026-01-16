@@ -1,8 +1,10 @@
 package net.zuperz.stellar_sorcery.block.entity.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -14,6 +16,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -43,9 +46,7 @@ public class VitalStumpBlockEntityRenderer implements BlockEntityRenderer<VitalS
                 new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "magic_aura"), "main");
 
         private final ModelPart magicPlane;
-
-        private Item lastRenderedItem = Items.AIR;
-        private int fadeTicks = 0;
+        private int progress = 0;
 
         public VitalStumpBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
             this.magicPlane = context.bakeLayer(MAGIC_AURA_LAYER).getChild("plane");
@@ -73,46 +74,53 @@ public class VitalStumpBlockEntityRenderer implements BlockEntityRenderer<VitalS
         @Override
         public void render(VitalStumpBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                            MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-            ItemStack input = pBlockEntity.inventory.getStackInSlot(0);
             ResourceLocation texture = null;
 
-            Item currentItem = input.getItem();
-
-            if (currentItem != lastRenderedItem) {
-                fadeTicks = 0;
-                lastRenderedItem = currentItem;
-            } else if (!input.isEmpty()) {
-                fadeTicks++;
-            }
-
-            float fadeAlpha = Mth.clamp((fadeTicks + pPartialTick) / 40.0f, 0.0f, 1.0f);
-
             if (pBlockEntity.getBlockState().getValue(CRAFTING)) {
-                texture = ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/entity/magic_aura.png");
+                texture = ResourceLocation.fromNamespaceAndPath(
+                        StellarSorcery.MOD_ID,
+                        "textures/entity/magic_aura.png"
+                );
+                progress++;
+            } else {
+                progress = 0;
             }
 
-            if (texture != null && fadeAlpha > 0.01f) {
+            float fadeAlpha = Mth.clamp(
+                    (float) progress / (pBlockEntity.maxProgress * 5),
+                    0f,
+                    1f
+            );
+
+            if (texture != null) {
                 pPoseStack.pushPose();
 
                 pPoseStack.translate(0.5, 1.01, 0.5);
-                pPoseStack.mulPose(Axis.YP.rotationDegrees((pBlockEntity.getLevel().getGameTime() + pPartialTick) % 360));
+                pPoseStack.mulPose(
+                        Axis.YP.rotationDegrees(
+                                (pBlockEntity.getLevel().getGameTime() + pPartialTick) % 360
+                        )
+                );
 
                 RenderType renderType = RenderType.entityTranslucent(texture);
                 VertexConsumer buffer = pBufferSource.getBuffer(renderType);
 
                 RenderSystem.enableBlend();
 
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, fadeAlpha);
+                int alpha = (int) (fadeAlpha * 255.0f) & 0xFF;
+                int color = (alpha << 24) | 0xFFFFFF;
 
-                magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
-
-                pPoseStack.popPose();
-
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                magicPlane.render(
+                        pPoseStack,
+                        buffer,
+                        pPackedLight,
+                        OverlayTexture.NO_OVERLAY,
+                        color
+                );
 
                 RenderSystem.disableBlend();
+                pPoseStack.popPose();
             }
-
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
