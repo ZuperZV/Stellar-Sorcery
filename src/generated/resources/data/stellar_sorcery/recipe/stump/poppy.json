@@ -1,0 +1,19 @@
+{
+  "type": "stellar_sorcery:stump",
+  "block": "minecraft:rose_bush",
+  "block_output": "minecraft:poppy",
+  "fake_time_of_day": "DAY",
+  "fluid_input": {
+    "amount": 500,
+    "fluid": "stellar_sorcery:source_noctilume"
+  },
+  "ingredient": {
+    "item": "minecraft:rose_bush"
+  },
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:poppy"
+  },
+  "time": 80,
+  "time_of_day": "DAY"
+}

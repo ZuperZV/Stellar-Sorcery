@@ -29,6 +29,11 @@
 
   "item.stellar_sorcery.fritillaria_meleagris_seeds": "Fritillaria Meleagris Seeds",
   "item.stellar_sorcery.fritillaria_meleagris": "Fritillaria Meleagris",
+  "item.stellar_sorcery.fritillaria_meleagris_crop": "Fritillaria Meleagris Crop",
+
+  "item.stellar_sorcery.soul_bloom_seeds": "Soul Bloom Seeds",
+  "item.stellar_sorcery.soul_blooms": "Soul Blooms",
+  "item.stellar_sorcery.soul_bloom_crop": "Soul Bloom Crop",
 
   "item.stellar_sorcery.moonshine_shard": "Moonshine Shard",
   "item.stellar_sorcery.moonshine_catalyst": "Moonshine Catalyst",
@@ -99,6 +104,7 @@
   "block.stellar_sorcery.light_jar": "Light Jar",
   "block.stellar_sorcery.light_beam_emitter": "Light Beam Emitter",
   "block.stellar_sorcery.light_infuser": "Light Infuser",
+  "block.stellar_sorcery.item_emitter": "Item Emitter",
 
   "block.stellar_sorcery.lunar_jar": "Lunar Jar",
   "block.stellar_sorcery.lunar_light_beam_emitter": "Lunar Light Beam Emitter",
@@ -151,9 +157,15 @@
   "item.stellar_sorcery.fire_time": "Fire Time",
   "item.stellar_sorcery.swiftness": "Swiftness",
 
+  "effect.stellar_sorcery.vulnerability": "Vulnerability",
+  "effect.stellar_sorcery.omnivision": "Omnivision",
+
+  "armor_type.stellar_sorcery.helmet": "Helmet",
+  "armor_type.stellar_sorcery.chestplate": "Chestplate",
+  "armor_type.stellar_sorcery.leggings": "Leggings",
+  "armor_type.stellar_sorcery.boots": "Boots",
+
   "/execute as %player% run data merge entity @s {Fire:200}": "Set player on fire (00:10)",
-
-
 
   "advancements.story.mine_stone.root.title": "Welcome, Budding Witch!",
   "advancements.story.mine_stone.root.description": "Pick a magical flower. Accidentally summon a forest spirit. Standard procedure.",

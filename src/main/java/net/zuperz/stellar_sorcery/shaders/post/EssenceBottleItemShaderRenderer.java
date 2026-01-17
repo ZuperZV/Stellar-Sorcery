@@ -10,6 +10,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.effect.ModEffects;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -62,8 +64,11 @@ public class EssenceBottleItemShaderRenderer {
     public static void onRenderStage(RenderLevelStageEvent event) {
         if (activeShaders.isEmpty()) return;
 
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc.player != null && mc.player.hasEffect(ModEffects.OMNIVISION)) return;
+
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            Minecraft mc = Minecraft.getInstance();
 
             Iterator<Map.Entry<ResourceLocation, ActiveShader>> it = activeShaders.entrySet().iterator();
             while (it.hasNext()) {

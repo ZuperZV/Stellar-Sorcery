@@ -121,6 +121,12 @@ public class SigilItem extends Item {
             return;
         }
 
+        String armorType = SigilDataLoader.getArmorByName(nameData.name());
+        if (armorType != null) {
+            MutableComponent armorLine = Component.translatable("armor_type.stellar_sorcery." + armorType);
+            pTooltipComponents.add(armorLine.withStyle(ChatFormatting.AQUA));
+        }
+
         List<MobEffectInstance> effects = SigilDataLoader.getEffectsByName(nameData.name());
         List<MobEffectInstance> toolTipEffects = new ArrayList<>();
 

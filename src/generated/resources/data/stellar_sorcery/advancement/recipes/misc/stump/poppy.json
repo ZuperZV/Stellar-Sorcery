@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rose": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:rose_bush"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:stump/poppy"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rose"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:stump/poppy"
+    ]
+  }
+}

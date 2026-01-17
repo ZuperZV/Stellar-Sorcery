@@ -198,7 +198,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SOUL_BLOOM_SEEDS.get()),
                         Ingredient.of(Items.WHEAT_SEEDS),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
-                        Ingredient.of(Items.WHEAT)
+                        Ingredient.of(Items.WHEAT),
+                        Ingredient.of(Items.GLOW_BERRIES),
+                        Ingredient.of(Items.FERMENTED_SPIDER_EYE)
                 )
                 .withBlock(Blocks.WHEAT)
                 .withBlockState(Map.of("age", "7"))

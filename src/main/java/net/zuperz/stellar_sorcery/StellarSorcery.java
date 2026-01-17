@@ -5,7 +5,10 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Blocks;
@@ -19,6 +22,7 @@ import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.block.entity.renderer.*;
 import net.zuperz.stellar_sorcery.data.*;
+import net.zuperz.stellar_sorcery.effect.ModEffects;
 import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
 import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
@@ -80,6 +84,7 @@ public class StellarSorcery
         ModEntities.register(modEventBus);
 
         ModMenuTypes.register(modEventBus);
+        ModEffects.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
     }
@@ -139,6 +144,12 @@ public class StellarSorcery
         @SubscribeEvent
         public static void registerItemDecorators(RegisterItemDecorationsEvent event) {
             event.register(ModItems.AURORA_SKULL.get(), new StarDustNumberBarDecorator());
+
+            for (Item item : BuiltInRegistries.ITEM) {
+                if (item instanceof ArmorItem) {
+                    event.register(item, new SigilItemOverlay());
+                }
+            }
         }
 
         @SubscribeEvent

@@ -2,7 +2,6 @@
   "name": "fire_time",
   "description": "Ignites the user’s aura with burning power.",
   "effects": [
-    { "id": "minecraft:fire_resistance", "duration": 190, "amplifier": 1 },
     { "id": "minecraft:strength", "duration": 90, "amplifier": 1 }
   ],
   "shader": {

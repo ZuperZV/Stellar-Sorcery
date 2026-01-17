@@ -107,17 +107,6 @@ public class ItemEmitterBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack p_316304_, BlockState p_316362_, Level p_316459_, BlockPos p_316366_, Player p_316132_, InteractionHand p_316595_, BlockHitResult p_316140_) {
-        if (!p_316459_.isClientSide) {
-            p_316362_ = p_316362_.setValue(ON, !p_316362_.getValue(ON));
-            p_316459_.setBlock(p_316366_, p_316362_, 3);
-            return ItemInteractionResult.SUCCESS;
-        } else {
-            return ItemInteractionResult.FAIL;
-        }
-    }
-
-    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ItemEmitterBlockEntity(pos, state);
     }

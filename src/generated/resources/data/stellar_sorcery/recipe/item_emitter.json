@@ -10,18 +10,14 @@
     },
     "C": {
       "tag": "minecraft:logs"
-    },
-    "D": {
-      "item": "minecraft:bucket"
     }
   },
   "pattern": [
     " A ",
-    " D ",
     "BCB"
   ],
   "result": {
     "count": 3,
-    "id": "stellar_sorcery:light_beam_emitter"
+    "id": "stellar_sorcery:item_emitter"
   }
 }

@@ -6,10 +6,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +22,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -33,6 +37,7 @@ import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
 import net.zuperz.stellar_sorcery.data.IModPlayerData;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
+import net.zuperz.stellar_sorcery.effect.ModEffects;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.shaders.post.EssenceBottleItemShaderRenderer;
@@ -41,6 +46,32 @@ import java.util.ArrayList;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID)
 public class ModEvents {
+
+    @SubscribeEvent
+    public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
+        LivingEntity entity = event.getEntity();
+
+        if (!entity.hasEffect(ModEffects.VULNERABILITY)) return;
+
+        if (event.getSource().is(DamageTypeTags.BYPASSES_RESISTANCE)) return;
+
+        int amplifier = entity.getEffect(ModEffects.VULNERABILITY).getAmplifier();
+
+        DamageContainer container = event.getContainer();
+
+        float oldDamage = container.getNewDamage();
+
+        float increase = (amplifier + 1) * 5F;
+        float newDamage = oldDamage * (25F + increase) / 25F;
+
+        container.setNewDamage(newDamage);
+
+        float extraDamage = newDamage - oldDamage;
+        container.setReduction(
+                DamageContainer.Reduction.MOB_EFFECTS,
+                -extraDamage
+        );
+    }
 
     @SubscribeEvent
     public static void onAnimalSacrifice(LivingDeathEvent event) {

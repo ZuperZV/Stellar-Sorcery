@@ -11,6 +11,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -35,6 +37,8 @@ import net.zuperz.stellar_sorcery.block.entity.custom.AugmentForgeBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AugmentForgeBlockEntity;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.component.SigilData;
+import net.zuperz.stellar_sorcery.component.SigilNameData;
+import net.zuperz.stellar_sorcery.data.SigilDataLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -89,7 +93,7 @@ public static final MapCodec<AstralNexusBlock> CODEC = simpleCodec(AstralNexusBl
         return new AugmentForgeBlockEntity(pPos, pState);
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return this.defaultBlockState();
@@ -156,21 +160,37 @@ public static final MapCodec<AstralNexusBlock> CODEC = simpleCodec(AstralNexusBl
                         pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
 
                         return ItemInteractionResult.SUCCESS;
-                    } else if (!pStack.isEmpty()){
-                        pPlayer.displayClientMessage(Component.literal("Ingen sigils - tilføjer nyt!"), true);
-
+                    } else if (!pStack.isEmpty()) {
                         ItemStack newSigil = pStack.copy();
+
+                        SigilNameData nameData = newSigil.get(ModDataComponentTypes.SIGIL_NAME.get());
+                        String sigilArmorType = SigilDataLoader.getArmorByName(nameData.name());
+                        String stackArmorType = "";
+
+                        if (isArmor(stack.getItem(), ArmorItem.Type.HELMET)) {
+                            stackArmorType = "helmet";
+                        } else if (isArmor(stack.getItem(), ArmorItem.Type.CHESTPLATE)) {
+                            stackArmorType = "chestplate";
+                        } else if (isArmor(stack.getItem(), ArmorItem.Type.LEGGINGS)) {
+                            stackArmorType = "leggings";
+                        } else if (isArmor(stack.getItem(), ArmorItem.Type.BOOTS)) {
+                            stackArmorType = "boots";
+                        }
+
+                        if (!stackArmorType.equalsIgnoreCase(sigilArmorType)) {
+                            pPlayer.displayClientMessage(Component.literal("Sigil passer ikke til denne armor type!"), true);
+                            System.out.println("stackArmorType: " + stackArmorType);
+                            System.out.println("sigilArmorType: " + sigilArmorType);
+                            return ItemInteractionResult.FAIL;
+                        }
 
                         pStack.shrink(1);
 
                         data.addSigil(newSigil);
-
                         stack.set(ModDataComponentTypes.SIGIL.get(), data);
-
                         forgeBE.getInputItems().setStackInSlot(0, stack);
 
                         forgeBE.setChanged();
-
                         pLevel.sendBlockUpdated(pPos, pState, pState, Block.UPDATE_ALL);
 
                         pPlayer.displayClientMessage(Component.literal("Tilføjede sigil: " +
@@ -247,5 +267,13 @@ public static final MapCodec<AstralNexusBlock> CODEC = simpleCodec(AstralNexusBl
 
         ItemStack stack = nexus.getInputItems().getStackInSlot(0);
         if (stack.isEmpty()) return;
+    }
+
+    public boolean isArmor(Item item, ArmorItem.Type type) {
+        if (item instanceof ArmorItem) {
+            ArmorItem armor = (ArmorItem) item;
+            return armor.getType() == type;
+        }
+        return false;
     }
 }
