@@ -142,6 +142,19 @@ public class ModItems {
             () -> new SpellItem(new Item.Properties().stacksTo(1).fireResistant()));
 
 
+    public static final DeferredItem<Item> SIGIL_OVERLAY_HELMET = ITEMS.register("sigil_overlay_helmet",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> SIGIL_OVERLAY_CHESTPLATE = ITEMS.register("sigil_overlay_chestplate",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> SIGIL_OVERLAY_LEGGINGS = ITEMS.register("sigil_overlay_leggings",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> SIGIL_OVERLAY_BOOTS = ITEMS.register("sigil_overlay_boots",
+            () -> new Item(new Item.Properties()));
+
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

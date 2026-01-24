@@ -11,6 +11,7 @@
   "client": [
     "AdvancementsScreenMixin",
     "AdvancementTabMixin",
+    "ItemRendererMixin",
     "ItemStackCodexTooltipMixin"
   ],
   "injectors": {

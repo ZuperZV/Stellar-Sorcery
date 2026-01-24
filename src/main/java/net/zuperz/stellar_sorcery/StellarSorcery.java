@@ -1,9 +1,6 @@
 package net.zuperz.stellar_sorcery;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.FastColor;
@@ -238,6 +235,9 @@ public class StellarSorcery
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             ModItemProperties.addCustomItemProperties();
+
+            Minecraft mc = Minecraft.getInstance();
+            mc.getItemRenderer().getItemModelShaper().rebuildCache();
         }
     }
 

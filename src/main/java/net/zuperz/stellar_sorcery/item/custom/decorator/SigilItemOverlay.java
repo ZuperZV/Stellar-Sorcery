@@ -43,7 +43,7 @@ public class SigilItemOverlay implements IItemDecorator {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 200);
 
-        guiGraphics.blit(
+        /*guiGraphics.blit(
                 ResourceLocation.fromNamespaceAndPath(
                         StellarSorcery.MOD_ID,
                         "textures/item/sigil_overlay_" + stackArmorType + ".png"
@@ -57,6 +57,7 @@ public class SigilItemOverlay implements IItemDecorator {
                 16,
                 16
         );
+         */
 
         guiGraphics.pose().popPose();
 
