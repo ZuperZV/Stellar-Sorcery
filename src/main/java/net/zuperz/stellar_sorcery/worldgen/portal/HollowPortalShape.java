@@ -20,13 +20,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 
 public class HollowPortalShape {
     private static final int MIN_WIDTH = 2;
     public static final int MAX_WIDTH = 21;
     private static final int MIN_HEIGHT = 3;
     public static final int MAX_HEIGHT = 21;
-    private static final BlockBehaviour.StatePredicate FRAME = (p_77720_, p_77721_, p_77722_) -> { return p_77720_.getBlock() == Blocks.END_PORTAL; };
+    private static final BlockBehaviour.StatePredicate FRAME = (p_77720_, p_77721_, p_77722_) -> { return p_77720_.getBlock() == Blocks.END_STONE; };
     private static final float SAFE_TRAVEL_MAX_ENTITY_XY = 4.0F;
     private static final double SAFE_TRAVEL_MAX_VERTICAL_DELTA = 1.0;
     private final LevelAccessor level;
@@ -145,7 +146,7 @@ public class HollowPortalShape {
                     return i;
                 }
 
-                if (blockstate.is(Blocks.NETHER_PORTAL)) {
+                if (blockstate.is(ModBlocks.HOLLOW_PORTAL)) {
                     this.numPortalBlocks++;
                 }
             }
@@ -155,7 +156,7 @@ public class HollowPortalShape {
     }
 
     private static boolean isEmpty(BlockState p_77718_) {
-        return p_77718_.isAir() || p_77718_.is(BlockTags.FIRE) || p_77718_.is(Blocks.NETHER_PORTAL);
+        return p_77718_.isAir() || p_77718_.is(BlockTags.FIRE) || p_77718_.is(ModBlocks.HOLLOW_PORTAL);
     }
 
     public boolean isValid() {
@@ -163,7 +164,7 @@ public class HollowPortalShape {
     }
 
     public void createPortalBlocks() {
-        BlockState blockstate = Blocks.NETHER_PORTAL.defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
+        BlockState blockstate = ModBlocks.HOLLOW_PORTAL.get().defaultBlockState().setValue(NetherPortalBlock.AXIS, this.axis);
         BlockPos.betweenClosed(this.bottomLeft, this.bottomLeft.relative(Direction.UP, this.height - 1).relative(this.rightDir, this.width - 1))
                 .forEach(p_77725_ -> this.level.setBlock(p_77725_, blockstate, 18));
     }

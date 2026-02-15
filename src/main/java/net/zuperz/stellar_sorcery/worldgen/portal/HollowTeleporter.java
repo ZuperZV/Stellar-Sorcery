@@ -46,13 +46,13 @@ public class HollowTeleporter {
     public static void registerPointOfInterest(RegisterEvent event) {
         if (event.getRegistry() == BuiltInRegistries.POINT_OF_INTEREST_TYPE) {
             event.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE.key(), helper -> {
-                ResourceLocation hollowPortalId = ResourceLocation.fromNamespaceAndPath(MOD_ID, "hollow_portal");
 
                 PoiType poiType = new PoiType(
                         ImmutableSet.copyOf(ModBlocks.HOLLOW_PORTAL.get().getStateDefinition().getPossibleStates()),
                         0, 1
                 );
 
+                ResourceLocation hollowPortalId = ResourceLocation.fromNamespaceAndPath(MOD_ID, "hollow_portal");
                 ResourceKey<PoiType> poiKey = ResourceKey.create(
                         BuiltInRegistries.POINT_OF_INTEREST_TYPE.key(),
                         hollowPortalId

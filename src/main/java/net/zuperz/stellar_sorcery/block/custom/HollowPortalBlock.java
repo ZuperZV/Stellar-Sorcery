@@ -1,5 +1,6 @@
 package net.zuperz.stellar_sorcery.block.custom;
 
+import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -10,24 +11,32 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.level.block.Portal;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.worldgen.dimension.ModDimensions;
+import net.zuperz.stellar_sorcery.worldgen.portal.HollowPortalForcer;
 import net.zuperz.stellar_sorcery.worldgen.portal.HollowPortalShape;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class HollowPortalBlock extends NetherPortalBlock {
+public class HollowPortalBlock extends NetherPortalBlock implements Portal {
     public HollowPortalBlock() {
         super(BlockBehaviour.Properties.of().noCollission().randomTicks().pushReaction(PushReaction.BLOCK).strength(-1.0F).sound(SoundType.GLASS).lightLevel(s -> 0).noLootTable());
     }
@@ -38,9 +47,7 @@ public class HollowPortalBlock extends NetherPortalBlock {
 
     public static void portalSpawn(Level world, BlockPos pos) {
         Optional<HollowPortalShape> optional = HollowPortalShape.findEmptyHollowPortalShape(world, pos, Direction.Axis.X);
-        if (optional.isPresent()) {
-            optional.get().createPortalBlocks();
-        }
+        optional.ifPresent(HollowPortalShape::createPortalBlocks);
     }
 
     @Override
@@ -86,39 +93,188 @@ public class HollowPortalBlock extends NetherPortalBlock {
             );
     }
 
+    @Nullable
     @Override
-    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        if (entity.canChangeDimensions(world, world) && !entity.level().isClientSide() && true) {
-            if (entity.isOnPortalCooldown()) {
-                entity.setPortalCooldown();
-            } else if (entity.level().dimension() != ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "hollowdim"))) {//stellar_sorcery/dimension/hollowdim
-                entity.setPortalCooldown();
-                teleportToDimension(entity, pos, ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "hollowdim")));//stellar_sorcery/dimension/hollowdim
-            } else {
-                entity.setPortalCooldown();
-                teleportToDimension(entity, pos, Level.OVERWORLD);
-            }
+    public DimensionTransition getPortalDestination(ServerLevel p_350444_, Entity p_350334_, BlockPos p_350764_) {
+        ResourceKey<Level> resourcekey = p_350444_.dimension() == ModDimensions.HOLLOWDIM_LEVEL_KEY ? Level.OVERWORLD : ModDimensions.HOLLOWDIM_LEVEL_KEY;
+        ServerLevel serverlevel = p_350444_.getServer().getLevel(resourcekey);
+        if (serverlevel == null) {
+            return null;
+        } else {
+            boolean flag = serverlevel.dimension() == ModDimensions.HOLLOWDIM_LEVEL_KEY;
+            WorldBorder worldborder = serverlevel.getWorldBorder();
+            double d0 = DimensionType.getTeleportationScale(p_350444_.dimensionType(), serverlevel.dimensionType());
+            BlockPos blockpos = worldborder.clampToBounds(p_350334_.getX() * d0, p_350334_.getY(), p_350334_.getZ() * d0);
+            return this.getExitPortal(serverlevel, p_350334_, p_350764_, blockpos, flag, worldborder);
         }
     }
 
-    private void teleportToDimension(Entity entity, BlockPos pos, ResourceKey<Level> destinationType) {
-        ServerLevel targetLevel = entity.getServer().getLevel(destinationType);
-        if (targetLevel != null) {
-            Vec3 targetPos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-            Vec3 velocity = entity.getDeltaMovement();
-            float yRot = entity.getYRot();
-            float xRot = entity.getXRot();
+    @Nullable
+    private DimensionTransition getExitPortal(
+            ServerLevel targetLevel,
+            Entity entity,
+            BlockPos portalPos,
+            BlockPos scaledPos,
+            boolean isTargetHollow,
+            WorldBorder worldBorder
+    ) {
+        HollowPortalForcer forcer = new HollowPortalForcer(targetLevel);
 
-            DimensionTransition transition = new DimensionTransition(
-                    targetLevel,    // måldimension
-                    targetPos,      // destination position
-                    velocity,       // entity's momentum
-                    yRot,           // rotation yaw
-                    xRot,           // rotation pitch
-                    DimensionTransition.DO_NOTHING // hvad der skal ske efter teleport
+        Optional<BlockPos> optional =
+                forcer.findClosestPortalPosition(scaledPos, isTargetHollow, worldBorder);
+
+        BlockUtil.FoundRectangle rectangle;
+        DimensionTransition.PostDimensionTransition postTransition;
+
+        if (optional.isPresent()) {
+
+            BlockPos foundPos = optional.get();
+            BlockState blockstate = targetLevel.getBlockState(foundPos);
+
+            rectangle = BlockUtil.getLargestRectangleAround(
+                    foundPos,
+                    blockstate.getValue(BlockStateProperties.HORIZONTAL_AXIS),
+                    21,
+                    Direction.Axis.Y,
+                    21,
+                    pos -> targetLevel.getBlockState(pos) == blockstate
             );
 
-            entity.changeDimension(transition);
+            postTransition = DimensionTransition.PLAY_PORTAL_SOUND
+                    .then(entity1 -> entity1.placePortalTicket(foundPos));
+
+        } else {
+
+            Direction.Axis axis = entity.level()
+                    .getBlockState(portalPos)
+                    .getOptionalValue(AXIS)
+                    .orElse(Direction.Axis.X);
+
+            Optional<BlockUtil.FoundRectangle> createdPortal =
+                    forcer.createPortal(scaledPos, axis);
+
+            if (createdPortal.isEmpty()) {
+                return null;
+            }
+
+            rectangle = createdPortal.get();
+            postTransition = DimensionTransition.PLAY_PORTAL_SOUND
+                    .then(DimensionTransition.PLACE_PORTAL_TICKET);
         }
+
+        return getDimensionTransitionFromExit(
+                entity,
+                portalPos,
+                rectangle,
+                targetLevel,
+                postTransition
+        );
+    }
+
+    private static DimensionTransition getDimensionTransitionFromExit(
+            Entity entity,
+            BlockPos originalPortalPos,
+            BlockUtil.FoundRectangle rectangle,
+            ServerLevel targetLevel,
+            DimensionTransition.PostDimensionTransition postTransition
+    ) {
+
+        BlockState state = entity.level().getBlockState(originalPortalPos);
+
+        Direction.Axis axis;
+        Vec3 relativePos;
+
+        if (state.hasProperty(BlockStateProperties.HORIZONTAL_AXIS)) {
+
+            axis = state.getValue(BlockStateProperties.HORIZONTAL_AXIS);
+
+            BlockUtil.FoundRectangle originalRectangle =
+                    BlockUtil.getLargestRectangleAround(
+                            originalPortalPos,
+                            axis,
+                            21,
+                            Direction.Axis.Y,
+                            21,
+                            pos -> entity.level().getBlockState(pos) == state
+                    );
+
+            relativePos = entity.getRelativePortalPosition(axis, originalRectangle);
+
+        } else {
+            axis = Direction.Axis.X;
+            relativePos = new Vec3(0.5, 0.0, 0.0);
+        }
+
+        return createDimensionTransition(
+                targetLevel,
+                rectangle,
+                axis,
+                relativePos,
+                entity,
+                entity.getDeltaMovement(),
+                entity.getYRot(),
+                entity.getXRot(),
+                postTransition
+        );
+    }
+
+    private static DimensionTransition createDimensionTransition(
+            ServerLevel targetLevel,
+            BlockUtil.FoundRectangle rectangle,
+            Direction.Axis axis,
+            Vec3 relativePos,
+            Entity entity,
+            Vec3 velocity,
+            float yRot,
+            float xRot,
+            DimensionTransition.PostDimensionTransition postTransition
+    ) {
+
+        BlockPos minCorner = rectangle.minCorner;
+        BlockState state = targetLevel.getBlockState(minCorner);
+
+        Direction.Axis portalAxis =
+                state.getOptionalValue(BlockStateProperties.HORIZONTAL_AXIS)
+                        .orElse(Direction.Axis.X);
+
+        double width = rectangle.axis1Size;
+        double height = rectangle.axis2Size;
+
+        EntityDimensions dimensions = entity.getDimensions(entity.getPose());
+
+        int rotation = axis == portalAxis ? 0 : 90;
+
+        Vec3 newVelocity =
+                axis == portalAxis ? velocity : new Vec3(velocity.z, velocity.y, -velocity.x);
+
+        double offsetX = dimensions.width() / 2.0
+                + (width - dimensions.width()) * relativePos.x();
+
+        double offsetY = (height - dimensions.height()) * relativePos.y();
+        double offsetZ = 0.5 + relativePos.z();
+
+        boolean xAxis = portalAxis == Direction.Axis.X;
+
+        Vec3 teleportPos = new Vec3(
+                minCorner.getX() + (xAxis ? offsetX : offsetZ),
+                minCorner.getY() + offsetY,
+                minCorner.getZ() + (xAxis ? offsetZ : offsetX)
+        );
+
+        Vec3 safePos = HollowPortalShape.findCollisionFreePosition(
+                teleportPos,
+                targetLevel,
+                entity,
+                dimensions
+        );
+
+        return new DimensionTransition(
+                targetLevel,
+                safePos,
+                newVelocity,
+                yRot + rotation,
+                xRot,
+                postTransition
+        );
     }
 }
