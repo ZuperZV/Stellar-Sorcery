@@ -1,5 +1,6 @@
 {
   "type": "stellar_sorcery:stump",
+  "essence_type": "minecraft:fermented_spider_eye,minecraft:glow_berries,stellar_sorcery:nigella_damascena",
   "fake_time_of_day": "NIGHT",
   "fluid_input": {
     "amount": 5000,
@@ -17,6 +18,9 @@
     },
     {
       "tag": "stellar_sorcery:stellar_sorcery_flower_items"
+    },
+    {
+      "item": "stellar_sorcery:essence_bottle"
     }
   ],
   "needs_block": false,

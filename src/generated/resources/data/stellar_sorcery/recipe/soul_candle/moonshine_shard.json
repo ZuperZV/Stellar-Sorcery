@@ -4,7 +4,7 @@
     "A": "stellar_sorcery:soul_candle",
     "O": "stellar_sorcery:white_chalk"
   },
-  "command": "spawn triyara minecraft:overworld 220 24 0.008 18",
+  "command": "spawn aurion minecraft:overworld 220 24 0.008 18",
   "fake_time_of_day": "NIGHT",
   "ingredients": [
     {

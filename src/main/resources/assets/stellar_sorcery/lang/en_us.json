@@ -38,6 +38,8 @@
   "item.stellar_sorcery.moonshine_shard": "Moonshine Shard",
   "item.stellar_sorcery.moonshine_catalyst": "Moonshine Catalyst",
 
+  "item.stellar_sorcery.whispering_fragment": "Whispering Fragment",
+
   "item.stellar_sorcery.noctilume_bucket": "Noctilume Bucket",
   "item.stellar_sorcery.root": "Root",
 
@@ -127,6 +129,7 @@
 
 
   "fluid_type.stellar_sorcery.noctilume": "Noctilume",
+  "block.stellar_sorcery.source_noctilume": "Noctilume",
 
 
   "item.stellar_sorcery.essence_amulet": "Essence Amulet",

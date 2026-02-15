@@ -1,4 +1,4 @@
-// 1.21	2026-01-17T00:38:43.495125	Recipes
+// 1.21	2026-02-13T23:53:32.789444	Recipes
 1cbf3bf1bb75677be898fec8e936cbf90d971988 data/minecraft/advancement/recipes/misc/calcite.json
 6fdacc99dad05300d69402d39fc23f719e621077 data/minecraft/recipe/calcite.json
 d3747469a9e4d2883c7d240b64560b806091fb68 data/stellar_sorcery/advancement/recipes/misc/astral_altar/dirt.json
@@ -122,7 +122,7 @@ bc0980c94ec1cce822e174e744c7b8d7e16512d3 data/stellar_sorcery/recipe/stump/nigel
 7176b5f267734d6f2b525eff1463de149583bc86 data/stellar_sorcery/recipe/stump/root.json
 472abf67ae586e17ca6926a12d728f3b73d7e0ca data/stellar_sorcery/recipe/stump/shadow_clay_jar.json
 ea02d78ca45d8a623dfd94351667ecf938547543 data/stellar_sorcery/recipe/stump/soul_blooms.json
-cfc2ee318fdf23c19a6bb2d8757e751c856f5b79 data/stellar_sorcery/recipe/stump/soul_bloom_seeds.json
+29804879c28546431d796fe09efbf676c5d4a7a9 data/stellar_sorcery/recipe/stump/soul_bloom_seeds.json
 c2abccdb917051fe919bdc7c48bcdf8e60b1167b data/stellar_sorcery/recipe/stump/soul_candle.json
 06534cd6da418f95488c0a5bbff9b1aefa270ed1 data/stellar_sorcery/recipe/stump/stone_clay_jar.json
 efbb1bf3ecb9ea5e934779873e14605693420c16 data/stellar_sorcery/recipe/stump/storm_clay_jar.json

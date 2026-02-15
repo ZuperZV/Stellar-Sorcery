@@ -1,5 +1,7 @@
 {
+	"format_version": "1.21",
 	"credit": "Made with Blockbench",
+    "texture_size": [16, 16],
 	"textures": {
 		"2": "stellar_sorcery:block/essence_boiler",
 		"3": "stellar_sorcery:block/essence_boiler_campfire_fire",
@@ -7,7 +9,7 @@
 		"particle": "stellar_sorcery:block/essence_boiler"
 	},
 	"elements": [
-		{
+      {
 			"from": [0, 0.5, 10],
 			"to": [16, 4.5, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.5, 8]},
@@ -23,7 +25,7 @@
 		{
 			"from": [10, 0, 0],
 			"to": [14, 4, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 0.5, 0.5, 1], "texture": "#2", "cullface": "south"},
 				"east": {"uv": [0, 0, 2, 0.5], "texture": "#2"},
@@ -179,7 +181,7 @@
 		{
 			"from": [2, 15.5, 0],
 			"to": [14, 18.5, 2],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.5, 7]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 9.5, 7]},
 			"faces": {
 				"north": {"uv": [10.25, 1.25, 11.75, 1.625], "texture": "#2"},
 				"east": {"uv": [8, 3.25, 8.25, 3.625], "texture": "#2"},
@@ -205,7 +207,7 @@
 		{
 			"from": [0, 15.5, 14],
 			"to": [14, 18.5, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.5, 9]},
+          "rotation": {"angle": 0, "axis": "z", "origin": [8, 9.5, 7]},
 			"faces": {
 				"north": {"uv": [10.25, 1.25, 12, 1.625], "texture": "#2"},
 				"east": {"uv": [1.25, 8.125, 1.5, 8.5], "texture": "#2"},
@@ -349,7 +351,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -357,7 +359,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {
@@ -379,5 +381,5 @@
 		},
 		23,
 		24
-	]
+]
 }

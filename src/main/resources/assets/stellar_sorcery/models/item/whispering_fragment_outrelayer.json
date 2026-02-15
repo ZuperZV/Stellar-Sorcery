@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:item/whispering_fragment",
+    "layer1": "stellar_sorcery:item/whispering_fragment_outrelayer"
+  }
+}

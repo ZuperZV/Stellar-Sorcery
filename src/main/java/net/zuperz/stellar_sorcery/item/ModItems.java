@@ -18,6 +18,9 @@ public class ModItems {
 
     //properties -> new FuelItem(properties, 800)
 
+    public static final DeferredItem<Item> HOLLOW_IGNITER = ITEMS.register("hollow_igniter",
+            () -> new HollowIgniterItem(new Item.Properties().stacksTo(1)));
+
     public static final DeferredItem<Item> CODEX_ARCANUM = ITEMS.register("codex_arcanum",
             () -> new CodexArcanumItem(new Item.Properties().stacksTo(1).fireResistant().component(ModDataComponentTypes.CODEX_TIER.get(), new CodexTierData(1))));
 

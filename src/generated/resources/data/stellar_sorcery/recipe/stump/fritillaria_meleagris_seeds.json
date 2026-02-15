@@ -15,9 +15,6 @@
     },
     {
       "item": "minecraft:wheat"
-    },
-    {
-      "item": "stellar_sorcery:essence_bottle"
     }
   ],
   "needs_block": false,

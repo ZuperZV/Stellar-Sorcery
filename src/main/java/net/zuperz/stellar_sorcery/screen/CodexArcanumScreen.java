@@ -616,7 +616,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
             guiGraphics.renderItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
 
-            //yte
             Component message = Component.translatable("codex_arcanum.stellar_sorcery." + cat.id);
 
             guiGraphics.drawString(font, message, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);

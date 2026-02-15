@@ -1,4 +1,6 @@
-// 1.21	2025-07-24T20:13:59.51212	Registries
+// 1.21	2026-02-15T01:04:03.992726	Registries
+b27b21803b8c44b262b796cee18351896fa7ffa0 data/stellar_sorcery/dimension/hollowdim.json
+96a9bbdd4064e417d54608dc6c01fa926ea95fac data/stellar_sorcery/dimension_type/hollowdim_type.json
 54533d6e24c8b354f7f4293b0d14ab365fc55a95 data/stellar_sorcery/neoforge/biome_modifier/add_calendula.json
 a0c11ae4ddd440d02c0c70fbe9263f935ebb1667 data/stellar_sorcery/neoforge/biome_modifier/add_nigella_damascena.json
 ff3847b6e5d38b748c6df7b81b447513cd90c6dc data/stellar_sorcery/neoforge/biome_modifier/add_red_campion.json
