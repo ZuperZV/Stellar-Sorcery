@@ -1,0 +1,34 @@
+{
+  "parent": "stellar_sorcery:get_astral_nexus",
+  "criteria": {
+    "get_arcforge": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:arcforge"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.arcforge.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:arcforge"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.arcforge.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_arcforge"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

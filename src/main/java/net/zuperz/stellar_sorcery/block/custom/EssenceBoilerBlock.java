@@ -151,164 +151,173 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if (pLevel.getBlockEntity(pPos) instanceof EssenceBoilerBlockEntity boiler) {
+        if (!(pLevel.getBlockEntity(pPos) instanceof EssenceBoilerBlockEntity boiler)) {
+            return ItemInteractionResult.SUCCESS;
+        }
 
-            IFluidHandlerItem fluidHandler = pStack.getCapability(Capabilities.FluidHandler.ITEM, null);
+        IFluidHandlerItem fluidHandler = pStack.getCapability(Capabilities.FluidHandler.ITEM, null);
 
-            if (!pStack.isEmpty() && pStack.is(Items.FLINT_AND_STEEL) && !pState.getValue(BlockStateProperties.LIT)) {
-                if (pState.hasProperty(BlockStateProperties.LIT)) {
-                    pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, true), 3);
-                    if (!pStack.isDamageableItem()) {
-                        pStack.shrink(1);
-                    } else {
-                        pStack.hurtAndBreak(1, pPlayer, getSlotForHand(pHand));
-                    }
-                    pLevel.playSound(null, pPos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1f, 1f);
-                    return ItemInteractionResult.SUCCESS;
+        if (!pStack.isEmpty() && pStack.is(Items.FLINT_AND_STEEL) && !pState.getValue(BlockStateProperties.LIT)) {
+            if (pState.hasProperty(BlockStateProperties.LIT)) {
+                pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, true), 3);
+                if (!pStack.isDamageableItem()) {
+                    pStack.shrink(1);
+                } else {
+                    pStack.hurtAndBreak(1, pPlayer, getSlotForHand(pHand));
                 }
-            } else if (!pStack.isEmpty() && pStack.is(ItemTags.SHOVELS) && pState.getValue(BlockStateProperties.LIT)) {
-                if (pState.hasProperty(BlockStateProperties.LIT)) {
-                    pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, false), 3);
-                    if (!pStack.isDamageableItem()) {
-                        pStack.shrink(1);
-                    } else {
-                        pStack.hurtAndBreak(1, pPlayer, getSlotForHand(pHand));
-                    }
-                    pLevel.playSound(null, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+                pLevel.playSound(null, pPos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1f, 1f);
+                return ItemInteractionResult.SUCCESS;
+            }
+        } else if (!pStack.isEmpty() && pStack.is(ItemTags.SHOVELS) && pState.getValue(BlockStateProperties.LIT)) {
+            if (pState.hasProperty(BlockStateProperties.LIT)) {
+                pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, false), 3);
+                if (!pStack.isDamageableItem()) {
+                    pStack.shrink(1);
+                } else {
+                    pStack.hurtAndBreak(1, pPlayer, getSlotForHand(pHand));
+                }
+                pLevel.playSound(null, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+
+        if (boiler.progress > 0) {
+            return ItemInteractionResult.SUCCESS;
+        }
+
+        if (fluidHandler != null && !pStack.isEmpty()) {
+            FluidStack itemFluid = fluidHandler.getFluidInTank(0);
+            FluidStack tankFluid = boiler.getFluidTank();
+
+            if (boiler.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
+                int amountToDrain = boiler.getFluidTankCapacity() - boiler.getFluidTankAmount();
+                FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
+                if (!drainedSim.isEmpty()) {
+                    FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
+                    boiler.fillFluidTank(drained);
+
+                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
             }
 
-            if (!(boiler.progress > 0)) {
-                if (fluidHandler != null && !pStack.isEmpty()) {
-                    FluidStack itemFluid = fluidHandler.getFluidInTank(0);
-                    FluidStack tankFluid = boiler.getFluidTank();
+            if (!boiler.getFluidTank().isEmpty()) {
+                int amountAvailable = boiler.getFluidTankAmount();
+                FluidStack fluidToFill = boiler.getFluidTank().copy();
+                fluidToFill.setAmount(amountAvailable);
 
-                    if (boiler.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
-                        int amountToDrain = boiler.getFluidTankCapacity() - boiler.getFluidTankAmount();
-                        FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
-                        if (!drainedSim.isEmpty()) {
-                            FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
-                            boiler.fillFluidTank(drained);
+                int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
+                if (filledAmount > 0) {
+                    FluidStack fluidFilled = fluidToFill.copy();
+                    fluidFilled.setAmount(filledAmount);
+                    fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
 
-                            pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                            pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            return ItemInteractionResult.SUCCESS;
-                        }
-                    }
+                    boiler.drainFluidTank(filledAmount);
 
-                    if (!boiler.getFluidTank().isEmpty() && !pStack.isEmpty()) {
-                        int amountAvailable = boiler.getFluidTankAmount();
-                        FluidStack fluidToFill = boiler.getFluidTank().copy();
-                        fluidToFill.setAmount(amountAvailable);
-
-                        int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-
-                        if (filledAmount > 0) {
-                            FluidStack fluidFilled = fluidToFill.copy();
-                            fluidFilled.setAmount(filledAmount);
-                            fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
-
-                            boiler.drainFluidTank(filledAmount);
-
-                            pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                            pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
-                            boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
-                            return ItemInteractionResult.SUCCESS;
-                        }
-                    }
-                }
-
-                if (!pStack.isEmpty()) {
-                    for (int slot = 0; slot < 3; slot++) {
-                        if (boiler.inventory.getStackInSlot(slot).isEmpty()) {
-                            boiler.inventory.insertItem(slot, pStack.copyWithCount(1), false);
-                            if (boiler.getFluidTankAmount() > 0) {
-                                pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1f, 1f);
-                                boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
-
-                                pLevel.playSound(null, pPos, SoundEvents.DECORATED_POT_INSERT, SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * 1f);
-                                if (pLevel instanceof ServerLevel serverlevel) {
-                                    serverlevel.sendParticles(
-                                            ParticleTypes.DUST_PLUME,
-                                            (double) pPos.getX() + 0.5,
-                                            (double) pPos.getY() + 1,
-                                            (double) pPos.getZ() + 0.5,
-                                            7,
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0
-                                    );
-                                }
-                            }
-                            pStack.shrink(1);
-                            pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
-                            return ItemInteractionResult.SUCCESS;
-                        }
-                    }
-
-                    if (boiler.inventory.getStackInSlot(3).isEmpty() && pStack.is(ModItems.EMPTY_ESSENCE_BOTTLE) && boiler.getFluidTank().getFluid().isSame(Fluids.WATER)) {
-                        boiler.inventory.insertItem(3, pStack.copyWithCount(1), false);
-                        if (boiler.getFluidTankAmount() > 0) {
-                            pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.2f, 1f);
-                            boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.NEGATIVE);
-
-                            pLevel.playSound(null, pPos, SoundEvents.DECORATED_POT_INSERT, SoundSource.BLOCKS, 1.0F, 0.7F + 0.5F * 1f);
-                            if (pLevel instanceof ServerLevel serverlevel) {
-                                serverlevel.sendParticles(
-                                        ParticleTypes.DUST_PLUME,
-                                        (double) pPos.getX() + 0.5,
-                                        (double) pPos.getY() + 1,
-                                        (double) pPos.getZ() + 0.5,
-                                        7,
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                );
-                            }
-                        }
-                        pStack.shrink(1);
-                        pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
-                        return ItemInteractionResult.SUCCESS;
-                    }
-                }
-
-                for (int slot = 0; slot < 3; slot++) {
-                    ItemStack extracted = boiler.inventory.getStackInSlot(slot);
-                    if (!extracted.isEmpty()) {
-                        boolean addedToInventory = false;
-
-                        for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
-                            ItemStack playerStack = pPlayer.getInventory().items.get(i);
-                            if (!playerStack.isEmpty()
-                                    && ItemStack.isSameItem(playerStack, extracted)
-                                    && playerStack.getCount() < playerStack.getMaxStackSize()) {
-
-                                playerStack.grow(1);
-                                addedToInventory = true;
-                                break;
-                            }
-                        }
-
-                        if (!addedToInventory && pStack.isEmpty()) {
-                            pPlayer.setItemInHand(pHand, extracted.copy());
-                            addedToInventory = true;
-                        }
-
-                        if (addedToInventory) {
-                            boiler.inventory.extractItem(slot, 1, false);
-                            pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
-                            return ItemInteractionResult.SUCCESS;
-                        }
-                    }
+                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
+                    boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
 
+        if (!pStack.isEmpty()) {
+            if ((pStack.is(ModItems.EMPTY_ESSENCE_BOTTLE) || pStack.is(ModItems.EMPTY_ESSENCE_AMULET))
+                    && boiler.inventory.getStackInSlot(EssenceBoilerBlockEntity.SLOT_CONTAINER).isEmpty()) {
+                boiler.inventory.insertItem(EssenceBoilerBlockEntity.SLOT_CONTAINER, pStack.copyWithCount(1), false);
+                playInsertEffects(pLevel, pPos, boiler, true);
+                pStack.shrink(1);
+                pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
+                return ItemInteractionResult.SUCCESS;
+            }
+
+            for (int slot = EssenceBoilerBlockEntity.SLOT_INGREDIENT_1; slot <= EssenceBoilerBlockEntity.SLOT_INGREDIENT_3; slot++) {
+                if (boiler.inventory.getStackInSlot(slot).isEmpty()) {
+                    boiler.inventory.insertItem(slot, pStack.copyWithCount(1), false);
+                    playInsertEffects(pLevel, pPos, boiler, false);
+                    pStack.shrink(1);
+                    pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+        }
+
+        int[] extractionOrder = new int[] {
+                EssenceBoilerBlockEntity.SLOT_OUTPUT,
+                EssenceBoilerBlockEntity.SLOT_INGREDIENT_1,
+                EssenceBoilerBlockEntity.SLOT_INGREDIENT_2,
+                EssenceBoilerBlockEntity.SLOT_INGREDIENT_3,
+                EssenceBoilerBlockEntity.SLOT_CONTAINER
+        };
+
+        for (int slot : extractionOrder) {
+            ItemStack extracted = boiler.inventory.getStackInSlot(slot);
+            if (extracted.isEmpty()) {
+                continue;
+            }
+
+            boolean addedToInventory = false;
+            for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
+                ItemStack playerStack = pPlayer.getInventory().items.get(i);
+                if (!playerStack.isEmpty()
+                        && ItemStack.isSameItemSameComponents(playerStack, extracted)
+                        && playerStack.getCount() < playerStack.getMaxStackSize()) {
+                    playerStack.grow(1);
+                    addedToInventory = true;
+                    break;
+                }
+            }
+
+            if (!addedToInventory && pStack.isEmpty()) {
+                pPlayer.setItemInHand(pHand, extracted.copyWithCount(1));
+                addedToInventory = true;
+            }
+
+            if (addedToInventory) {
+                boiler.inventory.extractItem(slot, 1, false);
+                pLevel.playSound(null, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+
         return ItemInteractionResult.SUCCESS;
+    }
+
+    private static void playInsertEffects(Level level, BlockPos pos, EssenceBoilerBlockEntity boiler, boolean containerSlot) {
+        if (boiler.getFluidTankAmount() <= 0) {
+            return;
+        }
+
+        level.playSound(
+                null,
+                pos,
+                SoundEvents.GENERIC_SPLASH,
+                SoundSource.BLOCKS,
+                containerSlot ? 1.2f : 1f,
+                1f
+        );
+        boiler.wobble(containerSlot
+                ? EssenceBoilerBlockEntity.WobbleStyle.NEGATIVE
+                : EssenceBoilerBlockEntity.WobbleStyle.POSITIVE
+        );
+
+        level.playSound(null, pos, SoundEvents.DECORATED_POT_INSERT, SoundSource.BLOCKS, 1.0F, 1.2F);
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    ParticleTypes.DUST_PLUME,
+                    pos.getX() + 0.5,
+                    pos.getY() + 1,
+                    pos.getZ() + 0.5,
+                    7,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+            );
+        }
     }
 
     @Override

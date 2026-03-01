@@ -17,16 +17,22 @@ public class ModItemBlockRenderTypes {
         event.enqueueWork(() -> {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ASTRAL_ALTAR.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ASTRAL_NEXUS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ESSENCE_BOILER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.WHITE_CHALK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.SOUL_CANDLE.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ESSENCE_BOILER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAR_LIGHT.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LUNAR_JAR.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LUNAR_INFUSER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LIGHT_JAR.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.LIGHT_INFUSER.get(), RenderType.cutout());
-
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ELDRITE.get(), RenderType.cutout());
+
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.GLOOM_MOSS_CARPET.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ECHO_THORN.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ECHO_THORN_FLOWER.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.TILLED_DRIFTSOIL.get(), RenderType.cutout());
+
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.HOLLOW_PORTAL.get(), RenderType.translucent());
 
             ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_NOCTILUME.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_NOCTILUME.get(), RenderType.translucent());

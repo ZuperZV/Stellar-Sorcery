@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "": [
+      { "model": "stellar_sorcery:block/grimrock" },
+      { "model": "stellar_sorcery:block/grimrock_full" }
+    ]
+  }
+}

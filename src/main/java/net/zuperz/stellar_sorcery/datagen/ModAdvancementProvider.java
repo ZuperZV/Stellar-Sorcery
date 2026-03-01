@@ -2,12 +2,9 @@ package net.zuperz.stellar_sorcery.datagen;
 
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.world.item.Items;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
-import net.zuperz.stellar_sorcery.component.EssenceBottleData;
-import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.minecraft.advancements.Advancement;
@@ -19,7 +16,6 @@ import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.zuperz.stellar_sorcery.util.ModTags;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ModAdvancementProvider implements AdvancementProvider.AdvancementGenerator {
@@ -190,6 +186,21 @@ public class ModAdvancementProvider implements AdvancementProvider.AdvancementGe
                 .addCriterion("get_light_beam_emitter", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LIGHT_BEAM_EMITTER))
                 .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_light_beam_emitter"), existingFileHelper);
 
+        AdvancementHolder itemEmitter = Advancement.Builder.advancement()
+                .parent(light_beam_emitter)
+                .display(
+                        ModBlocks.ITEM_EMITTER,
+                        Component.translatable("advancements.codex_sorcery.item_emitter.title"),
+                        Component.translatable("advancements.codex_sorcery.item_emitter.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_item_emitter", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.ITEM_EMITTER))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_item_emitter"), existingFileHelper);
+
         AdvancementHolder light_jar = Advancement.Builder.advancement()
                 .parent(light_Infuser)
                 .display(
@@ -245,8 +256,158 @@ public class ModAdvancementProvider implements AdvancementProvider.AdvancementGe
                         true,
                         true
                 )
-                .addCriterion("get_schalk_canister", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.SOUL_CANDLE))
+                .addCriterion("get_schalk_canister", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CHALK_CANISTER))
                 .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_schalk_canister"), existingFileHelper);
+
+        AdvancementHolder moonshineShard = Advancement.Builder.advancement()
+                .parent(soulCandle)
+                .display(
+                        ModItems.MOONSHINE_SHARD,
+                        Component.translatable("advancements.codex_sorcery.moonshine_shard.title"),
+                        Component.translatable("advancements.codex_sorcery.moonshine_shard.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_moonshine_shard", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.MOONSHINE_SHARD))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_moonshine_shard"), existingFileHelper);
+
+        AdvancementHolder whisperingFragment = Advancement.Builder.advancement()
+                .parent(moonshineShard)
+                .display(
+                        ModItems.WHISPERING_FRAGMENT,
+                        Component.translatable("advancements.codex_sorcery.whispering_fragment.title"),
+                        Component.translatable("advancements.codex_sorcery.whispering_fragment.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_whispering_fragment", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WHISPERING_FRAGMENT))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_whispering_fragment"), existingFileHelper);
+
+        AdvancementHolder bluestoneDust = Advancement.Builder.advancement()
+                .parent(moonshineShard)
+                .display(
+                        ModItems.BLUESTONE_DUST,
+                        Component.translatable("advancements.codex_sorcery.bluestone_dust.title"),
+                        Component.translatable("advancements.codex_sorcery.bluestone_dust.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_bluestone_dust", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.BLUESTONE_DUST))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_bluestone_dust"), existingFileHelper);
+
+        AdvancementHolder lunarJar = Advancement.Builder.advancement()
+                .parent(bluestoneDust)
+                .display(
+                        ModBlocks.LUNAR_JAR,
+                        Component.translatable("advancements.codex_sorcery.lunar_jar.title"),
+                        Component.translatable("advancements.codex_sorcery.lunar_jar.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_lunar_jar", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LUNAR_JAR))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_lunar_jar"), existingFileHelper);
+
+        AdvancementHolder lunarInfuser = Advancement.Builder.advancement()
+                .parent(lunarJar)
+                .display(
+                        ModBlocks.LUNAR_INFUSER,
+                        Component.translatable("advancements.codex_sorcery.lunar_infuser.title"),
+                        Component.translatable("advancements.codex_sorcery.lunar_infuser.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_lunar_infuser", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LUNAR_INFUSER))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_lunar_infuser"), existingFileHelper);
+
+        AdvancementHolder lunarLightBeamEmitter = Advancement.Builder.advancement()
+                .parent(lunarInfuser)
+                .display(
+                        ModBlocks.LUNAR_LIGHT_BEAM_EMITTER,
+                        Component.translatable("advancements.codex_sorcery.lunar_light_beam_emitter.title"),
+                        Component.translatable("advancements.codex_sorcery.lunar_light_beam_emitter.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_lunar_light_beam_emitter", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_lunar_light_beam_emitter"), existingFileHelper);
+
+        AdvancementHolder astralAltar = Advancement.Builder.advancement()
+                .parent(whisperingFragment)
+                .display(
+                        ModBlocks.ASTRAL_ALTAR,
+                        Component.translatable("advancements.codex_sorcery.astral_altar.title"),
+                        Component.translatable("advancements.codex_sorcery.astral_altar.description"),
+                        null,
+                        AdvancementType.GOAL,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_astral_altar", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.ASTRAL_ALTAR))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_astral_altar"), existingFileHelper);
+
+        AdvancementHolder astralNexus = Advancement.Builder.advancement()
+                .parent(astralAltar)
+                .display(
+                        ModBlocks.ASTRAL_NEXUS,
+                        Component.translatable("advancements.codex_sorcery.astral_nexus.title"),
+                        Component.translatable("advancements.codex_sorcery.astral_nexus.description"),
+                        null,
+                        AdvancementType.GOAL,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_astral_nexus", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.ASTRAL_NEXUS))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_astral_nexus"), existingFileHelper);
+
+        AdvancementHolder arcforge = Advancement.Builder.advancement()
+                .parent(astralNexus)
+                .display(
+                        ModBlocks.ARCFORGE,
+                        Component.translatable("advancements.codex_sorcery.arcforge.title"),
+                        Component.translatable("advancements.codex_sorcery.arcforge.description"),
+                        null,
+                        AdvancementType.CHALLENGE,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_arcforge", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.ARCFORGE))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_arcforge"), existingFileHelper);
+
+        AdvancementHolder augmentForge = Advancement.Builder.advancement()
+                .parent(arcforge)
+                .display(
+                        ModBlocks.AUGMENT_FORGE,
+                        Component.translatable("advancements.codex_sorcery.augment_forge.title"),
+                        Component.translatable("advancements.codex_sorcery.augment_forge.description"),
+                        null,
+                        AdvancementType.CHALLENGE,
+                        true,
+                        true,
+                        false
+                )
+                .addCriterion("get_augment_forge", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.AUGMENT_FORGE))
+                .save(saver, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "get_augment_forge"), existingFileHelper);
 
         AdvancementHolder essenceBoiler = Advancement.Builder.advancement()
                 .parent(rootAdvancement)

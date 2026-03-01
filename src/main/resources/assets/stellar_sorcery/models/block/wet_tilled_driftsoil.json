@@ -1,0 +1,36 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "driftsoil",
+	"textures": {
+		"0": "stellar_sorcery:block/driftsoil",
+		"1": "stellar_sorcery:block/wet_tilled_driftsoil",
+		"5": "stellar_sorcery:block/wet_tilled_driftsoil_north_side",
+		"6": "stellar_sorcery:block/wet_tilled_driftsoil_west_side",
+		"particle": "stellar_sorcery:block/driftsoil"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 13, 16],
+			"faces": {
+				"north": {"uv": [0, 3, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 3, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 3, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 3, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [-0.0125, 9, -0.0125],
+			"to": [16.0125, 13, 16.0125],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#5"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#6"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#5"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#6"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"}
+			}
+		}
+	]
+}

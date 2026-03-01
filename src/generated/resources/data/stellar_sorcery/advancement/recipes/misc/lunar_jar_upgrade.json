@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bluestone_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:bluestone_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:lunar_jar_upgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bluestone_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:lunar_jar_upgrade"
+    ]
+  }
+}

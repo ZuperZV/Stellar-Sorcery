@@ -61,6 +61,15 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ELDRITE.get());
         dropSelf(ModBlocks.MOON_SHARD_ELDRITE.get());
 
+        dropSelf(ModBlocks.GRIMROCK.get());
+        dropSelf(ModBlocks.GLOOM_MOSS_BLOCK.get());
+        dropSelf(ModBlocks.GLOOM_MOSS_CARPET.get());
+        dropSelf(ModBlocks.ECHO_THORN.get());
+        dropSelf(ModBlocks.ECHO_THORN_FLOWER.get());
+
+        dropSelf(ModBlocks.DRIFTSOIL.get());
+        this.add(ModBlocks.TILLED_DRIFTSOIL.get(), createPotFlowerItemTable(ModBlocks.DRIFTSOIL));
+
         this.add(ModBlocks.WHITE_CHALK.get(), noDrop());
 
         LootItemCondition.Builder fritillariaMeleagrisLootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())

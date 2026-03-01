@@ -10,6 +10,7 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.worldgen.ModBiomeModifiers;
 import net.zuperz.stellar_sorcery.worldgen.ModConfiguredFeatures;
 import net.zuperz.stellar_sorcery.worldgen.ModPlacedFeatures;
+import net.zuperz.stellar_sorcery.worldgen.biome.ModBiomes;
 import net.zuperz.stellar_sorcery.worldgen.dimension.ModDimensions;
 
 import java.util.Set;
@@ -25,7 +26,9 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
             .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem)
             .add(Registries.DIMENSION_TYPE, ModDimensions::bootstrapType)
-            //.add(Registries.BIOME, ModBiomes::boostrap)
+            .add(Registries.NOISE_SETTINGS, ModDimensions::bootstrapNoiseSettings)
+            .add(Registries.NOISE, ModDimensions::bootstrapNoise)
+            .add(Registries.BIOME, ModBiomes::boostrap)
     ;
 
 

@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_soul_candle",
+  "criteria": {
+    "get_moonshine_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:moonshine_shard"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.moonshine_shard.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:moonshine_shard"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.moonshine_shard.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_moonshine_shard"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

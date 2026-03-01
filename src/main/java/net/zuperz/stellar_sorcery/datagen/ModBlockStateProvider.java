@@ -47,6 +47,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         flowerWithPot(ModBlocks.NIGELLA_DAMASCENA, ModBlocks.POTTED_NIGELLA_DAMASCENA, "nigella_damascena", "flower_pot_cross");
 
         blockWithItem(ModBlocks.BUDDING_MOONSHINE);
+        blockWithItem(ModBlocks.DRIFTSOIL);
 
         createAmethystCluster(ModBlocks.MOONSHINE_SMALL_BUD.get());
         createAmethystCluster(ModBlocks.MOONSHINE_MEDIUM_BUD.get());

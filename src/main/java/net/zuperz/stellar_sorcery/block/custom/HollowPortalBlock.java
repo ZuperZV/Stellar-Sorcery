@@ -15,9 +15,11 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.Portal;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,6 +31,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.entity.custom.GlowingBlockEntity;
+import net.zuperz.stellar_sorcery.block.light.IGlowingBlock;
 import net.zuperz.stellar_sorcery.worldgen.dimension.ModDimensions;
 import net.zuperz.stellar_sorcery.worldgen.portal.HollowPortalForcer;
 import net.zuperz.stellar_sorcery.worldgen.portal.HollowPortalShape;
@@ -36,9 +40,20 @@ import net.zuperz.stellar_sorcery.worldgen.portal.HollowPortalShape;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class HollowPortalBlock extends NetherPortalBlock implements Portal {
+public class HollowPortalBlock extends NetherPortalBlock implements Portal, EntityBlock, IGlowingBlock {
     public HollowPortalBlock() {
-        super(BlockBehaviour.Properties.of().noCollission().randomTicks().pushReaction(PushReaction.BLOCK).strength(-1.0F).sound(SoundType.GLASS).lightLevel(s -> 0).noLootTable());
+        super(BlockBehaviour.Properties.of().noCollission().randomTicks().pushReaction(PushReaction.BLOCK).strength(-1.0F).sound(SoundType.GLASS).lightLevel(s -> 11).noLootTable());
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new GlowingBlockEntity(pos, state);
+    }
+
+    @Override
+    public float getGlowScale() {
+        return 0.8f;
     }
 
     @Override

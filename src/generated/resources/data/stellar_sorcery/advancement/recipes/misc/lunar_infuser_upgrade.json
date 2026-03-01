@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lunar_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:lunar_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:lunar_infuser_upgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lunar_jar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:lunar_infuser_upgrade"
+    ]
+  }
+}

@@ -2,25 +2,34 @@ package net.zuperz.stellar_sorcery.block.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.zuperz.stellar_sorcery.block.custom.LightBeamEmitterBlock;
 import net.zuperz.stellar_sorcery.block.entity.custom.LightBeamEmitterBlockEntity;
+import net.zuperz.stellar_sorcery.client.rendering.glow.GlowRenderTypes;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBeamEmitterBlockEntity> {
+    private static final List<GlowEntry> GLOW_QUEUE = new ArrayList<>();
 
     public lightBeamBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
     int MAX_BEAM_TICKS = 40;
+
+    private record GlowEntry(lightBeamBlockEntityRenderer renderer, LightBeamEmitterBlockEntity entity) {}
 
     @Override
     public void render(LightBeamEmitterBlockEntity be, float partialTick, PoseStack poseStack,
@@ -41,14 +50,17 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
 
-        renderBeam(poseStack, buffer, start, end, alpha);
+        renderBeam(poseStack, buffer, start, end, alpha, RenderType.lightning());
+        if (be.needsToBeNoctilume) {
+            GLOW_QUEUE.add(new GlowEntry(this, be));
+        }
 
         poseStack.popPose();
     }
 
     private void renderBeam(PoseStack poseStack, MultiBufferSource buffer,
-                            Vec3 startPos, Vec3 endPos, float alpha) {
-        VertexConsumer consumer = buffer.getBuffer(RenderType.lightning());
+                            Vec3 startPos, Vec3 endPos, float alpha, RenderType renderType) {
+        VertexConsumer consumer = buffer.getBuffer(renderType);
         Matrix4f matrix = poseStack.last().pose();
 
         double dx = endPos.x - startPos.x;
@@ -171,9 +183,52 @@ public class lightBeamBlockEntityRenderer implements BlockEntityRenderer<LightBe
         return AABB.INFINITE;
     }
 
-    private int getLightLevel(Level level, BlockPos pos) {
-        int bLight = level.getBrightness(LightLayer.BLOCK, pos);
-        int sLight = level.getBrightness(LightLayer.SKY, pos);
-        return LightTexture.pack(bLight, sLight);
+    public static boolean hasGlowPending() {
+        return !GLOW_QUEUE.isEmpty();
+    }
+
+    public static boolean renderGlowQueue(PoseStack matrices, Camera camera, Frustum frustum, MultiBufferSource vertexConsumers) {
+        if (GLOW_QUEUE.isEmpty()) {
+            return false;
+        }
+
+        Vec3 cameraPos = camera.getPosition();
+        boolean renderedAny = false;
+
+        matrices.pushPose();
+        matrices.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+
+        for (GlowEntry entry : GLOW_QUEUE) {
+            LightBeamEmitterBlockEntity be = entry.entity();
+            Level level = be.getLevel();
+            if (level == null || be.beamLength <= 0 || !be.needsToBeNoctilume || !frustum.isVisible(new AABB(be.getBlockPos()))) {
+                continue;
+            }
+
+            Direction facing = be.getBlockState().getValue(LightBeamEmitterBlock.FACING);
+            Vec3 start = Vec3.atCenterOf(be.getBlockPos());
+            Vec3 facingVec = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
+            Vec3 end = start.add(facingVec.scale(be.beamLength));
+            float alpha = (float) be.beamTicksRemaining / entry.renderer().MAX_BEAM_TICKS;
+            float lightFade = entry.renderer().getGlowIntensity(level, be.getBlockPos());
+
+            matrices.pushPose();
+            matrices.translate(start.x, start.y, start.z);
+            entry.renderer().renderBeam(matrices, vertexConsumers, start, end, alpha * lightFade, GlowRenderTypes.BLOOM_LIGHTNING);
+            matrices.popPose();
+
+            renderedAny = true;
+        }
+
+        GLOW_QUEUE.clear();
+        matrices.popPose();
+        return renderedAny;
+    }
+
+    private float getGlowIntensity(Level level, BlockPos pos) {
+        int block = level.getBrightness(LightLayer.BLOCK, pos);
+        int sky = level.getBrightness(LightLayer.SKY, pos);
+        float ambient = Math.max(block, sky) / 15.0f;
+        return Mth.clamp(1.0f - ambient * 0.85f, 0.15f, 1.0f);
     }
 }

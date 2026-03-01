@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_moonshine_shard",
+  "criteria": {
+    "get_bluestone_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:bluestone_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.bluestone_dust.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:bluestone_dust"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.bluestone_dust.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_bluestone_dust"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

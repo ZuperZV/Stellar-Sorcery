@@ -10,8 +10,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
@@ -21,12 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.InfestedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -40,13 +35,14 @@ import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.recipes.StarLightLunarInfuserRecipe;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.DrbgParameters;
-import java.util.List;
 import java.util.Optional;
 
 import static net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock.DONE;
 
 public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyContainer, IHasFluidTank {
+    public static final int SLOT_INPUT = 0;
+    private static final int[] INPUT_SLOT = new int[] {SLOT_INPUT};
+
     public int progress = 0;
     public int maxProgress = 80;
     private int prevProgress = 0;
@@ -60,7 +56,7 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
-            if (!level.isClientSide()) {
+            if (level != null && !level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
@@ -73,69 +69,74 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         }
     };
 
-    private final Lazy<FluidTank> fluidOptional = Lazy.of(() -> this.fluidTank);
-
     private float rotation;
 
     public LunarInfuserBlockEntity(BlockPos pos, BlockState state) {
-        super(state.getBlock() == ModBlocks.LUNAR_INFUSER.get()
-                ? ModBlockEntities.LUNAR_INFUSER_BE.get()
-                : ModBlockEntities.LIGHT_INFUSER_BE.get(), pos, state);
+        super(
+                state.getBlock() == ModBlocks.LUNAR_INFUSER.get()
+                        ? ModBlockEntities.LUNAR_INFUSER_BE.get()
+                        : ModBlockEntities.LIGHT_INFUSER_BE.get(),
+                pos,
+                state
+        );
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, LunarInfuserBlockEntity altar) {
-        BlockState oldState = level.getBlockState(pos);
-
-        oldState = oldState.setValue(DONE, false);
+        BlockState oldState = level.getBlockState(pos).setValue(DONE, false);
 
         altar.prevProgress = altar.progress;
         if (altar.hasStarLightRecipe()) {
             altar.progress++;
             setCRAFTING(pos, level, true);
+
             if (altar.progress >= altar.maxProgress) {
-                altar.craftItem();
-                oldState = oldState.setValue(DONE, true);
+                if (altar.craftItem()) {
+                    oldState = oldState.setValue(DONE, true);
+                } else {
+                    altar.progress = altar.maxProgress;
+                }
             }
             altar.setChanged();
         } else {
             altar.progress = 0;
+            setCRAFTING(pos, level, false);
             altar.setChanged();
         }
 
         oldState = oldState.setValue(LunarInfuserBlock.CRAFTING, altar.progress > 0);
-
         level.setBlockAndUpdate(pos, oldState);
 
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                if (dx == 0 && dz == 0) continue;
+                if (dx == 0 && dz == 0) {
+                    continue;
+                }
 
                 BlockPos checkPos = pos.offset(dx, 0, dz);
                 BlockEntity be = level.getBlockEntity(checkPos);
                 if (be instanceof AstralNexusBlockEntity nexus) {
                     nexus.setSavedPos(pos);
-
                     nexus.progress = altar.progress;
                     nexus.maxProgress = altar.maxProgress;
                     nexus.setChanged();
-
                     level.sendBlockUpdated(nexus.getBlockPos(), nexus.getBlockState(), nexus.getBlockState(), 3);
                 }
             }
         }
     }
 
-    public static void setCRAFTING(BlockPos altarPos, Level level, boolean boo) {
+    public static void setCRAFTING(BlockPos altarPos, Level level, boolean crafting) {
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                if (dx == 0 && dz == 0) continue;
+                if (dx == 0 && dz == 0) {
+                    continue;
+                }
 
                 BlockPos checkPos = altarPos.offset(dx, 0, dz);
-                BlockState state = level.getBlockState(checkPos);
                 BlockEntity be = level.getBlockEntity(checkPos);
 
                 if (be instanceof AstralNexusBlockEntity nexus) {
-                    if (boo) {
+                    if (crafting) {
                         if (nexus.craftingStartTime == -1) {
                             nexus.craftingStartTime = level.getGameTime();
                             nexus.setChanged();
@@ -163,69 +164,100 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         };
     }
 
+    private Optional<RecipeHolder<StarLightLunarInfuserRecipe>> getCurrentRecipe() {
+        if (level == null) {
+            return Optional.empty();
+        }
+
+        SimpleContainer simpleInventory = new SimpleContainer(inventory.getStackInSlot(SLOT_INPUT));
+        FluidStack fluidInTank = this.fluidTank.getFluidInTank(0);
+        return level.getRecipeManager().getRecipeFor(
+                ModRecipes.STAR_LIGHT_LUNAR_INFUSER_RECIPE_TYPE.get(),
+                getRecipeInput(simpleInventory, fluidInTank),
+                level
+        );
+    }
+
+    private boolean canAcceptFluidOutput(FluidStack output) {
+        if (output.isEmpty()) {
+            return false;
+        }
+
+        FluidStack tankFluid = fluidTank.getFluid();
+        if (!tankFluid.isEmpty() && !tankFluid.getFluid().isSame(output.getFluid())) {
+            return false;
+        }
+
+        return fluidTank.getFluidAmount() + output.getAmount() <= fluidTank.getCapacity();
+    }
+
     public boolean hasStarLightRecipe() {
-        if (level == null) return false;
+        if (level == null) {
+            return false;
+        }
 
-        SimpleContainer simpleInventory = new SimpleContainer(inventory.getStackInSlot(0));
+        Optional<RecipeHolder<StarLightLunarInfuserRecipe>> recipeOpt = getCurrentRecipe();
+        if (recipeOpt.isEmpty()) {
+            return false;
+        }
 
-        FluidStack fluidInTank =this.fluidTank.getFluidInTank(0);
+        StarLightLunarInfuserRecipe recipe = recipeOpt.get().value();
+        if (!canAcceptFluidOutput(recipe.output)) {
+            return false;
+        }
 
-        Optional<RecipeHolder<StarLightLunarInfuserRecipe>> recipe = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.STAR_LIGHT_LUNAR_INFUSER_RECIPE_TYPE.get(), getRecipeInput(simpleInventory, fluidInTank), level);
-
-        if (recipe.isEmpty()) return false;
-
-        StarLightLunarInfuserRecipe StarLightRecipe = recipe.get().value();
-
-        maxProgress = StarLightRecipe.recipeTime;
+        maxProgress = recipe.recipeTime;
         level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
-
         return true;
     }
 
-    public void craftItem() {
-        Level level = this.level;
-        if (level == null) return;
+    public boolean craftItem() {
+        if (level == null) {
+            return false;
+        }
 
-        SimpleContainer simpleInventory = new SimpleContainer(inventory.getStackInSlot(0));
+        Optional<RecipeHolder<StarLightLunarInfuserRecipe>> recipeOpt = getCurrentRecipe();
+        if (recipeOpt.isEmpty()) {
+            return false;
+        }
 
-        FluidStack fluidInTank = this.fluidTank.getFluidInTank(0);
+        StarLightLunarInfuserRecipe recipe = recipeOpt.get().value();
+        FluidStack output = recipe.output.copy();
+        if (!canAcceptFluidOutput(output)) {
+            return false;
+        }
 
-        Optional<RecipeHolder<StarLightLunarInfuserRecipe>> recipe = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.STAR_LIGHT_LUNAR_INFUSER_RECIPE_TYPE.get(), getRecipeInput(simpleInventory, fluidInTank), level);
-
-        if (recipe.isEmpty()) return;
-
-        StarLightLunarInfuserRecipe StarLightrecipe = recipe.get().value();
-
-        fillFluidTank(StarLightrecipe.output);
+        inventory.extractItem(SLOT_INPUT, 1, false);
+        fillFluidTank(output);
+        progress = 0;
 
         if (level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.ASH,
+            serverLevel.sendParticles(
+                    ParticleTypes.ASH,
                     worldPosition.getX() + 0.5,
                     worldPosition.getY() + 1.3,
                     worldPosition.getZ() + 0.5,
-                    1, // antal partikler
-                    0.1, 0.1, 0.1, // spread
-                    0.01 // fart
+                    1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.01
             );
 
-            serverLevel.sendParticles(ParticleTypes.CRIT,
+            serverLevel.sendParticles(
+                    ParticleTypes.CRIT,
                     worldPosition.getX() + 0.5,
                     worldPosition.getY() + 1.3,
                     worldPosition.getZ() + 0.5,
-                    1, // antal partikler
-                    0.1, 0.1, 0.1, // spread
-                    0.01 // fart
+                    1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.01
             );
-
-            /*
-            level.playSound(null, worldPosition, SoundEvents.ALLAY_HURT,
-                    SoundSource.BLOCKS, 0.12f, 0.17f);
-            level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME,
-                    SoundSource.BLOCKS, 0.3f, 0.2f);
-             */
         }
+
+        return true;
     }
 
     public Vec3 getStartPosition() {
@@ -238,31 +270,23 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
         return new Vec3(pos.getX() + 0.5, pos.getY() + 2.0, pos.getZ() + 0.5);
     }
 
-
     public ItemStackHandler getInputItems() {
         return inventory;
     }
 
     @Override
-    public int[] getSlotsForFace(Direction p_58363_) {
-        if (p_58363_ == Direction.DOWN) {
-            return new int[]{0};
-        } else {
-            return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
-        }
+    public int[] getSlotsForFace(Direction direction) {
+        return INPUT_SLOT;
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
-        if (slot == 0) {
-            return inventory.getStackInSlot(0).isEmpty();
-        }
-        return false;
+        return slot == SLOT_INPUT && inventory.getStackInSlot(SLOT_INPUT).isEmpty();
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
-        return direction == Direction.DOWN && slot == 0 && progress >= maxProgress;
+        return direction == Direction.DOWN && slot == SLOT_INPUT && progress <= 0;
     }
 
     @Override
@@ -272,35 +296,26 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
 
     @Override
     public boolean isEmpty() {
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            if (!inventory.getStackInSlot(i).isEmpty()) {
-                return false;
-            }
-        }
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            if (!inventory.getStackInSlot(i).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return inventory.getStackInSlot(SLOT_INPUT).isEmpty();
     }
 
     @Override
-    public ItemStack getItem(int pSlot) {
-        if (pSlot < 4) {
-            return inventory.getStackInSlot(pSlot);
-        } else {
-            return inventory.getStackInSlot(pSlot - 4);
+    public ItemStack getItem(int slot) {
+        if (slot == SLOT_INPUT) {
+            return inventory.getStackInSlot(SLOT_INPUT);
         }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        if (slot < 4) {
-            inventory.setStackInSlot(slot, stack);
+        if (slot != SLOT_INPUT) {
+            return;
         }
+
+        inventory.setStackInSlot(slot, stack);
         setChanged();
-        if (!level.isClientSide) {
+        if (level != null && !level.isClientSide) {
             markForUpdate();
         }
     }
@@ -313,56 +328,45 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
 
     @Override
     public ItemStack removeItem(int slotIndex, int count) {
-        if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            if (progress >= maxProgress) {
-                return inventory.extractItem(slotIndex, count, false);
-            }
+        if (slotIndex == SLOT_INPUT && progress <= 0) {
+            return inventory.extractItem(SLOT_INPUT, count, false);
         }
         return ItemStack.EMPTY;
     }
 
-
     @Override
     public ItemStack removeItemNoUpdate(int slotIndex) {
-        if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
-
-            if (!stackInSlot.isEmpty()) {
-                inventory.setStackInSlot(slotIndex, ItemStack.EMPTY);
-                return stackInSlot;
-            }
+        if (slotIndex != SLOT_INPUT) {
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+
+        ItemStack stackInSlot = inventory.getStackInSlot(SLOT_INPUT);
+        if (stackInSlot.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        inventory.setStackInSlot(SLOT_INPUT, ItemStack.EMPTY);
+        return stackInSlot;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        final double MAX_DISTANCE = 64.0;
-        double distanceSquared = player.distanceToSqr(this.worldPosition.getX() + 0.5,
+        final double maxDistance = 64.0;
+        double distanceSquared = player.distanceToSqr(
+                this.worldPosition.getX() + 0.5,
                 this.worldPosition.getY() + 0.5,
-                this.worldPosition.getZ() + 0.5);
-        return distanceSquared <= MAX_DISTANCE;
+                this.worldPosition.getZ() + 0.5
+        );
+        return distanceSquared <= maxDistance;
     }
 
     @Override
     public void clearContent() {
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            inventory.setStackInSlot(i, ItemStack.EMPTY);
-        }
-    }
-
-    private static class MatchedItem {
-        public final AstralNexusBlockEntity nexus;
-        public final int slot;
-
-        public MatchedItem(AstralNexusBlockEntity nexus, int slot) {
-            this.nexus = nexus;
-            this.slot = slot;
-        }
+        inventory.setStackInSlot(SLOT_INPUT, ItemStack.EMPTY);
     }
 
     public void clearContents() {
-        inventory.setStackInSlot(0, ItemStack.EMPTY);
+        clearContent();
     }
 
     public void drops() {
@@ -438,8 +442,16 @@ public class LunarInfuserBlockEntity extends BlockEntity implements WorldlyConta
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    public float getSmoothProgress(float partialTicks) {
+        if (maxProgress <= 0) {
+            return 0f;
+        }
+        float interpolated = Mth.lerp(partialTicks, prevProgress, progress);
+        return Mth.clamp(interpolated / maxProgress, 0f, 1f);
     }
 
     @Override

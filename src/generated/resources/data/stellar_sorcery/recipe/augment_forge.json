@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:obsidian"
+    },
+    "B": {
+      "item": "stellar_sorcery:essence_amulet"
+    },
+    "C": {
+      "item": "stellar_sorcery:bluestone_dust"
+    },
+    "D": {
+      "item": "stellar_sorcery:arcforge"
+    },
+    "E": {
+      "item": "stellar_sorcery:lunar_infuser"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:augment_forge"
+  }
+}

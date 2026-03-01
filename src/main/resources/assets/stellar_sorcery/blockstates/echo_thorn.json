@@ -1,0 +1,384 @@
+﻿{
+  "credit":  "Glowing block rendering approach based on Legend of Steve by DeadlyDiamond (CC0 1.0)",
+  "multipart":  [
+    {
+      "apply":  {
+        "model":  "stellar_sorcery:block/base_echo_thorn"
+      }
+    },
+    {
+      "apply":  [
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_empty",
+          "weight": 16
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_b",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_b",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_b",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_b",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_b",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6",
+          "weight":  2
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_a",
+          "weight":  1
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_b",
+          "weight":  1
+        }
+      ]
+    },
+    {
+      "apply":  [
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_empty",
+          "weight": 16
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_b",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_b",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_b",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_b",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_b",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6",
+          "weight":  2,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_a",
+          "weight":  1,
+          "y":  90
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_b",
+          "weight":  1,
+          "y":  90
+        }
+      ]
+    },
+    {
+      "apply":  [
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_empty",
+          "weight": 16
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_b",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_b",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_b",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_b",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_b",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6",
+          "weight":  2,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_a",
+          "weight":  1,
+          "y":  180
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_b",
+          "weight":  1,
+          "y":  180
+        }
+      ]
+    },
+    {
+      "apply":  [
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_empty",
+          "weight": 16
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_1_b",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_2_b",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_3_b",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_4_b",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_5_b",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6",
+          "weight":  2,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_a",
+          "weight":  1,
+          "y":  270
+        },
+        {
+          "model":  "stellar_sorcery:block/echo_thorn_eye_group_6_b",
+          "weight":  1,
+          "y":  270
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package net.zuperz.stellar_sorcery;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.FastColor;
@@ -8,8 +9,10 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -41,6 +44,7 @@ import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import net.zuperz.stellar_sorcery.screen.ModMenuTypes;
 import net.zuperz.stellar_sorcery.util.KeyBinding;
+import net.zuperz.stellar_sorcery.worldgen.biome.ModBiomes;
 import org.slf4j.Logger;import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -136,6 +140,24 @@ public class StellarSorcery
             event.registerBlockEntityRenderer(ModBlockEntities.ARCFORGE_BE.get(), ArcForgeBlockEntityRenderer::new);
 
             event.registerBlockEntityRenderer(ModBlockEntities.AUGMENT_FORGE_BE.get(), AugmentForgeBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.GLOWING_BLOCK_BE.get(), GlowingBlockRenderer::new);
+        }
+
+        @SubscribeEvent
+        public static void registerColoredBlocks(RegisterColorHandlersEvent.Block event) {
+            event.register((pState, pLevel, pPos, pTintIndex) -> pLevel != null &&
+                    pPos != null ? BiomeColors.getAverageFoliageColor(pLevel, pPos) : 0x463e57, ModBlocks.GLOOM_MOSS_CARPET.get());
+            event.register((pState, pLevel, pPos, pTintIndex) -> pLevel != null &&
+                    pPos != null ? BiomeColors.getAverageFoliageColor(pLevel, pPos) : 0x463e57, ModBlocks.GLOOM_MOSS_BLOCK.get());
+            event.register((pState, pLevel, pPos, pTintIndex) -> pLevel != null &&
+                    pPos != null ? BiomeColors.getAverageFoliageColor(pLevel, pPos) : 0x463e57, ModBlocks.ECHO_THORN_FLOWER.get());
+        }
+
+        @SubscribeEvent
+        public static void registerColoredItems(RegisterColorHandlersEvent.Item event) {
+            event.register((pStack, pTintIndex) -> 0x463e57, ModBlocks.GLOOM_MOSS_CARPET);
+            event.register((pStack, pTintIndex) -> 0x463e57, ModBlocks.GLOOM_MOSS_BLOCK);
+            event.register((pStack, pTintIndex) -> 0x463e57, ModBlocks.ECHO_THORN_FLOWER);
         }
 
         @SubscribeEvent

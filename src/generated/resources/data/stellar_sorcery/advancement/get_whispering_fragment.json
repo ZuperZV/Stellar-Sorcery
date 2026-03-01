@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_moonshine_shard",
+  "criteria": {
+    "get_whispering_fragment": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:whispering_fragment"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.whispering_fragment.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:whispering_fragment"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.whispering_fragment.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_whispering_fragment"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

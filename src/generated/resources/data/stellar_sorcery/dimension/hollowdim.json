@@ -6,7 +6,7 @@
       "type": "minecraft:multi_noise",
       "biomes": [
         {
-          "biome": "minecraft:deep_dark",
+          "biome": "stellar_sorcery:test_biome",
           "parameters": {
             "continentalness": 0.0,
             "depth": 0.0,
@@ -18,43 +18,31 @@
           }
         },
         {
-          "biome": "minecraft:basalt_deltas",
+          "biome": "minecraft:badlands",
           "parameters": {
             "continentalness": 0.0,
             "depth": 0.0,
-            "erosion": 0.2,
-            "humidity": 0.2,
+            "erosion": 0.0,
+            "humidity": 0.0,
             "offset": 0.0,
-            "temperature": 0.1,
+            "temperature": 1.0,
             "weirdness": 0.0
           }
         },
         {
-          "biome": "minecraft:the_end",
+          "biome": "minecraft:cherry_grove",
           "parameters": {
-            "continentalness": 0.1,
+            "continentalness": 0.0,
             "depth": 0.0,
-            "erosion": 0.1,
-            "humidity": 0.6,
+            "erosion": 0.0,
+            "humidity": 0.0,
             "offset": 0.0,
-            "temperature": 0.3,
-            "weirdness": 0.0
-          }
-        },
-        {
-          "biome": "minecraft:dark_forest",
-          "parameters": {
-            "continentalness": 0.2,
-            "depth": 0.0,
-            "erosion": 0.1,
-            "humidity": 0.3,
-            "offset": 0.0,
-            "temperature": 0.4,
+            "temperature": -1.0,
             "weirdness": 0.0
           }
         }
       ]
     },
-    "settings": "minecraft:amplified"
+    "settings": "stellar_sorcery:hollow_noise_settings"
   }
 }

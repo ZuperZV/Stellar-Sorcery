@@ -1,0 +1,34 @@
+{
+  "parent": "stellar_sorcery:get_astral_altar",
+  "criteria": {
+    "get_astral_nexus": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:astral_nexus"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.astral_nexus.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:astral_nexus"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.astral_nexus.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_astral_nexus"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

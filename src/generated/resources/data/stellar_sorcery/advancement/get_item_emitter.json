@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_light_beam_emitter",
+  "criteria": {
+    "get_item_emitter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:item_emitter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.item_emitter.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:item_emitter"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.item_emitter.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_item_emitter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

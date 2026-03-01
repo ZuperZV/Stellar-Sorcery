@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "moisture=0": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=1": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=2": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=3": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=4": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=5": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=6": {
+      "model": "stellar_sorcery:block/tilled_driftsoil"
+    },
+    "moisture=7": {
+      "model": "stellar_sorcery:block/wet_tilled_driftsoil"
+    }
+  }
+}

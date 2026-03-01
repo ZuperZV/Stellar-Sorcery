@@ -8,28 +8,34 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
@@ -38,6 +44,7 @@ import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
 import net.zuperz.stellar_sorcery.data.IModPlayerData;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
 import net.zuperz.stellar_sorcery.effect.ModEffects;
+import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.shaders.post.EssenceBottleItemShaderRenderer;
@@ -159,6 +166,27 @@ public class ModEvents {
                 }
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        Level world = event.getEntity().getCommandSenderWorld();
+        BlockPos pos = event.getPos();
+
+        if (world.getBlockState(pos).getBlock() == ModBlocks.DRIFTSOIL.get()) {
+            ItemStack itemStack = event.getItemStack();
+            if (itemStack.canPerformAction(ItemAbilities.HOE_TILL)) {
+
+                Player player = event.getEntity();
+                itemStack.hurtAndBreak(1, player,
+                        LivingEntity.getSlotForHand(event.getHand()));
+
+                world.setBlockAndUpdate(pos, ModBlocks.TILLED_DRIFTSOIL.get().defaultBlockState());
+
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+            }
+        }
     }
 
     private static void runSigilCommand(Player player, SoulCandleCommand cmd) {

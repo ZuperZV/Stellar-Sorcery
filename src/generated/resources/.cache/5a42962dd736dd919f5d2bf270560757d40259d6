@@ -1,6 +1,7 @@
-// 1.21	2026-02-13T23:53:32.7930161	Block States: stellar_sorcery
+// 1.21	2026-02-22T04:35:29.7247602	Block States: stellar_sorcery
 d428e7b05f23f91adbd0bb9360c2f77890e7540e assets/stellar_sorcery/blockstates/budding_moonshine.json
 9a21281bab6c1e541e876bd44605db6549bc695f assets/stellar_sorcery/blockstates/calendula.json
+4542063e799fd41eaefd455c44d791aba8e59be7 assets/stellar_sorcery/blockstates/driftsoil.json
 2a6699e4030f39cd6a9b6999aed863460d1bfb36 assets/stellar_sorcery/blockstates/fritillaria_meleagris_crop.json
 1235d6b11896c5518ee86d4742891382c7bd249d assets/stellar_sorcery/blockstates/moonshine_cluster.json
 9d038074e63c9aa61a01431036129ee9a18e19f5 assets/stellar_sorcery/blockstates/moonshine_large_bud.json
@@ -14,6 +15,7 @@ ac4bae342a13c4667db74416ce2c2c97d1009fdc assets/stellar_sorcery/blockstates/pott
 0fc62268237fff2324d5f9e652e1d87b785d8adf assets/stellar_sorcery/blockstates/soul_bloom_crop.json
 b682ad2504758de5ff8c07930e08c6599b86e8df assets/stellar_sorcery/models/block/budding_moonshine.json
 603cdde17cb8a29ba390e891446faa3c156d1ecb assets/stellar_sorcery/models/block/calendula.json
+a6957d84cb6fe9268ba93ebf6252ed908f820d13 assets/stellar_sorcery/models/block/driftsoil.json
 16e5c1179cf75e3a02058c825461b10432dc86ee assets/stellar_sorcery/models/block/fritillaria_meleagris_stage0.json
 c2f0a94148322846978a0610cda87b8c6f8be7d8 assets/stellar_sorcery/models/block/fritillaria_meleagris_stage1.json
 44cbcab55abb57c2efd23e9534c6c640e000bb5d assets/stellar_sorcery/models/block/fritillaria_meleagris_stage2.json
@@ -37,3 +39,4 @@ bb5a411091eab75d5c218259361b3696b95b5497 assets/stellar_sorcery/models/block/sou
 6be7b8c67a23b4a706f5fb538df1e5890bf3b76c assets/stellar_sorcery/models/block/soul_bloom_stag5.json
 5f6ca8e5bfabd5bf05b80f5331cbff6910c92f33 assets/stellar_sorcery/models/block/soul_bloom_stag6.json
 454c46bf9d98a6484a5054140339153526468fc9 assets/stellar_sorcery/models/item/budding_moonshine.json
+fa93d7ae9d128ab1132b3a8481c0ac8ef71ba5ef assets/stellar_sorcery/models/item/driftsoil.json

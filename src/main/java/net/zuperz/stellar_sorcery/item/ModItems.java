@@ -6,11 +6,14 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.component.CodexTierData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.component.SpellData;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.custom.*;
 import net.zuperz.stellar_sorcery.util.ModTags;
+
+import java.util.List;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -143,6 +146,16 @@ public class ModItems {
 
     public static final DeferredItem<Item> SCROLL_CONSTRUCT = ITEMS.register("scroll_construct",
             () -> new SpellItem(new Item.Properties().stacksTo(1).fireResistant()));
+
+    public static final DeferredItem<Item> VERDANT_RECALL_SCROLL = ITEMS.register("verdant_recall_scroll",
+            () -> new SpellItem(new Item.Properties().stacksTo(1).fireResistant()
+                    .component(ModDataComponentTypes.SPELL_DATA.get(),
+                            new SpellData("single_target", List.of("respawn_recall_rune"), List.of(), 8))));
+
+    public static final DeferredItem<Item> VERDANT_BLOOM_SCROLL = ITEMS.register("verdant_bloom_scroll",
+            () -> new SpellItem(new Item.Properties().stacksTo(1).fireResistant()
+                    .component(ModDataComponentTypes.SPELL_DATA.get(),
+                            new SpellData("verdant_growth_area", List.of("verdant_growth_rune"), List.of(), 4))));
 
 
     public static final DeferredItem<Item> SIGIL_OVERLAY_HELMET = ITEMS.register("sigil_overlay_helmet",

@@ -2,6 +2,7 @@ package net.zuperz.stellar_sorcery.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -71,15 +74,15 @@ public class ModBlocks {
     public static final DeferredBlock<Block> SOUL_BLOOM_CROP = BLOCKS.register("soul_bloom_crop",
             () -> new SoulBloomCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 
-    public static final DeferredBlock<Block> RED_CAMPION = registerBlock("red_campion",
-            () -> new FlowerBlock(MobEffects.HARM, 2, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
-    public static final DeferredBlock<Block> POTTED_RED_CAMPION = BLOCKS.register("potted_red_campion",
-            () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), RED_CAMPION, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
-
     public static final DeferredBlock<Block> CALENDULA = registerBlock("calendula",
             () -> new FlowerBlock(MobEffects.LUCK, 8, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
     public static final DeferredBlock<Block> POTTED_CALENDULA = BLOCKS.register("potted_calendula",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), CALENDULA, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
+
+    public static final DeferredBlock<Block> RED_CAMPION = registerBlock("red_campion",
+            () -> new FlowerBlock(MobEffects.HARM, 2, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
+    public static final DeferredBlock<Block> POTTED_RED_CAMPION = BLOCKS.register("potted_red_campion",
+            () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), RED_CAMPION, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
 
     public static final DeferredBlock<Block> NIGELLA_DAMASCENA = registerBlock("nigella_damascena",
             () -> new FlowerBlock(MobEffects.DARKNESS, 8, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
@@ -162,13 +165,44 @@ public class ModBlocks {
     public static final DeferredBlock<Block> HOLLOW_PORTAL = registerBlock("hollow_portal",
             HollowPortalBlock::new);
 
+    public static final DeferredBlock<Block> GRIMROCK = registerBlock("grimrock",
+            () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
+                    .sound(SoundType.DEEPSLATE)));
+
+    public static final DeferredBlock<Block> GLOOM_MOSS_BLOCK = registerBlock("gloom_moss_block",
+            () -> new BonemealableFeaturePlacerBlock(VegetationFeatures.MANGROVE_VEGETATION, BlockBehaviour.Properties.of().ignitedByLava()
+                    .mapColor(MapColor.COLOR_PURPLE).strength(0.1F).sound(SoundType.MOSS).pushReaction(PushReaction.DESTROY)));
+
+    public static final DeferredBlock<Block> GLOOM_MOSS_CARPET = registerBlock("gloom_moss_carpet",
+            () -> new MossyCarpetBlock(BlockBehaviour.Properties.of().ignitedByLava().mapColor(GLOOM_MOSS_BLOCK.get().defaultMapColor())
+                    .strength(0.1F).sound(SoundType.MOSS_CARPET).pushReaction(PushReaction.DESTROY).noOcclusion()));
+
+    public static final DeferredBlock<Block> ECHO_THORN = registerBlock("echo_thorn",
+            () -> new EchoThornBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CACTUS).mapColor(MapColor.COLOR_PURPLE).noOcclusion()));
+
+    public static final DeferredBlock<Block> ECHO_THORN_FLOWER = registerBlock("echo_thorn_flower",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY).mapColor(MapColor.COLOR_PURPLE).strength(0.1F)
+                    .pushReaction(PushReaction.DESTROY).noOcclusion().noCollission()) {
+                protected static final VoxelShape SHAPE = Block.box(1.0, 0.0, 1.0, 14.0, 10.0, 14.0);
+                @Override
+                protected VoxelShape getShape(BlockState p_53517_, BlockGetter p_53518_, BlockPos p_53519_, CollisionContext p_53520_) {
+                    return SHAPE;
+                }
+            });
+
+    public static final DeferredBlock<Block> DRIFTSOIL = registerBlock("driftsoil",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ROOTED_DIRT).mapColor(MapColor.COLOR_PURPLE).noOcclusion()));
+
+    public static final DeferredBlock<Block> TILLED_DRIFTSOIL = registerBlock("tilled_driftsoil",
+            () -> new TilledSoilBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.ROOTED_DIRT).mapColor(MapColor.COLOR_PURPLE).noOcclusion(), ModBlocks.DRIFTSOIL.get().defaultBlockState(), -3));
+
     public static final DeferredBlock<Block> ELDRITE = registerBlock("eldrite",
             () -> new EldriteBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
-                    .sound(SoundType.TUFF).noOcclusion()));
+                    .sound(SoundType.TUFF)));
 
     public static final DeferredBlock<Block> MOON_SHARD_ELDRITE = registerBlock("moon_shard_eldrite",
             () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
-                    .sound(SoundType.TUFF).noOcclusion()));
+                    .sound(SoundType.TUFF)));
 
     private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
         return true;

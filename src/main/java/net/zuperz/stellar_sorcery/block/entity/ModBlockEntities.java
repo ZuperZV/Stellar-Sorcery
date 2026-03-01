@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.fluid.ModFluids;
 import net.zuperz.stellar_sorcery.block.entity.custom.*;
 
 import java.util.function.Supplier;
@@ -73,6 +74,10 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<AugmentForgeBlockEntity>> AUGMENT_FORGE_BE =
             BLOCK_ENTITIES.register("augment_forge_be", () -> BlockEntityType.Builder.of(
                     AugmentForgeBlockEntity::new, ModBlocks.AUGMENT_FORGE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<GlowingBlockEntity>> GLOWING_BLOCK_BE =
+            BLOCK_ENTITIES.register("glowing_block_be", () -> BlockEntityType.Builder.of(
+                    GlowingBlockEntity::new, ModFluids.NOCTILUME_BLOCK.get(), ModBlocks.HOLLOW_PORTAL.get()).build(null));
 
 
 

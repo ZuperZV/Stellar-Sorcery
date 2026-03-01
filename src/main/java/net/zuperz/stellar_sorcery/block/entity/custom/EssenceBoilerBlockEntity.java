@@ -18,17 +18,14 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
@@ -38,8 +35,19 @@ import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import org.jetbrains.annotations.Nullable;
 
-
 public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyContainer, IHasFluidTank {
+    public static final int SLOT_INGREDIENT_1 = 0;
+    public static final int SLOT_INGREDIENT_2 = 1;
+    public static final int SLOT_INGREDIENT_3 = 2;
+    public static final int SLOT_CONTAINER = 3;
+    public static final int SLOT_OUTPUT = 4;
+    public static final int TOTAL_SLOTS = 5;
+
+    private static final int[] INPUT_SLOTS = new int[] {
+            SLOT_INGREDIENT_1, SLOT_INGREDIENT_2, SLOT_INGREDIENT_3, SLOT_CONTAINER
+    };
+    private static final int[] OUTPUT_SLOTS = new int[] {SLOT_OUTPUT};
+
     public int progress = 0;
     public int maxProgress = 60;
     public static final int EVENT_WOBBLE = 1;
@@ -47,16 +55,16 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     @Nullable
     public WobbleStyle lastWobbleStyle;
 
-    public final ItemStackHandler inventory = new ItemStackHandler(4) {
+    public final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 1;
+            return slot == SLOT_OUTPUT ? stack.getMaxStackSize() : 1;
         }
 
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
-            if (!level.isClientSide()) {
+            if (level != null && !level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
@@ -78,124 +86,145 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, EssenceBoilerBlockEntity boiler) {
-        if (level.isClientSide) return;
-
-        // AMULET RECIPE : Essence Bottle + Ghast Tear + Empty Essence Amulet -> Essence Amulet
-        ItemStack essenceBottleStack = ItemStack.EMPTY;
-        int essenceBottleSlot = -1;
-
-        int stringSlot = -1;
-        int leatherSlot = -1;
-
-        for (int i = 0; i < boiler.inventory.getSlots(); i++) {
-            ItemStack stack = boiler.inventory.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                if (essenceBottleStack.isEmpty() && stack.is(ModItems.ESSENCE_BOTTLE.get())) {
-                    essenceBottleStack = stack.copy();
-                    essenceBottleSlot = i;
-                } else if (stringSlot == -1 && stack.is(Items.GHAST_TEAR)) {
-                    stringSlot = i;
-                } else if (leatherSlot == -1 && stack.is(ModItems.EMPTY_ESSENCE_AMULET)) {
-                    leatherSlot = i;
-                }
-            }
-        }
-
-        if (!essenceBottleStack.isEmpty() && stringSlot != -1 && leatherSlot != -1) {
-            ItemStack amulet = new ItemStack(ModItems.ESSENCE_AMULET.get());
-
-            if (essenceBottleStack.has(ModDataComponentTypes.ESSENCE_BOTTLE.get())) {
-                EssenceBottleData data = essenceBottleStack.get(ModDataComponentTypes.ESSENCE_BOTTLE.get());
-                amulet.set(ModDataComponentTypes.ESSENCE_BOTTLE.get(), data);
-            }
-
-            boiler.inventory.extractItem(essenceBottleSlot, 1, false);
-            boiler.inventory.extractItem(stringSlot, 1, false);
-            boiler.inventory.extractItem(leatherSlot, 1, false);
-
-            Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, amulet);
-
-            boiler.progress = 0;
-
-            boiler.setChanged();
-            level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        if (level.isClientSide) {
             return;
         }
 
-        // RECIPE: 3 items + water + empty bottle -> Essence Bottle
-        boolean hasAllItems = true;
-
-        for (int i = 0; i < 3; i++) {
-            if (boiler.inventory.getStackInSlot(i).isEmpty()) {
-                hasAllItems = false;
-                break;
-            }
+        if (boiler.tryCraftAmulet(level, pos, state)) {
+            return;
         }
 
-        if (boiler.progress > 0) {
-            if (level instanceof ServerLevel serverLevel) {
-                serverLevel.getLevel().sendParticles(ParticleTypes.BUBBLE,
-                        (double) pos.getX() + 0.5,
-                        (double) pos.getY() + 1,
-                        (double) pos.getZ() + 0.5,
-                        1,
-                        0.2, 0.2, 0.2,
-                        0.0
-                );
-            }
+        boolean hasAllIngredients = !boiler.inventory.getStackInSlot(SLOT_INGREDIENT_1).isEmpty()
+                && !boiler.inventory.getStackInSlot(SLOT_INGREDIENT_2).isEmpty()
+                && !boiler.inventory.getStackInSlot(SLOT_INGREDIENT_3).isEmpty();
+
+        boolean hasBottle = boiler.inventory.getStackInSlot(SLOT_CONTAINER).is(ModItems.EMPTY_ESSENCE_BOTTLE.get());
+        boolean hasWater = boiler.getFluidTankAmount() >= 1000
+                && boiler.getFluidTank().getFluid().isSame(Fluids.WATER);
+
+        if (boiler.progress > 0 && level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    ParticleTypes.BUBBLE,
+                    pos.getX() + 0.5,
+                    pos.getY() + 1,
+                    pos.getZ() + 0.5,
+                    1,
+                    0.2,
+                    0.2,
+                    0.2,
+                    0.0
+            );
         }
 
-        if (hasAllItems && boiler.getFluidTankAmount() > 0 &&
-                boiler.getFluidTank().getFluid().isSame(Fluids.WATER) &&
-                boiler.inventory.getStackInSlot(3).is(ModItems.EMPTY_ESSENCE_BOTTLE)) {
+        if (hasAllIngredients && hasBottle && hasWater) {
             boiler.progress++;
-
-            level.playSound(null, pos, SoundEvents.WATER_AMBIENT,
-                    SoundSource.BLOCKS, 0.12f, 0.17f);
+            level.playSound(null, pos, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 0.12f, 0.17f);
 
             if (boiler.progress >= boiler.maxProgress) {
-                ItemStack input0 = boiler.inventory.getStackInSlot(0).copy();
-                ItemStack input1 = boiler.inventory.getStackInSlot(1).copy();
-                ItemStack input2 = boiler.inventory.getStackInSlot(2).copy();
+                ItemStack input0 = boiler.inventory.getStackInSlot(SLOT_INGREDIENT_1).copy();
+                ItemStack input1 = boiler.inventory.getStackInSlot(SLOT_INGREDIENT_2).copy();
+                ItemStack input2 = boiler.inventory.getStackInSlot(SLOT_INGREDIENT_3).copy();
 
-                for (int i = 0; i < 4; i++) {
-                    boiler.inventory.setStackInSlot(i, ItemStack.EMPTY);
+                ItemStack essenceBottle = new ItemStack(ModItems.ESSENCE_BOTTLE.get());
+                essenceBottle.set(
+                        ModDataComponentTypes.ESSENCE_BOTTLE.get(),
+                        new EssenceBottleData(input0, input1, input2)
+                );
+
+                if (!boiler.canOutput(essenceBottle)) {
+                    boiler.progress = boiler.maxProgress;
+                    boiler.setChanged();
+                    level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+                    return;
                 }
 
-                ItemStack essensBottle = new ItemStack(ModItems.ESSENCE_BOTTLE.get());
-
-                essensBottle.set(ModDataComponentTypes.ESSENCE_BOTTLE.get(), new EssenceBottleData(input0, input1, input2));
-
+                boiler.inventory.extractItem(SLOT_INGREDIENT_1, 1, false);
+                boiler.inventory.extractItem(SLOT_INGREDIENT_2, 1, false);
+                boiler.inventory.extractItem(SLOT_INGREDIENT_3, 1, false);
+                boiler.inventory.extractItem(SLOT_CONTAINER, 1, false);
                 boiler.drainFluidTank(1000);
-
-                Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, essensBottle);
+                boiler.insertOutput(essenceBottle);
 
                 boiler.progress = 0;
             }
-
-
-        } else {
-            if (boiler.progress != 0) {
-                boiler.progress = 0;
-            }
+        } else if (boiler.progress != 0) {
+            boiler.progress = 0;
         }
 
         boiler.setChanged();
         level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
     }
 
-    private RecipeInput getRecipeInput(SimpleContainer inventory) {
-        return new RecipeInput() {
-            @Override
-            public ItemStack getItem(int index) {
-                return inventory.getItem(index).copy();
+    private boolean tryCraftAmulet(Level level, BlockPos pos, BlockState state) {
+        int essenceBottleSlot = -1;
+        int ghastTearSlot = -1;
+        int emptyAmuletSlot = -1;
+
+        for (int slot : INPUT_SLOTS) {
+            ItemStack stack = inventory.getStackInSlot(slot);
+            if (stack.isEmpty()) {
+                continue;
             }
 
-            @Override
-            public int size() {
-                return inventory.getContainerSize();
+            if (essenceBottleSlot == -1 && stack.is(ModItems.ESSENCE_BOTTLE.get())) {
+                essenceBottleSlot = slot;
+            } else if (ghastTearSlot == -1 && stack.is(Items.GHAST_TEAR)) {
+                ghastTearSlot = slot;
+            } else if (emptyAmuletSlot == -1 && stack.is(ModItems.EMPTY_ESSENCE_AMULET.get())) {
+                emptyAmuletSlot = slot;
             }
-        };
+        }
+
+        if (essenceBottleSlot == -1 || ghastTearSlot == -1 || emptyAmuletSlot == -1) {
+            return false;
+        }
+
+        ItemStack essenceBottleStack = inventory.getStackInSlot(essenceBottleSlot).copy();
+        ItemStack amulet = new ItemStack(ModItems.ESSENCE_AMULET.get());
+        if (essenceBottleStack.has(ModDataComponentTypes.ESSENCE_BOTTLE.get())) {
+            EssenceBottleData data = essenceBottleStack.get(ModDataComponentTypes.ESSENCE_BOTTLE.get());
+            amulet.set(ModDataComponentTypes.ESSENCE_BOTTLE.get(), data);
+        }
+
+        if (!canOutput(amulet)) {
+            return true;
+        }
+
+        inventory.extractItem(essenceBottleSlot, 1, false);
+        inventory.extractItem(ghastTearSlot, 1, false);
+        inventory.extractItem(emptyAmuletSlot, 1, false);
+        insertOutput(amulet);
+
+        progress = 0;
+        setChanged();
+        level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        return true;
+    }
+
+    private boolean canOutput(ItemStack output) {
+        ItemStack currentOutput = inventory.getStackInSlot(SLOT_OUTPUT);
+        if (currentOutput.isEmpty()) {
+            return true;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(currentOutput, output)) {
+            return false;
+        }
+
+        return currentOutput.getCount() + output.getCount() <= currentOutput.getMaxStackSize();
+    }
+
+    private void insertOutput(ItemStack output) {
+        ItemStack currentOutput = inventory.getStackInSlot(SLOT_OUTPUT);
+        if (currentOutput.isEmpty()) {
+            inventory.setStackInSlot(SLOT_OUTPUT, output.copy());
+            return;
+        }
+
+        if (ItemStack.isSameItemSameComponents(currentOutput, output)) {
+            currentOutput.grow(output.getCount());
+            inventory.setStackInSlot(SLOT_OUTPUT, currentOutput);
+        }
     }
 
     public ItemStackHandler getInputItems() {
@@ -203,25 +232,31 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     }
 
     @Override
-    public int[] getSlotsForFace(Direction p_58363_) {
-        if (p_58363_ == Direction.DOWN) {
-            return new int[]{0};
-        } else {
-            return p_58363_ == Direction.UP ? new int[]{0} : new int[]{0};
-        }
+    public int[] getSlotsForFace(Direction direction) {
+        return direction == Direction.DOWN ? OUTPUT_SLOTS : INPUT_SLOTS;
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
-        if (slot == 0) {
-            return inventory.getStackInSlot(0).isEmpty();
+        if (slot == SLOT_OUTPUT || direction == Direction.DOWN) {
+            return false;
         }
+
+        if (slot == SLOT_CONTAINER) {
+            return inventory.getStackInSlot(slot).isEmpty()
+                    && (stack.is(ModItems.EMPTY_ESSENCE_BOTTLE.get()) || stack.is(ModItems.EMPTY_ESSENCE_AMULET.get()));
+        }
+
+        if (slot >= SLOT_INGREDIENT_1 && slot <= SLOT_INGREDIENT_3) {
+            return inventory.getStackInSlot(slot).isEmpty();
+        }
+
         return false;
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
-        return direction == Direction.DOWN && slot == 0 && progress >= maxProgress;
+        return direction == Direction.DOWN && slot == SLOT_OUTPUT;
     }
 
     @Override
@@ -236,30 +271,26 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
                 return false;
             }
         }
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            if (!inventory.getStackInSlot(i).isEmpty()) {
-                return false;
-            }
-        }
         return true;
     }
 
     @Override
-    public ItemStack getItem(int pSlot) {
-        if (pSlot < 4) {
-            return inventory.getStackInSlot(pSlot);
-        } else {
-            return inventory.getStackInSlot(pSlot - 4);
+    public ItemStack getItem(int slot) {
+        if (slot >= 0 && slot < inventory.getSlots()) {
+            return inventory.getStackInSlot(slot);
         }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        if (slot < 4) {
-            inventory.setStackInSlot(slot, stack);
+        if (slot < 0 || slot >= inventory.getSlots()) {
+            return;
         }
+
+        inventory.setStackInSlot(slot, stack);
         setChanged();
-        if (!level.isClientSide) {
+        if (level != null && !level.isClientSide) {
             markForUpdate();
         }
     }
@@ -273,34 +304,35 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     @Override
     public ItemStack removeItem(int slotIndex, int count) {
         if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            if (progress >= maxProgress) {
-                return inventory.extractItem(slotIndex, count, false);
-            }
+            return inventory.extractItem(slotIndex, count, false);
         }
         return ItemStack.EMPTY;
     }
 
-
     @Override
     public ItemStack removeItemNoUpdate(int slotIndex) {
-        if (slotIndex >= 0 && slotIndex < inventory.getSlots()) {
-            ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
-
-            if (!stackInSlot.isEmpty()) {
-                inventory.setStackInSlot(slotIndex, ItemStack.EMPTY);
-                return stackInSlot;
-            }
+        if (slotIndex < 0 || slotIndex >= inventory.getSlots()) {
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+
+        ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
+        if (stackInSlot.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        inventory.setStackInSlot(slotIndex, ItemStack.EMPTY);
+        return stackInSlot;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        final double MAX_DISTANCE = 64.0;
-        double distanceSquared = player.distanceToSqr(this.worldPosition.getX() + 0.5,
+        final double maxDistance = 64.0;
+        double distanceSquared = player.distanceToSqr(
+                this.worldPosition.getX() + 0.5,
                 this.worldPosition.getY() + 0.5,
-                this.worldPosition.getZ() + 0.5);
-        return distanceSquared <= MAX_DISTANCE;
+                this.worldPosition.getZ() + 0.5
+        );
+        return distanceSquared <= maxDistance;
     }
 
     @Override
@@ -310,47 +342,8 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         }
     }
 
-    private static class MatchedItem {
-        public final AstralNexusBlockEntity nexus;
-        public final int slot;
-
-        public MatchedItem(AstralNexusBlockEntity nexus, int slot) {
-            this.nexus = nexus;
-            this.slot = slot;
-        }
-    }
-
-    public static class BlockRecipeInput implements RecipeInput {
-        private final ItemStack stack;
-        private final BlockPos pos;
-
-        public BlockRecipeInput(ItemStack stack, BlockPos pos) {
-            this.stack = stack;
-            this.pos = pos;
-        }
-
-        @Override
-        public ItemStack getItem(int pIndex) {
-            return stack;
-        }
-
-        @Override
-        public int size() {
-            return 1;
-        }
-
-        public ItemStack stack() {
-            return stack;
-        }
-
-        public BlockPos pos() {
-            return pos;
-        }
-    }
-
-
     public void clearContents() {
-        inventory.setStackInSlot(0, ItemStack.EMPTY);
+        clearContent();
     }
 
     public void drops() {
@@ -399,8 +392,8 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
     }
 
     public Lazy<FluidTank> getFluidOptional() {
@@ -428,9 +421,14 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     }
 
     public enum WobbleStyle {
-        POSITIVE(7), NEGATIVE(10);
+        POSITIVE(7),
+        NEGATIVE(10);
+
         public final int duration;
-        WobbleStyle(int duration) { this.duration = duration; }
+
+        WobbleStyle(int duration) {
+            this.duration = duration;
+        }
     }
 
     public void wobble(WobbleStyle style) {

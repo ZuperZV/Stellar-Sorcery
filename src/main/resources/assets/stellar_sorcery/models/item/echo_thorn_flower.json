@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "stellar_sorcery:block/echo_thorn_flower",
+    "layer1": "stellar_sorcery:block/echo_thorn_flower_side"
+  }
+}

@@ -120,85 +120,83 @@ public class LunarInfuserBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if (pLevel.getBlockEntity(pPos) instanceof LunarInfuserBlockEntity LunarInfuser) {
-            IFluidHandlerItem fluidHandler = pStack.getCapability(Capabilities.FluidHandler.ITEM, null);
+        if (!(pLevel.getBlockEntity(pPos) instanceof LunarInfuserBlockEntity infuser)) {
+            return ItemInteractionResult.SUCCESS;
+        }
 
-            if (fluidHandler != null && !pStack.isEmpty()) {
-                FluidStack itemFluid = fluidHandler.getFluidInTank(0);
-                FluidStack tankFluid = LunarInfuser.getFluidTank();
+        IFluidHandlerItem fluidHandler = pStack.getCapability(Capabilities.FluidHandler.ITEM, null);
+        if (fluidHandler != null && !pStack.isEmpty()) {
+            FluidStack itemFluid = fluidHandler.getFluidInTank(0);
+            FluidStack tankFluid = infuser.getFluidTank();
 
-                if (LunarInfuser.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
-                    int amountToDrain = LunarInfuser.getFluidTankCapacity() - LunarInfuser.getFluidTankAmount();
-                    FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
-                    if (!drainedSim.isEmpty()) {
-                        FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
-                        LunarInfuser.fillFluidTank(drained);
+            if (infuser.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
+                int amountToDrain = infuser.getFluidTankCapacity() - infuser.getFluidTankAmount();
+                FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
+                if (!drainedSim.isEmpty()) {
+                    FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
+                    infuser.fillFluidTank(drained);
 
-                        pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                        pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        return ItemInteractionResult.SUCCESS;
-                    }
-                }
-
-                if (!LunarInfuser.getFluidTank().isEmpty() && !pStack.isEmpty()) {
-                    int amountAvailable = LunarInfuser.getFluidTankAmount();
-                    FluidStack fluidToFill = LunarInfuser.getFluidTank().copy();
-                    fluidToFill.setAmount(amountAvailable);
-
-                    int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-
-                    if (filledAmount > 0) {
-                        FluidStack fluidFilled = fluidToFill.copy();
-                        fluidFilled.setAmount(filledAmount);
-                        fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
-
-                        LunarInfuser.drainFluidTank(filledAmount);
-
-                        pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                        pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
-                        return ItemInteractionResult.SUCCESS;
-                    }
+                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
-            if (LunarInfuser.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
-                LunarInfuser.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
-                pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
-                return ItemInteractionResult.SUCCESS;
-            } else if (pStack.isEmpty() || !pStack.isEmpty() && !LunarInfuser.inventory.getStackInSlot(0).isEmpty()) {
-                ItemStack extracted = LunarInfuser.inventory.extractItem(0, 1, true);
 
-                if (!extracted.isEmpty()) {
-                    boolean addedToInventory = false;
+            if (!infuser.getFluidTank().isEmpty()) {
+                int amountAvailable = infuser.getFluidTankAmount();
+                FluidStack fluidToFill = infuser.getFluidTank().copy();
+                fluidToFill.setAmount(amountAvailable);
 
-                    for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
-                        ItemStack playerStack = pPlayer.getInventory().items.get(i);
+                int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
+                if (filledAmount > 0) {
+                    FluidStack fluidFilled = fluidToFill.copy();
+                    fluidFilled.setAmount(filledAmount);
+                    fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
 
-                        if (!playerStack.isEmpty()
-                                && ItemStack.isSameItem(playerStack, extracted)
-                                && playerStack.getCount() < playerStack.getMaxStackSize()) {
+                    infuser.drainFluidTank(filledAmount);
 
-                            playerStack.grow(1);
-                            addedToInventory = true;
-                            break;
-                        }
-                    }
-
-                    if (!addedToInventory && pStack.isEmpty()) {
-                        pPlayer.setItemInHand(InteractionHand.MAIN_HAND, extracted);
-                        addedToInventory = true;
-                    }
-
-                    if (addedToInventory) {
-                        LunarInfuser.clearContents();
-                        LunarInfuser.inventory.extractItem(0, 1, false);
-                        pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
-                    }
+                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
                     return ItemInteractionResult.SUCCESS;
                 }
             }
         }
+
+        if (infuser.inventory.getStackInSlot(LunarInfuserBlockEntity.SLOT_INPUT).isEmpty() && !pStack.isEmpty()) {
+            infuser.inventory.insertItem(LunarInfuserBlockEntity.SLOT_INPUT, pStack.copyWithCount(1), false);
+            pStack.shrink(1);
+            pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
+            return ItemInteractionResult.SUCCESS;
+        }
+
+        ItemStack extracted = infuser.inventory.extractItem(LunarInfuserBlockEntity.SLOT_INPUT, 1, true);
+        if (extracted.isEmpty()) {
+            return ItemInteractionResult.SUCCESS;
+        }
+
+        boolean addedToInventory = false;
+        for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
+            ItemStack playerStack = pPlayer.getInventory().items.get(i);
+            if (!playerStack.isEmpty()
+                    && ItemStack.isSameItemSameComponents(playerStack, extracted)
+                    && playerStack.getCount() < playerStack.getMaxStackSize()) {
+                playerStack.grow(1);
+                addedToInventory = true;
+                break;
+            }
+        }
+
+        if (!addedToInventory && pStack.isEmpty()) {
+            pPlayer.setItemInHand(pHand, extracted.copyWithCount(1));
+            addedToInventory = true;
+        }
+
+        if (addedToInventory) {
+            infuser.inventory.extractItem(LunarInfuserBlockEntity.SLOT_INPUT, 1, false);
+            pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+        }
+
         return ItemInteractionResult.SUCCESS;
     }
 

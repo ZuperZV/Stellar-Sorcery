@@ -3,6 +3,7 @@ package net.zuperz.stellar_sorcery.block.entity.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -34,17 +36,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.custom.LunarInfuserBlock;
 import net.zuperz.stellar_sorcery.block.entity.custom.LunarInfuserBlockEntity;
+import net.zuperz.stellar_sorcery.client.rendering.glow.GlowRenderTypes;
+import net.zuperz.stellar_sorcery.util.ModTags;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<LunarInfuserBlockEntity> {
+    private static final List<GlowEntry> GLOW_QUEUE = new ArrayList<>();
 
     public static final ModelLayerLocation MAGIC_AURA_LAYER =
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "magic_aura"), "main");
@@ -53,6 +58,8 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
 
     private Item lastRenderedItem = Items.AIR;
     private int fadeTicks = 0;
+
+    private record GlowEntry(LunarInfuserBlockEntityRenderer renderer, LunarInfuserBlockEntity entity, float partialTick, float fadeAlpha) {}
 
     public LunarInfuserBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.magicPlane = context.bakeLayer(MAGIC_AURA_LAYER).getChild("plane");
@@ -81,6 +88,8 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         }
 
         float fadeAlpha = Mth.clamp((fadeTicks + pPartialTick) / 240.0f, 0.0f, 1.0f);
+        boolean isNoctilume = pBlockEntity.getFluidTank().getFluid().defaultFluidState().is(ModTags.Fluids.NOCTILUME);
+        float glowIntensity = getGlowIntensity(level, pBlockEntity.getBlockPos());
 
         if (pBlockEntity.getBlockState().getValue(LunarInfuserBlock.CRAFTING)) {
             texture = ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/entity/magic_aura.png");
@@ -96,8 +105,8 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
 
             RenderType renderType = RenderType.entityTranslucent(texture);
             VertexConsumer buffer = pBufferSource.getBuffer(renderType);
-
-            magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+            int planeColor = FastColor.ARGB32.color(Mth.clamp((int) (fadeAlpha * 255.0f), 0, 255), 255, 255, 255);
+            magicPlane.render(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY, planeColor);
 
             pPoseStack.popPose();
 
@@ -105,9 +114,13 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
             pPoseStack.pushPose();
 
             pPoseStack.translate(0.5f, 1.0f, 0.5f);
-            renderLightningBolt(pPoseStack, pBufferSource, pBlockEntity.getBlockPos().asLong() + (gameTime / 5));
+            renderLightningBolt(pPoseStack, pBufferSource, pBlockEntity.getBlockPos().asLong() + (gameTime / 5), RenderType.lightning(), fadeAlpha);
 
             pPoseStack.popPose();
+
+            if (isNoctilume && glowIntensity > 0.01f) {
+                GLOW_QUEUE.add(new GlowEntry(this, pBlockEntity, pPartialTick, fadeAlpha));
+            }
         }
 
         pPoseStack.pushPose();
@@ -171,7 +184,7 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
         poseStack.popPose();
     }
 
-    private void renderLightningBolt(PoseStack poseStack, MultiBufferSource buffer, long seed) {
+    private void renderLightningBolt(PoseStack poseStack, MultiBufferSource buffer, long seed, RenderType renderType, float alphaMultiplier) {
         RandomSource random = RandomSource.create(seed);
 
         float[] xOffsets = new float[8];
@@ -187,7 +200,7 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
             z += (float)(random.nextInt(11) - 5);
         }
 
-        VertexConsumer consumer = buffer.getBuffer(RenderType.lightning());
+        VertexConsumer consumer = buffer.getBuffer(renderType);
         Matrix4f matrix = poseStack.last().pose();
 
         for (int j = 0; j < 4; j++) {
@@ -231,10 +244,10 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
                         f11 *= ((float)index - 1.0F) * 0.1F + 1.0F;
                     }
 
-                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, false, true, false);
-                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, false, true, true);
-                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, true, false, true);
-                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, true, false, false);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, false, true, false, alphaMultiplier);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, false, true, true, alphaMultiplier);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, true, true, false, true, alphaMultiplier);
+                    quad(matrix, consumer, dx, dz, index, prevDx, prevDz, r, g, b, f10, f11, false, true, false, false, alphaMultiplier);
                 }
             }
         }
@@ -245,15 +258,16 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
                              float x2, float z2,
                              float r, float g, float b,
                              float f10, float f11,
-                             boolean b1, boolean b2, boolean b3, boolean b4) {
+                             boolean b1, boolean b2, boolean b3, boolean b4, float alphaMultiplier) {
+        float alpha = 0.3F * alphaMultiplier;
         consumer.addVertex(matrix, x1 + (b1 ? f11 : -f11), (float)(segment * 16), z1 + (b2 ? f11 : -f11))
-                .setColor(r, g, b, 0.3F);
+                .setColor(r, g, b, alpha);
         consumer.addVertex(matrix, x2 + (b1 ? f10 : -f10), (float)((segment + 1) * 16), z2 + (b2 ? f10 : -f10))
-                .setColor(r, g, b, 0.3F);
+                .setColor(r, g, b, alpha);
         consumer.addVertex(matrix, x2 + (b3 ? f10 : -f10), (float)((segment + 1) * 16), z2 + (b4 ? f10 : -f10))
-                .setColor(r, g, b, 0.3F);
+                .setColor(r, g, b, alpha);
         consumer.addVertex(matrix, x1 + (b3 ? f11 : -f11), (float)(segment * 16), z1 + (b4 ? f11 : -f11))
-                .setColor(r, g, b, 0.3F);
+                .setColor(r, g, b, alpha);
     }
 
     @Override
@@ -264,6 +278,71 @@ public class LunarInfuserBlockEntityRenderer implements BlockEntityRenderer<Luna
     @Override
     public AABB getRenderBoundingBox(LunarInfuserBlockEntity blockEntity) {
         return AABB.INFINITE;
+    }
+
+    public static boolean hasGlowPending() {
+        return !GLOW_QUEUE.isEmpty();
+    }
+
+    public static boolean renderGlowQueue(PoseStack matrices, Camera camera, Frustum frustum, MultiBufferSource vertexConsumers) {
+        if (GLOW_QUEUE.isEmpty()) {
+            return false;
+        }
+
+        boolean renderedAny = false;
+        Vec3 cameraPos = camera.getPosition();
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/entity/magic_aura.png");
+
+        matrices.pushPose();
+        matrices.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+
+        for (GlowEntry entry : GLOW_QUEUE) {
+            LunarInfuserBlockEntity entity = entry.entity();
+            Level level = entity.getLevel();
+            if (level == null || !frustum.isVisible(new AABB(entity.getBlockPos()))) {
+                continue;
+            }
+            if (!entity.getFluidTank().getFluid().defaultFluidState().is(ModTags.Fluids.NOCTILUME)) {
+                continue;
+            }
+
+            float glowIntensity = entry.renderer().getGlowIntensity(level, entity.getBlockPos());
+            float glowAlpha = entry.fadeAlpha() * glowIntensity;
+            if (glowAlpha <= 0.01f) {
+                continue;
+            }
+
+            BlockPos pos = entity.getBlockPos();
+            long seed = pos.asLong() + (level.getGameTime() / 5);
+
+            matrices.pushPose();
+            matrices.translate(pos.getX(), pos.getY(), pos.getZ());
+            matrices.translate(0.5, 1.01, 0.5);
+            matrices.mulPose(Axis.YP.rotationDegrees((level.getGameTime() + entry.partialTick()) % 360));
+            VertexConsumer glowBuffer = vertexConsumers.getBuffer(GlowRenderTypes.entityBloom(texture));
+            int glowPlaneColor = FastColor.ARGB32.color(Mth.clamp((int) (glowAlpha * 255.0f), 0, 255), 255, 255, 255);
+            entry.renderer().magicPlane.render(matrices, glowBuffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glowPlaneColor);
+            matrices.popPose();
+
+            matrices.pushPose();
+            matrices.translate(pos.getX() + 0.5f, pos.getY() + 1.0f, pos.getZ() + 0.5f);
+            entry.renderer().renderLightningBolt(matrices, vertexConsumers, seed, GlowRenderTypes.BLOOM_LIGHTNING, glowAlpha);
+            matrices.popPose();
+
+            renderedAny = true;
+        }
+
+        GLOW_QUEUE.clear();
+        matrices.popPose();
+
+        return renderedAny;
+    }
+
+    private float getGlowIntensity(Level level, BlockPos pos) {
+        int bLight = level.getBrightness(LightLayer.BLOCK, pos);
+        int sLight = level.getBrightness(LightLayer.SKY, pos);
+        float ambient = Math.max(bLight, sLight) / 15.0f;
+        return Mth.clamp(1.0f - ambient * 0.85f, 0.15f, 1.0f);
     }
 
     private int getLightLevel(Level level, BlockPos pos) {

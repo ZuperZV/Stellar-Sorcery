@@ -16,6 +16,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.block.custom.GlowingLiquidBlock;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
@@ -31,7 +32,10 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.NOCTILUME_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> NOCTILUME_BLOCK = ModBlocks.BLOCKS.register("noctilume_block",
-            () -> new LiquidBlock(ModFluids.SOURCE_NOCTILUME.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable()));
+            () -> new GlowingLiquidBlock(ModFluids.SOURCE_NOCTILUME.get(),
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                            .lightLevel(state -> 12)
+                            .noLootTable()));
     public static final DeferredItem<Item> NOCTILUME_BUCKET = ModItems.ITEMS.registerItem("noctilume_bucket",
             properties -> new BucketItem(ModFluids.SOURCE_NOCTILUME.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 

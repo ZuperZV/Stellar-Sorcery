@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "stellar_sorcery:block/hollow_portal_ns"
+    },
+    "axis=z": {
+      "model": "stellar_sorcery:block/hollow_portal_ew"
+    }
+  }
+}

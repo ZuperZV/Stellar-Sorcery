@@ -1,0 +1,15 @@
+{
+    "textures": {
+        "particle": "stellar_sorcery:block/hollow_portal",
+        "portal": "stellar_sorcery:block/hollow_portal"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 6 ],
+            "to": [ 16, 16, 10 ],
+            "faces": {
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#portal", "emissive": true },
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#portal", "emissive": true }
+            }
+        }
+    ]
+}

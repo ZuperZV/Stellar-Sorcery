@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "B": {
+      "item": "stellar_sorcery:moonshine_shard"
+    },
+    "C": {
+      "item": "stellar_sorcery:lunar_light_beam_emitter"
+    },
+    "D": {
+      "item": "stellar_sorcery:astral_altar"
+    },
+    "E": {
+      "item": "minecraft:blaze_rod"
+    },
+    "F": {
+      "item": "stellar_sorcery:bluestone_dust"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:arcforge"
+  }
+}

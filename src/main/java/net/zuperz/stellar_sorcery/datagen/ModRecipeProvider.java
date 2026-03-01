@@ -142,6 +142,92 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_campfire", has(Blocks.CAMPFIRE))
                 .save(pWriter);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LUNAR_JAR.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("AEA")
+                .define('A', Items.AMETHYST_SHARD)
+                .define('B', ModItems.MOONSHINE_SHARD.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('D', ModBlocks.LIGHT_JAR.get())
+                .define('E', ModItems.BLUESTONE_DUST.get())
+                .unlockedBy("has_bluestone_dust", has(ModItems.BLUESTONE_DUST.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "lunar_jar_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LUNAR_INFUSER.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("AEA")
+                .define('A', Items.AMETHYST_SHARD)
+                .define('B', ModItems.MOONSHINE_SHARD.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('D', ModBlocks.LIGHT_INFUSER.get())
+                .define('E', ModBlocks.LUNAR_JAR.get())
+                .unlockedBy("has_lunar_jar", has(ModBlocks.LUNAR_JAR.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "lunar_infuser_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("AEA")
+                .define('A', Items.AMETHYST_SHARD)
+                .define('B', ModItems.MOONSHINE_SHARD.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('D', ModBlocks.LIGHT_BEAM_EMITTER.get())
+                .define('E', ModBlocks.LUNAR_JAR.get())
+                .unlockedBy("has_lunar_infuser", has(ModBlocks.LUNAR_INFUSER.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "lunar_light_beam_emitter_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ASTRAL_ALTAR.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("EFE")
+                .define('A', Items.POLISHED_DEEPSLATE)
+                .define('B', ModItems.WHISPERING_FRAGMENT.get())
+                .define('C', ModBlocks.LUNAR_JAR.get())
+                .define('D', ModBlocks.VITAL_STUMP.get())
+                .define('E', ModBlocks.SOUL_CANDLE.get())
+                .define('F', ModBlocks.LUNAR_INFUSER.get())
+                .unlockedBy("has_whispering_fragment", has(ModItems.WHISPERING_FRAGMENT.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "astral_altar"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ASTRAL_NEXUS.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("AEA")
+                .define('A', Items.ECHO_SHARD)
+                .define('B', ModItems.WHISPERING_FRAGMENT.get())
+                .define('C', Items.ENDER_EYE)
+                .define('D', ModBlocks.ASTRAL_ALTAR.get())
+                .define('E', ModItems.MOONSHINE_SHARD.get())
+                .unlockedBy("has_astral_altar", has(ModBlocks.ASTRAL_ALTAR.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "astral_nexus"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ARCFORGE.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("EFE")
+                .define('A', Items.NETHERITE_INGOT)
+                .define('B', ModItems.MOONSHINE_SHARD.get())
+                .define('C', ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get())
+                .define('D', ModBlocks.ASTRAL_ALTAR.get())
+                .define('E', Items.BLAZE_ROD)
+                .define('F', ModItems.BLUESTONE_DUST.get())
+                .unlockedBy("has_astral_altar", has(ModBlocks.ASTRAL_ALTAR.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "arcforge"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.AUGMENT_FORGE.get())
+                .pattern("ABA")
+                .pattern("CDC")
+                .pattern("AEA")
+                .define('A', Items.OBSIDIAN)
+                .define('B', ModItems.ESSENCE_AMULET.get())
+                .define('C', ModItems.BLUESTONE_DUST.get())
+                .define('D', ModBlocks.ARCFORGE.get())
+                .define('E', ModBlocks.LUNAR_INFUSER.get())
+                .unlockedBy("has_arcforge", has(ModBlocks.ARCFORGE.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "augment_forge"));
+
         // Crafting Shapeless
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get(), 2)

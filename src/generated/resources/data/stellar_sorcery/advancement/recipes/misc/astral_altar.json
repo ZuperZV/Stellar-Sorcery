@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:astral_altar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_whispering_fragment": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:whispering_fragment"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_whispering_fragment"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:astral_altar"
+    ]
+  }
+}

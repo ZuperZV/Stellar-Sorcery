@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_bluestone_dust",
+  "criteria": {
+    "get_lunar_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:lunar_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.lunar_jar.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:lunar_jar"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.lunar_jar.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_lunar_jar"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

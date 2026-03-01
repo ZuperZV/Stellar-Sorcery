@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "B": {
+      "item": "stellar_sorcery:whispering_fragment"
+    },
+    "C": {
+      "item": "stellar_sorcery:lunar_jar"
+    },
+    "D": {
+      "item": "stellar_sorcery:vital_stump"
+    },
+    "E": {
+      "item": "stellar_sorcery:soul_candle"
+    },
+    "F": {
+      "item": "stellar_sorcery:lunar_infuser"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stellar_sorcery:astral_altar"
+  }
+}

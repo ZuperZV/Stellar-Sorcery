@@ -1,0 +1,33 @@
+{
+  "parent": "stellar_sorcery:get_lunar_jar",
+  "criteria": {
+    "get_lunar_infuser": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:lunar_infuser"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.lunar_infuser.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:lunar_infuser"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.lunar_infuser.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_lunar_infuser"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

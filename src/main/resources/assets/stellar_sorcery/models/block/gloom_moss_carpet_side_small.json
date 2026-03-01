@@ -1,0 +1,6 @@
+{
+  "parent": "stellar_sorcery:block/mossy_carpet_side",
+  "textures": {
+    "side": "stellar_sorcery:block/gloom_moss_carpet_side_small"
+  }
+}

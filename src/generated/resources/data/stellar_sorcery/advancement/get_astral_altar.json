@@ -1,0 +1,34 @@
+{
+  "parent": "stellar_sorcery:get_whispering_fragment",
+  "criteria": {
+    "get_astral_altar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:astral_altar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.codex_sorcery.astral_altar.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "stellar_sorcery:astral_altar"
+    },
+    "title": {
+      "translate": "advancements.codex_sorcery.astral_altar.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_astral_altar"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

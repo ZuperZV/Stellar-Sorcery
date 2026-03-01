@@ -112,6 +112,16 @@
   "block.stellar_sorcery.lunar_light_beam_emitter": "Lunar Light Beam Emitter",
   "block.stellar_sorcery.lunar_infuser": "Lunar Infuser",
 
+  "block.stellar_sorcery.grimrock": "Grimrock",
+  "block.stellar_sorcery.gloom_moss_carpet": "Gloom Moss Carpet",
+  "block.stellar_sorcery.gloom_moss_block": "Gloom Moss Block",
+
+  "block.stellar_sorcery.echo_thorn_flower": "Echo Thorn Flower",
+  "block.stellar_sorcery.echo_thorn": "Echo Thorn",
+
+  "block.stellar_sorcery.tilled_driftsoil": "Tilled Driftsoil",
+  "block.stellar_sorcery.driftsoil": "Driftsoil",
+
   "stellar_sorcery.stellar_sorcery.crude_iron": "Crude Iron",
 
   "recipe_mods.stellar_sorcery.soul_candle": "Soul Circle Alter",
@@ -222,5 +232,38 @@
   "advancements.codex_sorcery.essence_bottle.description": "Shake well before unleashing arcane chaos.",
 
   "advancements.codex_sorcery.essence_amulet.title": "Arcane Bling",
-  "advancements.codex_sorcery.essence_amulet.description": "Fashion AND danger. A stunning combination."
+  "advancements.codex_sorcery.essence_amulet.description": "Fashion AND danger. A stunning combination.",
+
+  "advancements.codex_sorcery.item_emitter.title": "Arcane Conveyor",
+  "advancements.codex_sorcery.item_emitter.description": "Beam items between machines and start automating your rituals.",
+
+  "advancements.codex_sorcery.moonshine_shard.title": "Condensed Moonfire",
+  "advancements.codex_sorcery.moonshine_shard.description": "Distill lunar energy into a shard that powers advanced devices.",
+
+  "advancements.codex_sorcery.whispering_fragment.title": "Whispers in Crystal",
+  "advancements.codex_sorcery.whispering_fragment.description": "Capture a fragment of astral static for high-tier crafting.",
+
+  "advancements.codex_sorcery.bluestone_dust.title": "Star-Touched Powder",
+  "advancements.codex_sorcery.bluestone_dust.description": "A refined catalyst used for lunar machine upgrades.",
+
+  "advancements.codex_sorcery.lunar_jar.title": "Lunar Reservoir",
+  "advancements.codex_sorcery.lunar_jar.description": "Store far more magical fluid and stabilize automation loops.",
+
+  "advancements.codex_sorcery.lunar_infuser.title": "Moonlit Reactor",
+  "advancements.codex_sorcery.lunar_infuser.description": "Infuse starlit materials into fluid fuel for your network.",
+
+  "advancements.codex_sorcery.lunar_light_beam_emitter.title": "Celestial Pipeline",
+  "advancements.codex_sorcery.lunar_light_beam_emitter.description": "Move Noctilume over distance with focused lunar beams.",
+
+  "advancements.codex_sorcery.astral_altar.title": "Astral Assembly",
+  "advancements.codex_sorcery.astral_altar.description": "You can now channel large rituals into block transformation.",
+
+  "advancements.codex_sorcery.astral_nexus.title": "Nexus Core",
+  "advancements.codex_sorcery.astral_nexus.description": "Bind altar power to nearby structures for synchronized magic.",
+
+  "advancements.codex_sorcery.arcforge.title": "Arcforge Ignition",
+  "advancements.codex_sorcery.arcforge.description": "Forge a late-game magical workstation from lunar machinery.",
+
+  "advancements.codex_sorcery.augment_forge.title": "Augment Matrix",
+  "advancements.codex_sorcery.augment_forge.description": "Complete the automation path with your strongest forge setup."
 }

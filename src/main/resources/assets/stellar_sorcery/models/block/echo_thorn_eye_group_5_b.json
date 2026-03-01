@@ -1,0 +1,88 @@
+﻿{
+  "format_version":  "1.21.11",
+  "credit":  "Made with Blockbench",
+  "parent":  "block/block",
+  "textures":  {
+    "7":  "stellar_sorcery:block/echo_eye",
+    "particle":  "stellar_sorcery:block/echo_eye"
+  },
+  "elements":  [
+    {
+      "from":  [
+        0,
+        2,
+        8
+      ],
+      "to":  [
+        2,
+        8,
+        14
+      ],
+      "rotation":  {
+        "angle":  0,
+        "axis":  "y",
+        "origin":  [
+          1,
+          6,
+          8
+        ]
+      },
+      "faces":  {
+        "north":  {
+          "uv":  [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture":  "#7", "emissive": true
+        },
+        "east":  {
+          "uv":  [
+            0,
+            6,
+            6,
+            12
+          ],
+          "texture":  "#7", "emissive": true
+        },
+        "south":  {
+          "uv":  [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture":  "#7", "emissive": true
+        },
+        "west":  {
+          "uv":  [
+            0,
+            0,
+            6,
+            6
+          ],
+          "texture":  "#7", "emissive": true
+        },
+        "up":  {
+          "uv":  [
+            10,
+            6,
+            8,
+            0
+          ],
+          "texture":  "#7", "emissive": true
+        },
+        "down":  {
+          "uv":  [
+            10,
+            0,
+            8,
+            6
+          ],
+          "texture":  "#7", "emissive": true
+        }
+      }
+    }
+  ]
+}
