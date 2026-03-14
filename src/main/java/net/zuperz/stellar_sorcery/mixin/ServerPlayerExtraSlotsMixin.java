@@ -20,7 +20,7 @@ public abstract class ServerPlayerExtraSlotsMixin implements IExtraSlotsProvider
     @Override
     public Container getExtraSlots() {
         if (extraSlots == null) {
-            extraSlots = new SimpleContainer(2);
+            extraSlots = new SimpleContainer(IExtraSlotsProvider.TOTAL_SLOTS);
         }
         return extraSlots;
     }

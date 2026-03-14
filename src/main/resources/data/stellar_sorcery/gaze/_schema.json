@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gaze Definition",
+  "type": "object",
+  "required": ["type", "target", "action"],
+  "properties": {
+    "type": { "type": "string" },
+    "target": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["self", "entity", "block", "area", "raycast", "structure"] },
+        "range": { "type": "number", "minimum": 0 },
+        "radius": { "type": "number", "minimum": 0 },
+        "center": { "enum": ["player", "raycast", "block"] },
+        "structure": { "type": "string" },
+        "include_entities": { "type": "boolean" },
+        "include_blocks": { "type": "boolean" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "mana": { "type": "integer", "minimum": 0 },
+        "xp_levels": { "type": "integer", "minimum": 0 },
+        "health": { "type": "integer", "minimum": 0 },
+        "exhaustion": { "type": "number", "minimum": 0 }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" }
+      }
+    },
+    "sacrifice": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "item": { "type": "string" },
+        "count": { "type": "integer", "minimum": 1 },
+        "fluid": { "type": "string" },
+        "amount": { "type": "integer", "minimum": 1 },
+        "entity": { "type": "string" },
+        "radius": { "type": "integer", "minimum": 1 },
+        "health": { "type": "number", "minimum": 0 },
+        "life_energy": { "type": "integer", "minimum": 0 },
+        "time_min": { "type": "integer", "minimum": 0, "maximum": 23999 },
+        "time_max": { "type": "integer", "minimum": 0, "maximum": 23999 },
+        "origin": { "enum": ["player", "target"] },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "integer" },
+              "y": { "type": "integer" },
+              "z": { "type": "integer" },
+              "block": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "particles": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "particle": { "type": "string" },
+        "count": { "type": "integer", "minimum": 0 },
+        "spread": { "type": "number", "minimum": 0 },
+        "speed": { "type": "number", "minimum": 0 },
+        "radius": { "type": "number", "minimum": 0 }
+      }
+    },
+    "hand_effect": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "particle": { "type": "string" },
+        "color": { "type": "string" },
+        "duration": { "type": "integer", "minimum": 0 },
+        "intensity": { "type": "number", "minimum": 0 }
+      }
+    },
+    "hand_animation": { "type": "string" },
+    "cooldown": { "type": "integer", "minimum": 0 },
+    "modifiers": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

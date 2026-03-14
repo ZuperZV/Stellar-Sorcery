@@ -56,6 +56,8 @@ public abstract class ItemRendererMixin {
         RandomSource rand = RandomSource.create();
         VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
 
+        poseStack.pushPose();
+
         if (displayContext == ItemDisplayContext.GROUND) {
             poseStack.scale(0.501F, 0.501F, 0.501F);
             poseStack.translate(-0.5F, -0.25F, -0.5F);
@@ -82,6 +84,8 @@ public abstract class ItemRendererMixin {
         for (var quad : overlayModel.getQuads(null, null, rand)) {
             renderer.renderQuadList(poseStack, consumer, java.util.List.of(quad), stack, packedLight, packedOverlay);
         }
+
+        poseStack.popPose();
     }
 
     private static ResourceLocation getSigilTexture(ItemStack stack) {

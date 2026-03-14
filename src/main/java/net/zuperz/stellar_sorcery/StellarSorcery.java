@@ -39,6 +39,8 @@ import net.zuperz.stellar_sorcery.item.custom.EssenceBottleItem;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.item.custom.decorator.*;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
+import net.zuperz.stellar_sorcery.network.GazeCastPacket;
+import net.zuperz.stellar_sorcery.network.GazeCastRequestPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
@@ -108,6 +110,7 @@ public class StellarSorcery
         PlanetDataLoader.load();
         SigilDataLoader.load();
         SpellDataLoader.load();
+        GazeDataLoader.load();
     }
 
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -252,6 +255,7 @@ public class StellarSorcery
         @SubscribeEvent
         public static void onRegisterKeys(RegisterKeyMappingsEvent event) {
             event.register(KeyBinding.OPEN_BOOK);
+            event.register(KeyBinding.CAST_GAZE);
         }
 
         @SubscribeEvent
@@ -277,6 +281,16 @@ public class StellarSorcery
                 SyncBookmarksPacket.TYPE,
                 SyncBookmarksPacket.STREAM_CODEC,
                 SyncBookmarksPacket::handle
+        );
+        registrar.playToClient(
+                GazeCastPacket.TYPE,
+                GazeCastPacket.STREAM_CODEC,
+                GazeCastPacket::handle
+        );
+        registrar.playToServer(
+                GazeCastRequestPacket.TYPE,
+                GazeCastRequestPacket.STREAM_CODEC,
+                GazeCastRequestPacket::handle
         );
 
         LOGGER.info("[StellarSorcery] Network channel registered for BookmarkPacket!");

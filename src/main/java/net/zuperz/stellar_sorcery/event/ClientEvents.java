@@ -15,9 +15,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.zuperz.stellar_sorcery.client.gaze.GazeClientEffects;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.planet.PlanetRenderer;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
@@ -27,9 +30,11 @@ import net.zuperz.stellar_sorcery.data.CodexEntry;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
+import net.zuperz.stellar_sorcery.network.GazeCastRequestPacket;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumMenu;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
 import net.zuperz.stellar_sorcery.screen.Helpers.RecipeHelper;
+import net.zuperz.stellar_sorcery.screen.Helpers.IExtraSlotsProvider;
 import net.zuperz.stellar_sorcery.util.KeyBinding;
 
 import java.util.List;
@@ -62,6 +67,23 @@ public class ClientEvents {
                     level,
                     partialTick
             );
+        }
+
+        @SubscribeEvent
+        public static void onClientTick(ClientTickEvent.Post event) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.level == null || mc.player == null) return;
+
+            GazeClientEffects.onClientTick(mc);
+
+            if (mc.screen != null) return;
+
+            if (KeyBinding.CAST_GAZE.consumeClick()) {
+                int slotIndex = mc.player.isShiftKeyDown()
+                        ? IExtraSlotsProvider.GAZE_SLOT_LEFT
+                        : IExtraSlotsProvider.GAZE_SLOT_RIGHT;
+                PacketDistributor.sendToServer(new GazeCastRequestPacket(slotIndex));
+            }
         }
 
         @SubscribeEvent

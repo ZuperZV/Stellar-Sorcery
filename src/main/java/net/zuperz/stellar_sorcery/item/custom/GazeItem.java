@@ -45,13 +45,13 @@ public class GazeItem extends Item implements Equipable {
 
         Container extraInventory = provider.getExtraSlots();
 
-        ItemStack slot0 = extraInventory.getItem(0);
-        ItemStack slot1 = extraInventory.getItem(1);
+        ItemStack slot0 = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT);
+        ItemStack slot1 = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_LEFT);
 
         if (slot0.isEmpty()) {
-            extraInventory.setItem(0, heldStack.split(1));
+            extraInventory.setItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT, heldStack.split(1));
         } else if (slot1.isEmpty()) {
-            extraInventory.setItem(1, heldStack.split(1));
+            extraInventory.setItem(IExtraSlotsProvider.GAZE_SLOT_LEFT, heldStack.split(1));
         }
 
         return InteractionResultHolder.sidedSuccess(heldStack, level.isClientSide());
@@ -72,14 +72,14 @@ public class GazeItem extends Item implements Equipable {
 
         Container extraInventory = provider.getExtraSlots();
 
-        ItemStack slot0 = extraInventory.getItem(0);
-        ItemStack slot1 = extraInventory.getItem(1);
+        ItemStack slot0 = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT);
+        ItemStack slot1 = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_LEFT);
 
         if (slot0.isEmpty()) {
-            extraInventory.setItem(0, stack.split(1));
+            extraInventory.setItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT, stack.split(1));
             return true;
         } else if (slot1.isEmpty()) {
-            extraInventory.setItem(1, stack.split(1));
+            extraInventory.setItem(IExtraSlotsProvider.GAZE_SLOT_LEFT, stack.split(1));
             return true;
         }
         return false;

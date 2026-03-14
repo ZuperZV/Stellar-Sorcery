@@ -1,0 +1,36 @@
+{
+  "type": "spell",
+  "target": {
+    "type": "raycast",
+    "range": 7
+  },
+  "cost": {
+    "mana": 2
+  },
+  "sacrifice": {
+    "type": "health",
+    "health": "1"
+  },
+  "action": {
+    "type": "grow_plants",
+    "radius": 2
+  },
+  "particles": {
+    "type": "nature_magic",
+    "particle": "minecraft:happy_villager",
+    "count": 30,
+    "spread": 0.25
+  },
+  "hand_effect": {
+    "type": "energy_flow",
+    "color": "#88FFAA",
+    "particle": "minecraft:happy_villager",
+    "duration": 14
+  },
+  "hand_animation": "nature_cast",
+  "cooldown": 40,
+  "modifiers": [
+    "stellar_sorcery:radius_boost",
+    "stellar_sorcery:mana_efficiency"
+  ]
+}

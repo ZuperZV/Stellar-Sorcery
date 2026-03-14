@@ -26,6 +26,7 @@
 
   "item.stellar_sorcery.celestial_blade": "Celestial Blade",
   "item.stellar_sorcery.aurora_skull": "Aurora Skull",
+  "item.stellar_sorcery.grow_gaze": "Grow Gaze",
 
   "item.stellar_sorcery.fritillaria_meleagris_seeds": "Fritillaria Meleagris Seeds",
   "item.stellar_sorcery.fritillaria_meleagris": "Fritillaria Meleagris",
@@ -130,6 +131,17 @@
 
   "key.category.stellar_sorcery": "Stellar Sorcery Keybinds",
   "key.stellar_sorcery.open_codex_arcanum": "Open Codex Arcanum",
+  "key.stellar_sorcery.cast_gaze": "Cast Gaze",
+
+  "gaze.stellar_sorcery.fail.no_gaze": "No gaze equipped in slot",
+  "gaze.stellar_sorcery.fail.no_definition": "No gaze definition found",
+  "gaze.stellar_sorcery.fail.cooldown": "Gaze is on cooldown",
+  "gaze.stellar_sorcery.fail.mana": "Not enough XP",
+  "gaze.stellar_sorcery.fail.xp": "Not enough experience levels",
+  "gaze.stellar_sorcery.fail.health": "Not enough health",
+  "gaze.stellar_sorcery.fail.cost": "Not enough resources",
+  "gaze.stellar_sorcery.fail.target": "No valid target in range",
+  "gaze.stellar_sorcery.fail.sacrifice": "Missing required sacrifice",
 
   "codex_arcanum.stellar_sorcery.misc": "Misc",
   "codex_arcanum.stellar_sorcery.mobs": "Mobs",

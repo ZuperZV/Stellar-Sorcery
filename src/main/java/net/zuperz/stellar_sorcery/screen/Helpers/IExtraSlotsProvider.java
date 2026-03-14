@@ -10,6 +10,10 @@ import java.util.Collections;
 import java.util.List;
 
 public interface IExtraSlotsProvider {
+    int GAZE_SLOT_RIGHT = 0;
+    int GAZE_SLOT_LEFT = 1;
+    int TOTAL_SLOTS = 2;
+
     Container getExtraSlots();
 
     public static List<GazeItem> getActiveGazes(Player player) {

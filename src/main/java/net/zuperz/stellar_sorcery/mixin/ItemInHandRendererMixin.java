@@ -41,7 +41,9 @@ public abstract class ItemInHandRendererMixin {
         Container extraInventory = provider.getExtraSlots();
 
         // slot0 = right, slot1 = left
-        ItemStack gazeStack = arm == HumanoidArm.RIGHT ? extraInventory.getItem(0) : extraInventory.getItem(1);
+        ItemStack gazeStack = arm == HumanoidArm.RIGHT
+                ? extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT)
+                : extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_LEFT);
         if (gazeStack.isEmpty() || !(gazeStack.getItem() instanceof GazeItem gaze)) return;
 
         ResourceLocation baseTexture = gaze.getGazeTexture();

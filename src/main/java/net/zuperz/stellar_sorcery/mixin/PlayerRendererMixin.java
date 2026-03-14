@@ -55,21 +55,30 @@ public abstract class PlayerRendererMixin {
                 poseStack.scale(scale, scale, scale);
                 poseStack.translate(0.0, (1.0 - scale) * 0.5, 0.0);
 
-                for (int i = 0; i < extraInventory.getContainerSize(); i++) {
-                    ItemStack stack = extraInventory.getItem(i);
-                    if (stack.isEmpty() || !(stack.getItem() instanceof GazeItem gaze)) continue;
+                if (extraInventory.getContainerSize() > IExtraSlotsProvider.GAZE_SLOT_RIGHT) {
+                    ItemStack stack = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_RIGHT);
+                    if (!stack.isEmpty() && stack.getItem() instanceof GazeItem gaze) {
+                        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
+                                gaze.getGazeTexture().getNamespace(),
+                                gaze.getGazeTexture().getPath() + "_right.png"
+                        );
 
-                    // slot0 = right, slot1 = left
-                    boolean isRight = i == 0;
-                    String armSuffix = isRight ? "_right.png" : "_left.png";
+                        VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(texture));
+                        this.getParentModel().renderToBuffer(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY);
+                    }
+                }
 
-                    ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
-                            gaze.getGazeTexture().getNamespace(),
-                            gaze.getGazeTexture().getPath() + armSuffix
-                    );
+                if (extraInventory.getContainerSize() > IExtraSlotsProvider.GAZE_SLOT_LEFT) {
+                    ItemStack stack = extraInventory.getItem(IExtraSlotsProvider.GAZE_SLOT_LEFT);
+                    if (!stack.isEmpty() && stack.getItem() instanceof GazeItem gaze) {
+                        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
+                                gaze.getGazeTexture().getNamespace(),
+                                gaze.getGazeTexture().getPath() + "_left.png"
+                        );
 
-                    VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(texture));
-                    this.getParentModel().renderToBuffer(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY);
+                        VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(texture));
+                        this.getParentModel().renderToBuffer(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY);
+                    }
                 }
 
                 poseStack.popPose();

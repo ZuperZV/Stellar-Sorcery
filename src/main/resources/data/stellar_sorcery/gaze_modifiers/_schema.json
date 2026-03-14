@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gaze Modifier",
+  "type": "object",
+  "required": ["effect", "amount"],
+  "properties": {
+    "effect": { "type": "string" },
+    "amount": { "type": "number" }
+  }
+}
