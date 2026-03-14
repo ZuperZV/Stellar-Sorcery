@@ -3,6 +3,7 @@ package net.zuperz.stellar_sorcery.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,9 +68,19 @@ public abstract class ItemInHandRendererMixin {
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(texture));
 
+        ModelPart arm2 = arm == HumanoidArm.RIGHT
+                ? renderer.getModel().rightArm
+                : renderer.getModel().leftArm;
+
+        poseStack.pushPose();
+
+        arm2.translateAndRotate(poseStack);
+
+        VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(texture));
+
         renderer.getModel().renderToBuffer(
                 poseStack,
-                vertexConsumer,
+                vc,
                 packedLight,
                 OverlayTexture.NO_OVERLAY
         );

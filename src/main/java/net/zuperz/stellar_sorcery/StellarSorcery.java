@@ -41,6 +41,7 @@ import net.zuperz.stellar_sorcery.item.custom.decorator.*;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.network.GazeCastPacket;
 import net.zuperz.stellar_sorcery.network.GazeCastRequestPacket;
+import net.zuperz.stellar_sorcery.network.ArmAnimationPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
@@ -265,6 +266,11 @@ public class StellarSorcery
             Minecraft mc = Minecraft.getInstance();
             mc.getItemRenderer().getItemModelShaper().rebuildCache();
         }
+
+        @SubscribeEvent
+        public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
+            event.registerReloadListener(new ArmAnimationLoader());
+        }
     }
 
     public void registerNetworkHandlers(RegisterPayloadHandlersEvent event) {
@@ -286,6 +292,11 @@ public class StellarSorcery
                 GazeCastPacket.TYPE,
                 GazeCastPacket.STREAM_CODEC,
                 GazeCastPacket::handle
+        );
+        registrar.playToClient(
+                ArmAnimationPacket.TYPE,
+                ArmAnimationPacket.STREAM_CODEC,
+                ArmAnimationPacket::handle
         );
         registrar.playToServer(
                 GazeCastRequestPacket.TYPE,

@@ -435,7 +435,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.WIND_CLAY_JAR.get()),
                         Ingredient.of(ModItems.CLAY_JAR),
-                        Ingredient.of(ModItems.MOONSHINE_SHARD),
+                        Ingredient.of(Items.WIND_CHARGE),
                         Ingredient.of(Items.LAPIS_LAZULI)
                 )
                 .timeOfDay(TimeOfDay.BOTH)

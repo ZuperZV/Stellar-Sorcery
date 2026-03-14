@@ -27,7 +27,7 @@
     "particle": "minecraft:happy_villager",
     "duration": 14
   },
-  "hand_animation": "nature_cast",
+  "hand_animation": "stellar_sorcery:nature_cast",
   "cooldown": 40,
   "modifiers": [
     "stellar_sorcery:radius_boost",

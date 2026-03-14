@@ -1,0 +1,23 @@
+{
+  "hands": "both",
+  "mode": "oneshot",
+  "duration": 30,
+
+  "first_person": [
+    {
+      "tick": 0,
+      "right_arm": { "x_rot": -10 },
+      "left_arm": { "x_rot": -10 }
+    },
+    {
+      "tick": 10,
+      "right_arm": { "x_rot": -45, "y_rot": 10 },
+      "left_arm": { "x_rot": -30, "y_rot": -10 }
+    },
+    {
+      "tick": 30,
+      "right_arm": { "x_rot": 0, "y_rot": 0 },
+      "left_arm": { "x_rot": 0, "y_rot": 0 }
+    }
+  ]
+}

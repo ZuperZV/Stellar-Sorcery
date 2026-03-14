@@ -21,6 +21,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.client.gaze.GazeClientEffects;
+import net.zuperz.stellar_sorcery.client.animation.ArmAnimationController;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.planet.PlanetRenderer;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
@@ -75,6 +76,7 @@ public class ClientEvents {
             if (mc.level == null || mc.player == null) return;
 
             GazeClientEffects.onClientTick(mc);
+            ArmAnimationController.onClientTick(mc);
 
             if (mc.screen != null) return;
 

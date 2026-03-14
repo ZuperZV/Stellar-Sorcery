@@ -43,6 +43,7 @@ import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
 import net.zuperz.stellar_sorcery.data.IModPlayerData;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
+import net.zuperz.stellar_sorcery.data.ArmAnimationLoader;
 import net.zuperz.stellar_sorcery.effect.ModEffects;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
@@ -53,6 +54,11 @@ import java.util.ArrayList;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID)
 public class ModEvents {
+
+    @SubscribeEvent
+    public static void onAddReloadListener(AddReloadListenerEvent event) {
+        event.addListener(new ArmAnimationLoader());
+    }
 
     @SubscribeEvent
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {

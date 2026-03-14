@@ -18,17 +18,23 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.zuperz.stellar_sorcery.screen.Helpers.ExtraSlot;
+import net.zuperz.stellar_sorcery.animation.ArmAnimationItem;
 import net.zuperz.stellar_sorcery.screen.Helpers.IExtraSlotsProvider;
 
 import java.util.List;
 
-public class GazeItem extends Item implements Equipable {
+public class GazeItem extends Item implements Equipable, ArmAnimationItem {
     private final ResourceLocation texture;
+    private final ResourceLocation armAnimationId;
 
     public GazeItem(Properties properties, ResourceLocation texture) {
+        this(properties, texture, null);
+    }
+
+    public GazeItem(Properties properties, ResourceLocation texture, ResourceLocation armAnimationId) {
         super(properties);
         this.texture = texture;
+        this.armAnimationId = armAnimationId;
     }
 
     public static final DispenseItemBehavior DISPENSE_ITEM_BEHAVIOR = new DefaultDispenseItemBehavior() {
@@ -97,5 +103,10 @@ public class GazeItem extends Item implements Equipable {
 
     public ResourceLocation getGazeTexture() {
         return texture;
+    }
+
+    @Override
+    public ResourceLocation getArmAnimationId(ItemStack stack) {
+        return armAnimationId;
     }
 }

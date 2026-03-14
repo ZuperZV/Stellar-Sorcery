@@ -21,6 +21,8 @@
     "ItemRendererMixin",
     "ItemStackCodexTooltipMixin",
     "LocalPlayerExtraSlotsMixin",
+    "PlayerModelAnimationMixin",
+    "PlayerRendererArmAnimationMixin",
     "PlayerRendererMixin",
     "RecipeBookComponentMixin"
   ],

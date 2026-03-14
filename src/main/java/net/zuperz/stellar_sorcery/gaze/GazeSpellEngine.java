@@ -10,8 +10,11 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.data.gaze.GazeDefinition;
 import net.zuperz.stellar_sorcery.data.gaze.GazeRegistry;
+import net.zuperz.stellar_sorcery.animation.ArmAnimationItem;
 import net.zuperz.stellar_sorcery.item.custom.GazeItem;
 import net.zuperz.stellar_sorcery.network.GazeCastPacket;
+import net.zuperz.stellar_sorcery.network.ArmAnimationPacket;
+import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.screen.Helpers.IExtraSlotsProvider;
 
 public final class GazeSpellEngine {
@@ -26,7 +29,7 @@ public final class GazeSpellEngine {
 
         ItemStack stack = extra.getItem(slotIndex);
         if (stack.isEmpty() || !(stack.getItem() instanceof GazeItem)) {
-            return fail(player, "gaze.stellar_sorcery.fail.no_gaze");
+            return false;
         }
 
         return tryCast(player, stack);
@@ -36,13 +39,13 @@ public final class GazeSpellEngine {
         if (player.level().isClientSide()) return false;
 
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(gazeStack.getItem());
-        if (itemId == null) return fail(player, "gaze.stellar_sorcery.fail.no_definition");
+        if (itemId == null) return false;
 
         GazeDefinition def = GazeRegistry.getByItemId(itemId);
-        if (def == null) return fail(player, "gaze.stellar_sorcery.fail.no_definition");
+        if (def == null) return false;
 
         if (player.getCooldowns().isOnCooldown(gazeStack.getItem())) {
-            return fail(player, "gaze.stellar_sorcery.fail.cooldown");
+            return false;
         }
 
         GazeMutableStats stats = GazeMutableStats.fromDefinition(def);
@@ -118,5 +121,34 @@ public final class GazeSpellEngine {
                 effectParticle,
                 effectDuration
         ));
+
+        String animationId = handAnimation;
+        if ((animationId == null || animationId.isBlank()) && context.gazeStack().getItem() instanceof ArmAnimationItem animItem) {
+            ResourceLocation itemAnim = animItem.getArmAnimationId(context.gazeStack());
+            if (itemAnim != null) {
+                animationId = itemAnim.toString();
+            }
+        }
+
+        if (animationId != null && !animationId.isBlank()) {
+            ResourceLocation animId = parseAnimationId(animationId);
+            if (animId != null) {
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+                        serverPlayer,
+                        new ArmAnimationPacket(context.player().getId(), animId, false)
+                );
+            }
+        }
+    }
+
+    private static ResourceLocation parseAnimationId(String raw) {
+        try {
+            if (raw.contains(":")) {
+                return ResourceLocation.parse(raw);
+            }
+            return ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, raw);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
