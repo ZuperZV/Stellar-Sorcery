@@ -1,4 +1,4 @@
-// 1.21	2026-02-15T01:04:03.9911677	Item Models: stellar_sorcery
+// 1.21	2026-03-01T17:35:01.1818767	Item Models: stellar_sorcery
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
 a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay_jar.json
@@ -9,6 +9,7 @@ a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay
 e1db705af1c14c3e1feff23897047820ca99ddf0 assets/stellar_sorcery/models/item/fritillaria_meleagris.json
 c38ff77939cd817bee1c6a66d3262779dfafb0e7 assets/stellar_sorcery/models/item/fritillaria_meleagris_seeds.json
 9c59a68c61a25f9144b36d9f9663bb62822e0ddd assets/stellar_sorcery/models/item/frost_clay_jar.json
+b0d880c36f15dd5e3c22959fad8588f2f3124234 assets/stellar_sorcery/models/item/grow_gaze.json
 47cc0d6e115526703fbfe6794ce072e53c007f61 assets/stellar_sorcery/models/item/moonshine_catalyst.json
 e4a428f7b9457f7daf5027165c34a64684f0f6d4 assets/stellar_sorcery/models/item/moonshine_cluster.json
 aaae2fc0f25c2e8cc72f01b8ba50f01ecd7e3375 assets/stellar_sorcery/models/item/moonshine_large_bud.json

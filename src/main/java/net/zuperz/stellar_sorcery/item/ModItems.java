@@ -1,5 +1,6 @@
 package net.zuperz.stellar_sorcery.item;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -169,6 +170,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> SIGIL_OVERLAY_BOOTS = ITEMS.register("sigil_overlay_boots",
             () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> GROW_GAZE = ITEMS.register("grow_gaze",
+            () -> new GazeItem(new Item.Properties().stacksTo(1), ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/model/player/gaze/grow_gaze")));
 
 
     public static void register(IEventBus eventBus) {

@@ -30,20 +30,10 @@ public abstract class InventoryMenuMixin {
 
         Container extraInventory = provider.getExtraSlots();
 
-        // Slot 0
-        containerMixin.callAddSlot(new Slot(extraInventory, 1, 57, 62) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return true;
-            }
-        });
+        ExtraSlot slot0 = new ExtraSlot(extraInventory, 0, 97, 62);
+        ExtraSlot slot1 = new ExtraSlot(extraInventory, 1, 57, 62);
 
-        // Slot 1
-        containerMixin.callAddSlot(new Slot(extraInventory, 1, 97, 62) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return true;
-            }
-        });
+        containerMixin.callAddSlot(slot0);
+        containerMixin.callAddSlot(slot1);
     }
 }

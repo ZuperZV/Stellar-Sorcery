@@ -10,8 +10,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.item.custom.GazeItem;
+import net.zuperz.stellar_sorcery.screen.Helpers.IExtraSlotsProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,19 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemInHandRenderer.class)
 public abstract class ItemInHandRendererMixin {
-
-    private static final ResourceLocation GAZE_TEXTURE_LEFT =
-            ResourceLocation.fromNamespaceAndPath(
-                    StellarSorcery.MOD_ID,
-                    "textures/model/player/gaze/grow_gaze_left.png"
-            );
-
-    private static final ResourceLocation GAZE_TEXTURE_RIGHT =
-            ResourceLocation.fromNamespaceAndPath(
-                    StellarSorcery.MOD_ID,
-                    "textures/model/player/gaze/grow_gaze_right.png"
-            );
-
 
     @Inject(method = "renderPlayerArm", at = @At("TAIL"))
     private void renderGazeFirstPerson(
@@ -43,9 +34,24 @@ public abstract class ItemInHandRendererMixin {
             HumanoidArm arm,
             CallbackInfo ci
     ) {
-
         AbstractClientPlayer player = Minecraft.getInstance().player;
         if (player == null || player.isInvisible()) return;
+        if (!(player instanceof IExtraSlotsProvider provider)) return;
+
+        Container extraInventory = provider.getExtraSlots();
+
+        // slot0 = right, slot1 = left
+        ItemStack gazeStack = arm == HumanoidArm.RIGHT ? extraInventory.getItem(0) : extraInventory.getItem(1);
+        if (gazeStack.isEmpty() || !(gazeStack.getItem() instanceof GazeItem gaze)) return;
+
+        ResourceLocation baseTexture = gaze.getGazeTexture();
+        if (baseTexture == null) return;
+
+        String armSuffix = arm == HumanoidArm.RIGHT ? "_right.png" : "_left.png";
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
+                baseTexture.getNamespace(),
+                baseTexture.getPath() + armSuffix
+        );
 
         poseStack.pushPose();
 
@@ -57,11 +63,7 @@ public abstract class ItemInHandRendererMixin {
                         .getEntityRenderDispatcher()
                         .getRenderer(player);
 
-        ResourceLocation texture =
-                arm == HumanoidArm.LEFT ? GAZE_TEXTURE_LEFT : GAZE_TEXTURE_RIGHT;
-
-        VertexConsumer vertexConsumer =
-                buffer.getBuffer(RenderType.entityTranslucent(texture));
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(texture));
 
         renderer.getModel().renderToBuffer(
                 poseStack,

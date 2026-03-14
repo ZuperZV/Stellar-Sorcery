@@ -38,17 +38,29 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         basicItem(ModItems.SOFT_CLAY_JAR.get());
         basicItem(ModItems.CLAY_JAR.get());
+
         basicItem(ModItems.FIRE_CLAY_JAR.get());
         basicItem(ModItems.TWIG_CLAY_JAR.get());
+
         basicItem(ModItems.WIND_CLAY_JAR.get());
         basicItem(ModItems.WATER_CLAY_JAR.get());
+
         basicItem(ModItems.SHADOW_CLAY_JAR.get());
         basicItem(ModItems.STONE_CLAY_JAR.get());
+
         basicItem(ModItems.SUN_CLAY_JAR.get());
         basicItem(ModItems.FROST_CLAY_JAR.get());
+
         basicItem(ModItems.STORM_CLAY_JAR.get());
         basicItem(ModItems.EXTRACTER_CLAY_JAR.get());
+
         basicItem(ModItems.WHITE_CHALK_STICK.get());
+        basicItem(ModFluids.NOCTILUME_BUCKET.get());
+
+        basicItem(ModItems.BLUESTONE_DUST.get());
+        basicItem(ModItems.WRAITH_STRING.get());
+
+        basicItem(ModItems.GROW_GAZE.get());
 
         flowerItem(ModBlocks.RED_CAMPION);
         flowerItem(ModBlocks.CALENDULA);
@@ -56,14 +68,9 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         blockItem(ModBlocks.MOONSHINE_SMALL_BUD.get());
         blockItem(ModBlocks.MOONSHINE_MEDIUM_BUD.get());
+
         blockItem(ModBlocks.MOONSHINE_LARGE_BUD.get());
         blockItem(ModBlocks.MOONSHINE_CLUSTER.get());
-
-        basicItem(ModFluids.NOCTILUME_BUCKET.get());
-
-        basicItem(ModItems.BLUESTONE_DUST.get());
-
-        basicItem(ModItems.WRAITH_STRING.get());
 
         handheldItem(ModItems.RITUAL_DAGGER);
     }

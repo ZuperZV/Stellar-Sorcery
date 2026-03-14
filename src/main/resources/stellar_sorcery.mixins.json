@@ -5,14 +5,23 @@
   "refmap": "stellar_sorcery.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractContainerMenuMixin",
+    "InventoryMenuMixin",
     "ModPlayerDataSaverMixin",
+    "ServerPlayerExtraSlotsMixin",
     "SwordItemSigilMixin"
   ],
   "client": [
     "AdvancementsScreenMixin",
     "AdvancementTabMixin",
+    "InventoryScreenInvoker",
+    "InventoryScreenMixin",
+    "ItemInHandRendererMixin",
     "ItemRendererMixin",
-    "ItemStackCodexTooltipMixin"
+    "ItemStackCodexTooltipMixin",
+    "LocalPlayerExtraSlotsMixin",
+    "PlayerRendererMixin",
+    "RecipeBookComponentMixin"
   ],
   "injectors": {
     "defaultRequire": 1

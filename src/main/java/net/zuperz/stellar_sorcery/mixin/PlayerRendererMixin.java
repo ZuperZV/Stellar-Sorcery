@@ -11,7 +11,10 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.zuperz.stellar_sorcery.StellarSorcery;
+import net.zuperz.stellar_sorcery.item.custom.GazeItem;
+import net.zuperz.stellar_sorcery.screen.Helpers.IExtraSlotsProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,11 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin {
-
-    private static final ResourceLocation GAZE_TEXTURE_LEFT =
-            ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/model/player/gaze/grow_gaze_left.png");
-    private static final ResourceLocation GAZE_TEXTURE_RIGHT =
-            ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/model/player/gaze/grow_gaze_right.png");
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void addGazeLayer(net.minecraft.client.renderer.entity.EntityRendererProvider.Context context,
@@ -35,7 +33,6 @@ public abstract class PlayerRendererMixin {
         renderer.addLayer(new RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>(
                 (RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>) renderer
         ) {
-
             @Override
             public void render(PoseStack poseStack,
                                MultiBufferSource buffer,
@@ -49,34 +46,31 @@ public abstract class PlayerRendererMixin {
                                float headPitch) {
 
                 if (player.isInvisible()) return;
+                if (!(player instanceof IExtraSlotsProvider provider)) return;
+
+                var extraInventory = provider.getExtraSlots();
 
                 float scale = 1.01f;
-
                 poseStack.pushPose();
-
                 poseStack.scale(scale, scale, scale);
-
                 poseStack.translate(0.0, (1.0 - scale) * 0.5, 0.0);
 
-                VertexConsumer vertexConsumer =
-                        buffer.getBuffer(RenderType.entityTranslucent(GAZE_TEXTURE_LEFT));
+                for (int i = 0; i < extraInventory.getContainerSize(); i++) {
+                    ItemStack stack = extraInventory.getItem(i);
+                    if (stack.isEmpty() || !(stack.getItem() instanceof GazeItem gaze)) continue;
 
-                this.getParentModel().renderToBuffer(
-                        poseStack,
-                        vertexConsumer,
-                        packedLight,
-                        OverlayTexture.NO_OVERLAY
-                );
+                    // slot0 = right, slot1 = left
+                    boolean isRight = i == 0;
+                    String armSuffix = isRight ? "_right.png" : "_left.png";
 
-                VertexConsumer vertexConsumer3 =
-                        buffer.getBuffer(RenderType.entityTranslucent(GAZE_TEXTURE_RIGHT));
+                    ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
+                            gaze.getGazeTexture().getNamespace(),
+                            gaze.getGazeTexture().getPath() + armSuffix
+                    );
 
-                this.getParentModel().renderToBuffer(
-                        poseStack,
-                        vertexConsumer3,
-                        packedLight,
-                        OverlayTexture.NO_OVERLAY
-                );
+                    VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(texture));
+                    this.getParentModel().renderToBuffer(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY);
+                }
 
                 poseStack.popPose();
             }

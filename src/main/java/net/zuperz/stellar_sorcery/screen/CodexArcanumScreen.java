@@ -237,11 +237,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     protected void pageBack() {
         if (this.selectedEntry != null) {
-            this.selectedEntry = null;
             this.scrollOffset = 0;
             this.selectedPage = 0;
 
             this.isInCategoryView = false;
+            this.selectedEntry = null;
 
             this.updateButtonVisibility();
 
@@ -263,32 +263,24 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     protected void pageWardBack() {
-        if (selectedEntry == null) return;
 
-        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
-        int playerTier = tierData != null ? tierData.getTier() : 0;
+        if (selectedEntry == null) return;
 
         if (this.selectedPage > 0) {
             this.selectedPage--;
         } else {
-            int index = this.entryList.indexOf(this.selectedEntry);
+
+            List<CodexEntry> list = getAvailableEntries();
+            int index = list.indexOf(selectedEntry);
+
             if (index > 0) {
-                CodexEntry previousEntry = this.entryList.get(index - 1);
+
+                CodexEntry previousEntry = list.get(index - 1);
+
+                CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+                int playerTier = tierData != null ? tierData.getTier() : 0;
 
                 int previousTier = getTierForEntry(previousEntry);
-
-                if (previousTier == -1 && previousEntry != null && previousEntry.id != null) {
-                    try {
-                        java.util.regex.Matcher m = java.util.regex.Pattern.compile("tier_(\\d+)").matcher(previousEntry.id);
-                        if (m.find()) {
-                            previousTier = Integer.parseInt(m.group(1));
-                        }
-                    } catch (Exception ignored) { }
-                }
-
-                try {
-                    StellarSorcery.LOGGER.debug("pageBack: playerTier={}, previousEntryId={}, previousTier={}", playerTier, previousEntry.id, previousTier);
-                } catch (Exception ignored) {}
 
                 if (previousTier > playerTier) {
                     this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1.0F));
@@ -296,8 +288,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 }
 
                 this.selectedEntry = previousEntry;
+                this.selectedPage = Math.max(0, previousEntry.right_side.size() - 1);
                 this.isInCategoryView = false;
-                this.selectedPage = Math.max(0, this.selectedEntry.right_side.size() - 1);
             }
         }
 
@@ -306,32 +298,24 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     protected void pageForward() {
-        if (selectedEntry == null) return;
 
-        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
-        int playerTier = tierData != null ? tierData.getTier() : 0;
+        if (selectedEntry == null) return;
 
         if (this.selectedPage < this.selectedEntry.right_side.size() - 1) {
             this.selectedPage++;
         } else {
-            int index = this.entryList.indexOf(this.selectedEntry);
-            if (index < this.entryList.size() - 1) {
-                CodexEntry nextEntry = this.entryList.get(index + 1);
+
+            List<CodexEntry> list = getAvailableEntries();
+            int index = list.indexOf(selectedEntry);
+
+            if (index < list.size() - 1) {
+
+                CodexEntry nextEntry = list.get(index + 1);
+
+                CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+                int playerTier = tierData != null ? tierData.getTier() : 0;
 
                 int nextTier = getTierForEntry(nextEntry);
-
-                if (nextTier == -1 && nextEntry != null && nextEntry.id != null) {
-                    try {
-                        java.util.regex.Matcher m = java.util.regex.Pattern.compile("tier_(\\d+)").matcher(nextEntry.id);
-                        if (m.find()) {
-                            nextTier = Integer.parseInt(m.group(1));
-                        }
-                    } catch (Exception ignored) { }
-                }
-
-                try {
-                    StellarSorcery.LOGGER.debug("pageForward: playerTier={}, nextEntryId={}, nextTier={}", playerTier, nextEntry.id, nextTier);
-                } catch (Exception ignored) {}
 
                 if (nextTier > playerTier) {
                     this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1.0F));
@@ -339,8 +323,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 }
 
                 this.selectedEntry = nextEntry;
-                this.isInCategoryView = false;
                 this.selectedPage = 0;
+                this.isInCategoryView = false;
             }
         }
 
@@ -349,13 +333,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     public void updateButtonVisibility() {
-        if (isInCategoryView) {
-            this.backButton.visible = false;
-        } else {
-            this.backButton.visible = true;
-        }
 
-        if (selectedEntry == null || this.isInCategoryView) {
+        this.backButton.visible = !isInCategoryView;
+
+        if (selectedEntry == null || isInCategoryView) {
             this.forwardButton.visible = false;
             this.backWardButton.visible = false;
             return;
@@ -363,10 +344,17 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         int entryIndex = entryList.indexOf(selectedEntry);
 
-        this.backWardButton.visible = this.selectedPage > 0 || entryIndex > 0;
+        if (entryIndex == -1) {
+            this.forwardButton.visible = false;
+            this.backWardButton.visible = false;
+            return;
+        }
+
+        this.backWardButton.visible =
+                selectedPage > 0 || entryIndex > 0;
 
         this.forwardButton.visible =
-                this.selectedPage < this.selectedEntry.right_side.size() - 1 ||
+                selectedPage < selectedEntry.right_side.size() - 1 ||
                         entryIndex < entryList.size() - 1;
     }
 
@@ -577,9 +565,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         if (isInCategoryView) {
             renderCategoryOverview(guiGraphics, mouseX, mouseY);
-        } else if (selectedCategory != null && selectedEntry == null) {
+        }
+        else if (selectedCategory != null && selectedEntry == null) {
             renderCategoryEntries(guiGraphics, mouseX, mouseY);
-        } else {
+        }
+        else if (selectedEntry != null) {
             drawSelectedPage(guiGraphics, mouseX, mouseY, x, y);
             drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y);
         }
@@ -602,7 +592,21 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         int drawY = areaY - scrollOffset;
 
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
         for (CodexCategory cat : categories) {
+
+            long unlocked = cat.entries.stream()
+                    .filter(e -> {
+                        int index = cat.entries.indexOf(e);
+                        int tier = cat.tiers.get(index);
+                        return tier <= playerTier;
+                    })
+                    .count();
+
+            if (unlocked == 0) continue;
+
             boolean hovered = MouseUtil.isMouseOver(mouseX, mouseY, areaX, drawY, SLOT_WIDTH, SLOT_HEIGHT);
 
             guiGraphics.pose().pushPose();
@@ -679,8 +683,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     }
 
     private void drawIconAndTitle(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+        if (selectedEntry == null) return;
+
         int yIcon = y + 11;
         int xIcon = x + 146;
+
 
         guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, ChatFormatting.DARK_GRAY.getColor(), false);
 
@@ -842,19 +849,34 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        if (showAdvancement && advancementsScreen != null) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(advancementX, advancementY, 0);
 
-            CustomAdvancementRenderer.renderTooltipsOnly(
-                    advancementsScreen,
-                    guiGraphics,
-                    mouseX - advancementX,
-                    mouseY - advancementY,
-                    (this.width - 252) / 2,
-                    (this.height - 140) / 2,
-                    this
-            );
+        if (showAdvancement && advancementsScreen != null) {
+
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
+
+            int advX = x + 16;
+            int advY = y + 22;
+            int advW = 92;
+            int advH = 138;
+
+            if (MouseUtil.isMouseOver(mouseX, mouseY, advX, advY, advW, advH)) {
+
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(advancementX, advancementY, 0);
+
+                CustomAdvancementRenderer.renderTooltipsOnly(
+                        advancementsScreen,
+                        guiGraphics,
+                        mouseX - advancementX,
+                        mouseY - advancementY,
+                        (this.width - 252) / 2,
+                        (this.height - 140) / 2,
+                        this
+                );
+
+                guiGraphics.pose().popPose();
+            }
         }
     }
 
@@ -919,14 +941,29 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int drawY = areaY - scrollOffset;
 
             for (CodexCategory cat : categories) {
+
                 if (mouseX >= areaX && mouseX <= areaX + SLOT_WIDTH &&
                         mouseY >= drawY && mouseY <= drawY + SLOT_HEIGHT) {
 
+                    CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+                    int playerTier = tierData != null ? tierData.getTier() : 0;
+
+                    List<CodexEntry> unlocked = new ArrayList<>();
+
+                    for (int i = 0; i < cat.entries.size(); i++) {
+                        if (cat.tiers.get(i) <= playerTier) {
+                            unlocked.add(cat.entries.get(i));
+                        }
+                    }
+
                     this.selectedCategory = cat;
+                    this.selectedEntry = null;
                     this.isInCategoryView = false;
+
                     this.updateButtonVisibility();
                     this.selectedPage = 0;
                     this.scrollOffset = 0;
+
                     return true;
                 }
                 drawY += SLOT_HEIGHT + SLOT_SPACING;
@@ -1423,5 +1460,32 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         return null;
+    }
+
+    private List<CodexEntry> getAvailableEntries() {
+
+        if (selectedCategory == null) return List.of();
+
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        int playerTier = tierData != null ? tierData.getTier() : 0;
+
+        List<CodexEntry> list = new ArrayList<>();
+
+        for (int i = 0; i < selectedCategory.entries.size(); i++) {
+
+            if (selectedCategory.tiers.get(i) <= playerTier) {
+
+                String entryId = selectedCategory.entries.get(i).id;
+
+                CodexEntry entry = entryList.stream()
+                        .filter(e -> e.id.equals(entryId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (entry != null) list.add(entry);
+            }
+        }
+
+        return list;
     }
 }
