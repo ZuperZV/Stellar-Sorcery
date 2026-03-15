@@ -6,8 +6,8 @@
   "first_person": [
     {
       "tick": 0,
-      "right_arm": { "x_rot": -10 },
-      "left_arm": { "x_rot": -10 }
+      "right_arm": { "x_rot": 0, "y_rot": 0 },
+      "left_arm": { "x_rot": 0, "y_rot": 0 }
     },
     {
       "tick": 10,

@@ -13,6 +13,7 @@ import net.zuperz.stellar_sorcery.animation.ArmAnimationRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = StellarSorcery.MOD_ID, value = Dist.CLIENT)
 public class ArmAnimationRenderHandler {
@@ -41,7 +42,7 @@ public class ArmAnimationRenderHandler {
     @SubscribeEvent
     public static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer player)) return;
-        ArmAnimationApplier.Snapshot snapshot = SNAPSHOTS.remove(player.getId());
+        ArmAnimationApplier.Snapshot snapshot = SNAPSHOTS.remove(Optional.of(player.getId()));
         if (snapshot == null) return;
 
         PlayerModel<?> model = event.getRenderer().getModel();

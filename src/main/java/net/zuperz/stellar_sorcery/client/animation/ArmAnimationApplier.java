@@ -5,6 +5,10 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.HumanoidArm;
 import net.zuperz.stellar_sorcery.animation.ArmAnimation;
 import net.zuperz.stellar_sorcery.animation.ArmAnimationPose;
+import net.zuperz.stellar_sorcery.mixin.ModelPartAccessor;
+
+import java.util.List;
+import java.util.Map;
 
 public final class ArmAnimationApplier {
 
@@ -39,8 +43,26 @@ public final class ArmAnimationApplier {
     public static void applyToArm(ModelPart arm, ModelPart sleeve, ArmAnimationPose.PosePart part) {
         if (arm == null || sleeve == null || part == null || part.isEmpty()) return;
 
-        applyPosePart(arm, part, false);
-        applyPosePart(sleeve, part, true);
+        applyPosePart(arm, part, true);
+
+        Map<String, ModelPart> children = ((ModelPartAccessor)(Object)arm).stellar_sorcery$getChildren();
+
+        if (!children.containsKey("stellar_sleeve")) {
+
+            sleeve.visible = false;
+
+            List<ModelPart.Cube> cubes = ((ModelPartAccessor)(Object)sleeve).stellar_sorcery$getCubes();
+            ModelPart fakeSleeve = new ModelPart(cubes, Map.of());
+
+            fakeSleeve.setPos(0.0F, 0.0F, 0.0F);
+            fakeSleeve.setRotation(0.0F, 0.0F, 0.0F);
+
+            children.put("stellar_sleeve", fakeSleeve);
+        }
+    }
+
+    public static Map<String, ModelPart> getChildren(ModelPart part) {
+        return ((ModelPartAccessor)(Object)part).stellar_sorcery$getChildren();
     }
 
     private static void applyArm(PlayerModel<?> model, boolean right, ArmAnimationPose pose, boolean mirror) {
@@ -49,8 +71,12 @@ public final class ArmAnimationApplier {
 
         if (right) {
             applyToArm(model.rightArm, model.rightSleeve, part);
+            model.rightSleeve.copyFrom(model.rightArm);
+            model.leftSleeve.copyFrom(model.leftArm);
         } else {
             applyToArm(model.leftArm, model.leftSleeve, part);
+            model.rightSleeve.copyFrom(model.rightArm);
+            model.leftSleeve.copyFrom(model.leftArm);
         }
     }
 

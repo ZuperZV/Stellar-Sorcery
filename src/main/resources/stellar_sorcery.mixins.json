@@ -21,6 +21,7 @@
     "ItemRendererMixin",
     "ItemStackCodexTooltipMixin",
     "LocalPlayerExtraSlotsMixin",
+    "ModelPartAccessor",
     "PlayerModelAnimationMixin",
     "PlayerRendererArmAnimationMixin",
     "PlayerRendererMixin",

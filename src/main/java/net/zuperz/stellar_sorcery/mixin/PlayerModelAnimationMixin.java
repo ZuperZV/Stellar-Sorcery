@@ -54,5 +54,8 @@ public class PlayerModelAnimationMixin {
             model.leftArm.yRot = pose.leftArm.yRot;
             model.leftArm.zRot = pose.leftArm.zRot;
         }
+
+        model.rightSleeve.copyFrom(model.rightArm);
+        model.leftSleeve.copyFrom(model.leftArm);
     }
 }
