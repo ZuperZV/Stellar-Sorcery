@@ -1,11 +1,15 @@
 package net.zuperz.stellar_sorcery.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.zuperz.stellar_sorcery.animation.ArmAnimation;
 import net.zuperz.stellar_sorcery.animation.ArmAnimationPose;
@@ -14,13 +18,21 @@ import net.zuperz.stellar_sorcery.client.animation.ArmAnimationApplier;
 import net.zuperz.stellar_sorcery.client.animation.ArmAnimationController;
 import net.zuperz.stellar_sorcery.client.animation.ArmAnimationInstance;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Map;
+
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererArmAnimationMixin {
+
+    @Shadow
+    public abstract ResourceLocation getTextureLocation(AbstractClientPlayer p_117783_);
+
+    @Unique public ModelPart ss$fakeSleeve;
 
     @Unique private boolean ss$hasSaved;
     @Unique private HumanoidArm ss$currentArm;
@@ -110,7 +122,7 @@ public abstract class PlayerRendererArmAnimationMixin {
         ss$sleeveY = sleeve.y;
         ss$sleeveZ = sleeve.z;
 
-        ArmAnimationApplier.applyToArm(arm, sleeve, part);
+        ArmAnimationApplier.applyToArm(arm, sleeve, part, false);
     }
 
     @Inject(method = "renderHand", at = @At("TAIL"))
@@ -153,5 +165,30 @@ public abstract class PlayerRendererArmAnimationMixin {
     @Inject(method = "renderLeftHand", at = @At("TAIL"))
     private void clearLeftHand(PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, CallbackInfo ci) {
         ss$currentArm = null;
+    }
+
+    @Inject(method = "renderHand", at = @At("TAIL"))
+    private void renderFakeSleeve(
+            PoseStack poseStack,
+            MultiBufferSource bufferSource,
+            int packedLight,
+            AbstractClientPlayer player,
+            ModelPart arm,
+            ModelPart sleeve,
+            CallbackInfo ci
+    ) {
+        if (arm == null) return;
+
+        Map<String, ModelPart> children = ((ModelPartAccessor)(Object)arm).stellar_sorcery$getChildren();
+        System.out.println("testing for fakeSleeve i children: " + children);
+        ModelPart fakeSleeve = children.get("stellar_sleeve");
+        if (fakeSleeve == null) {
+            System.out.println("NEJJ");
+            return;
+        }
+
+        fakeSleeve.visible = true;
+        VertexConsumer cutoutBuffer = bufferSource.getBuffer(RenderType.cutout());
+        fakeSleeve.render(poseStack, cutoutBuffer, packedLight, OverlayTexture.NO_OVERLAY);
     }
 }

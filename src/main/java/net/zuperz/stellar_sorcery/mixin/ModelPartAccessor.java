@@ -2,6 +2,7 @@ package net.zuperz.stellar_sorcery.mixin;
 
 import net.minecraft.client.model.geom.ModelPart;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;

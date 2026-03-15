@@ -7,6 +7,7 @@ import net.zuperz.stellar_sorcery.animation.ArmAnimation;
 import net.zuperz.stellar_sorcery.animation.ArmAnimationPose;
 import net.zuperz.stellar_sorcery.mixin.ModelPartAccessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,29 +41,32 @@ public final class ArmAnimationApplier {
         }
     }
 
-    public static void applyToArm(ModelPart arm, ModelPart sleeve, ArmAnimationPose.PosePart part) {
+    public static void applyToArm(ModelPart arm, ModelPart sleeve, ArmAnimationPose.PosePart part, boolean mirror) {
         if (arm == null || sleeve == null || part == null || part.isEmpty()) return;
 
         applyPosePart(arm, part, true);
 
         Map<String, ModelPart> children = ((ModelPartAccessor)(Object)arm).stellar_sorcery$getChildren();
 
+        sleeve.visible = false;
+        arm.visible = false;
+
         if (!children.containsKey("stellar_sleeve")) {
+            List<ModelPart.Cube> originalCubes = ((ModelPartAccessor)(Object)sleeve).stellar_sorcery$getCubes();
+            List<ModelPart.Cube> copiedCubes = new ArrayList<>(originalCubes);
 
-            sleeve.visible = false;
-
-            List<ModelPart.Cube> cubes = ((ModelPartAccessor)(Object)sleeve).stellar_sorcery$getCubes();
-            ModelPart fakeSleeve = new ModelPart(cubes, Map.of());
-
+            ModelPart fakeSleeve = new ModelPart(copiedCubes, Map.of());
             fakeSleeve.setPos(0.0F, 0.0F, 0.0F);
             fakeSleeve.setRotation(0.0F, 0.0F, 0.0F);
 
+            if (mirror) {
+                fakeSleeve.yRot = -fakeSleeve.yRot;
+                fakeSleeve.zRot = -fakeSleeve.zRot;
+            }
+            System.out.println("Adding fakeSleeve to children: " + children);
             children.put("stellar_sleeve", fakeSleeve);
+            System.out.println("Children after adding: " + children);
         }
-    }
-
-    public static Map<String, ModelPart> getChildren(ModelPart part) {
-        return ((ModelPartAccessor)(Object)part).stellar_sorcery$getChildren();
     }
 
     private static void applyArm(PlayerModel<?> model, boolean right, ArmAnimationPose pose, boolean mirror) {
@@ -70,11 +74,11 @@ public final class ArmAnimationApplier {
         if (part == null || part.isEmpty()) return;
 
         if (right) {
-            applyToArm(model.rightArm, model.rightSleeve, part);
+            applyToArm(model.rightArm, model.rightSleeve, part, mirror);
             model.rightSleeve.copyFrom(model.rightArm);
             model.leftSleeve.copyFrom(model.leftArm);
         } else {
-            applyToArm(model.leftArm, model.leftSleeve, part);
+            applyToArm(model.leftArm, model.leftSleeve, part, mirror);
             model.rightSleeve.copyFrom(model.rightArm);
             model.leftSleeve.copyFrom(model.leftArm);
         }
