@@ -32,6 +32,7 @@ import net.zuperz.stellar_sorcery.block.custom.SoulBloomCropBlock;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 import java.util.Set;
+import java.util.function.Function;
 
 public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected ModBlockLootTableProvider(HolderLookup.Provider provider) {
@@ -61,6 +62,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ELDRITE.get());
         dropSelf(ModBlocks.MOON_SHARD_ELDRITE.get());
 
+        dropSelf(ModBlocks.NULLITE_BLOCK.get());
         dropSelf(ModBlocks.GRIMROCK.get());
         dropSelf(ModBlocks.GLOOM_MOSS_BLOCK.get());
         dropSelf(ModBlocks.GLOOM_MOSS_CARPET.get());
@@ -113,6 +115,10 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
         this.add(ModBlocks.BUDDING_MOONSHINE.get(), noDrop());
         this.add(ModBlocks.STAR_LIGHT.get(), noDrop());
+
+        this.add(ModBlocks.SMART_SPAWNER.get(),
+                block -> createSingleItemTable(ModItems.SMART_UPGRADE_TEMPLATE.get())
+        );
     }
 
 

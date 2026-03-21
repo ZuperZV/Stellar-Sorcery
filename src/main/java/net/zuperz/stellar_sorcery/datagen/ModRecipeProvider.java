@@ -228,6 +228,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_arcforge", has(ModBlocks.ARCFORGE.get()))
                 .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "augment_forge"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMART_UPGRADE_TEMPLATE.get(), 2)
+                .pattern("ACA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', Items.DIAMOND)
+                .define('B', ModBlocks.NULLITE_BLOCK.get())
+                .define('C', ModItems.SMART_UPGRADE_TEMPLATE.get())
+                .unlockedBy("has_smart_upgrade_template", has(ModBlocks.ARCFORGE.get()))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "smart_upgrade_template_dupe"));
+
         // Crafting Shapeless
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get(), 2)
@@ -902,6 +912,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .timeOfDay(TimeOfDay.NIGHT)
                 .recipeTime(100)
                 .save(pWriter);
+
+        //nineBlockStorageRecipes
+
+        nineBlockStorageRecipes(pWriter, RecipeCategory.MISC, ModItems.NULLITE_NUGGET.get(), RecipeCategory.MISC,
+                ModItems.NULLITE_INGOT.get());
+        nineBlockStorageRecipes(pWriter, RecipeCategory.MISC, ModItems.NULLITE_INGOT.get(), RecipeCategory.MISC,
+                ModBlocks.NULLITE_BLOCK.get());
+
 
 
         /*fourBlockStorageRecipes(pWriter, RecipeCategory.BUILDING_BLOCKS, ModItems.CHROMIUM_INGOT.get(), RecipeCategory.MISC,

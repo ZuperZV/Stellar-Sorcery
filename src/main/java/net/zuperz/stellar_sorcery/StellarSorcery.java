@@ -145,6 +145,8 @@ public class StellarSorcery
 
             event.registerBlockEntityRenderer(ModBlockEntities.AUGMENT_FORGE_BE.get(), AugmentForgeBlockEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.GLOWING_BLOCK_BE.get(), GlowingBlockRenderer::new);
+
+            event.registerBlockEntityRenderer(ModBlockEntities.MOB_SMART_SPAWNER_BE.get(), SmartSpawnerBlockEntityRenderer::new);
         }
 
         @SubscribeEvent

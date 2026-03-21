@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "activated=false": {
+      "model": "stellar_sorcery:block/smart_spawner_off"
+    },
+
+    "activated=true": {
+      "model": "stellar_sorcery:block/smart_spawner_on"
+    }
+  }
+}

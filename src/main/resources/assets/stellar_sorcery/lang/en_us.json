@@ -72,6 +72,18 @@
   "item.stellar_sorcery.sigil_of": "Sigil of",
   "item.stellar_sorcery.sigil": "Sigil",
 
+  "item.stellar_sorcery.nullite_ingot": "Nullite Ingot",
+  "item.stellar_sorcery.nullite_nugget": "Nullite Nugget",
+
+
+  "upgrade.stellar_sorcery.smart": "Nullite Upgrade",
+  "item.stellar_sorcery.smart_upgrade_template": "Nullite Template",
+  "item.stellar_sorcery.smithing_template.smart.applies_to": "Monster Spawner",
+  "item.stellar_sorcery.smithing_template.smart.ingredients": "Right Click",
+
+  "item.stellar_sorcery.smithing_template.smart.base_slot_description": "Right Click block Spawner",
+  "item.stellar_sorcery.smithing_template.smart.additions_slot_description": "Right Click block Monster Spawner",
+
 
   "block.stellar_sorcery.white_chalk": "White Chalk",
   "block.stellar_sorcery.soul_candle": "Soul Candle",
@@ -83,6 +95,8 @@
 
   "block.stellar_sorcery.vital_stump": "Vital Stump",
   "block.stellar_sorcery.stump": "Stump",
+
+  "block.stellar_sorcery.smart_spawner": "Nullite Monster Spawner",
 
   "block.stellar_sorcery.cursed_candle": "Cursed Candle",
   "block.stellar_sorcery.essence_boiler": "Essence Boiler",
@@ -214,7 +228,7 @@
   "advancements.codex_sorcery.fire_clay_jar.description": "It's like a normal jar, but with a burning desire to be impressive.",
 
   "advancements.codex_sorcery.twig_clay_jar.title": "Twig-Enhanced Jar",
-  "advancements.codex_sorcery.twig_clay_jar.description": "You added a twig. This counts as crafting, probably.",
+  "advancements.codex_sorcery.twig_clay_jar.description": "You added a twig. This counts as magic, probably.",
 
   "advancements.codex_sorcery.moonshine.title": "Certified Moonshine Grower",
   "advancements.codex_sorcery.moonshine.description": "You’re basically gardening the moon. This is fine.",

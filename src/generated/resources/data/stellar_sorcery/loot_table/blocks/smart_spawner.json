@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "stellar_sorcery:smart_upgrade_template"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "stellar_sorcery:blocks/smart_spawner"
+}

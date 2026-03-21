@@ -61,6 +61,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.WRAITH_STRING.get());
 
         basicItem(ModItems.GROW_GAZE.get());
+        basicItem(ModItems.SMART_UPGRADE_TEMPLATE.get());
+
+        basicItem(ModItems.NULLITE_NUGGET.get());
+        basicItem(ModItems.NULLITE_INGOT.get());
 
         flowerItem(ModBlocks.RED_CAMPION);
         flowerItem(ModBlocks.CALENDULA);

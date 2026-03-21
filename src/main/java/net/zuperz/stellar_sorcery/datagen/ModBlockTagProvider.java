@@ -23,6 +23,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         this.tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.ASTRAL_ALTAR.get())
                 .add(ModBlocks.ASTRAL_NEXUS.get())
+                .add(ModBlocks.NULLITE_BLOCK.get())
+                .add(ModBlocks.SMART_SPAWNER.get())
 
                 .add(ModBlocks.MOONSHINE_SMALL_BUD.get())
                 .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
@@ -47,6 +49,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.ASTRAL_ALTAR.get())
                 .add(ModBlocks.ASTRAL_NEXUS.get())
+                .add(ModBlocks.NULLITE_BLOCK.get())
+                .add(ModBlocks.SMART_SPAWNER.get())
 
                 .add(ModBlocks.MOONSHINE_SMALL_BUD.get())
                 .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())

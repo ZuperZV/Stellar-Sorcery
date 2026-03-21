@@ -1,4 +1,4 @@
-// 1.21	2026-02-28T12:25:23.8724283	Recipes
+// 1.21	2026-03-20T23:47:31.229835	Recipes
 1cbf3bf1bb75677be898fec8e936cbf90d971988 data/minecraft/advancement/recipes/misc/calcite.json
 6fdacc99dad05300d69402d39fc23f719e621077 data/minecraft/recipe/calcite.json
 ba98aba16038cd27efe7df36ba80e6782f903982 data/stellar_sorcery/advancement/recipes/misc/arcforge.json
@@ -144,6 +144,6 @@ efbb1bf3ecb9ea5e934779873e14605693420c16 data/stellar_sorcery/recipe/stump/storm
 fd58e5cd5b3fd9c4a55b85f82b9de20830dbaf03 data/stellar_sorcery/recipe/stump/twig_clay_jar.json
 4103d45838dcd0be2f227960bc9c5c238285c8ff data/stellar_sorcery/recipe/stump/water_clay_jar.json
 aac54e8df2c055d5bda21656d4fcc9be123aaa2b data/stellar_sorcery/recipe/stump/whispering_fragment.json
-04b155e78461bc57dd72e289737e6a741e8e675c data/stellar_sorcery/recipe/stump/wind_clay_jar.json
+bdd80ae4d3de86f7df6beaddb1c64c64ff1254ca data/stellar_sorcery/recipe/stump/wind_clay_jar.json
 759db07522ec46660bf8b7f9071fbbe10b677b6c data/stellar_sorcery/recipe/vital_stump.json
 1b0e89784beed21752620044fd6d5df64e1ae8fd data/stellar_sorcery/recipe/white_chalk_stick.json

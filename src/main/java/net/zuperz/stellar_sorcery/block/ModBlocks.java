@@ -162,12 +162,18 @@ public class ModBlocks {
             () -> new AugmentForgeBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(6.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
 
+    public static final DeferredBlock<Block> SMART_SPAWNER = registerBlock("smart_spawner",
+            () -> new SmartSpawnerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER).requiresCorrectToolForDrops().strength(6.0F, 6.0F)));
+
     public static final DeferredBlock<Block> HOLLOW_PORTAL = registerBlock("hollow_portal",
             HollowPortalBlock::new);
 
     public static final DeferredBlock<Block> GRIMROCK = registerBlock("grimrock",
             () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.DEEPSLATE)));
+
+    public static final DeferredBlock<Block> NULLITE_BLOCK = registerBlock("nullite_block",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_BLOCK)));
 
     public static final DeferredBlock<Block> GLOOM_MOSS_BLOCK = registerBlock("gloom_moss_block",
             () -> new BonemealableFeaturePlacerBlock(VegetationFeatures.MANGROVE_VEGETATION, BlockBehaviour.Properties.of().ignitedByLava()

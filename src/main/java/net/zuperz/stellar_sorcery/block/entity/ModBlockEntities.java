@@ -1,7 +1,9 @@
 package net.zuperz.stellar_sorcery.block.entity;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -14,6 +16,10 @@ import java.util.function.Supplier;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, StellarSorcery.MOD_ID);
+
+    public static final Supplier<BlockEntityType<SmartSpawnerBlockEntity>> MOB_SMART_SPAWNER_BE =
+            BLOCK_ENTITIES.register("mob_smart_spawner_be", () -> BlockEntityType.Builder.of(
+                    SmartSpawnerBlockEntity::new, ModBlocks.SMART_SPAWNER.get()).build(null));
 
     public static final Supplier<BlockEntityType<AstralAltarBlockEntity>> ASTRAL_ALTAR_BE =
             BLOCK_ENTITIES.register("astral_altar_be", () -> BlockEntityType.Builder.of(

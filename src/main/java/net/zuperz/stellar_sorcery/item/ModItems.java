@@ -102,6 +102,15 @@ public class ModItems {
     public static final DeferredItem<Item> SOUL_BLOOMS = ITEMS.registerItem("soul_blooms",
             Item::new, new Item.Properties().food(ModFoodProperties.SOUL_BLOOMS));
 
+    public static final DeferredItem<Item> NULLITE_NUGGET = ITEMS.registerItem("nullite_nugget",
+            Item::new, new Item.Properties());
+
+    public static final DeferredItem<Item> NULLITE_INGOT = ITEMS.registerItem("nullite_ingot",
+            Item::new, new Item.Properties());
+
+    public static final DeferredItem<Item> SMART_UPGRADE_TEMPLATE = ITEMS.register("smart_upgrade_template",
+            () -> CustomSmithingTemplateItem.createTemplateFromMaterial("smart"));
+
     public static final DeferredItem<Item> MOONSHINE_CATALYST = ITEMS.register("moonshine_catalyst",
             () -> new MoonshineCatalystItem(new Item.Properties()));
 

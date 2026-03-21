@@ -1,5 +1,6 @@
 package net.zuperz.stellar_sorcery.item;
 
+import com.jcraft.jorbis.Block;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -137,6 +139,12 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.RITUAL_DAGGER.get());
                         pOutput.accept(ModItems.BLOOD_VIAL.get());
                         pOutput.accept(ModItems.WOODOO_DOLL.get());
+
+                        pOutput.accept(ModItems.NULLITE_NUGGET.get());
+                        pOutput.accept(ModItems.NULLITE_INGOT.get());
+                        pOutput.accept(ModItems.SMART_UPGRADE_TEMPLATE.get());
+                        pOutput.accept(ModBlocks.SMART_SPAWNER.get());
+                        pOutput.accept(Blocks.SPAWNER);
 
                         // bottle_essence_of_nature
                         ItemStack bottle_essence_of_nature = new ItemStack(ModItems.ESSENCE_BOTTLE.get());
