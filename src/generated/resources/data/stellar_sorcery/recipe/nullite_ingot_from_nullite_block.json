@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:nullite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "stellar_sorcery:nullite_ingot"
+  }
+}

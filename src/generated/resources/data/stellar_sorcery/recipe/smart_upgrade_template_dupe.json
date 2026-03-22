@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:diamond"
+    },
+    "B": {
+      "item": "stellar_sorcery:nullite_block"
+    },
+    "C": {
+      "item": "stellar_sorcery:smart_upgrade_template"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 2,
+    "id": "stellar_sorcery:smart_upgrade_template"
+  }
+}

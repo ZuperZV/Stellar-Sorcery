@@ -1,4 +1,4 @@
-// 1.21	2026-03-21T01:48:40.3425302	Item Models: stellar_sorcery
+// 1.21	2026-03-21T13:38:54.23547	Item Models: stellar_sorcery
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
 a513da2155e0c1aa2da244c3156fbb798f64810d assets/stellar_sorcery/models/item/clay_jar.json
@@ -18,6 +18,8 @@ a854080d2d6e39dfbd6c88ee169cc034eeb3b3a0 assets/stellar_sorcery/models/item/moon
 0d2fb9aea17713bb6c25d540c5ad81ff1807264a assets/stellar_sorcery/models/item/moonshine_small_bud.json
 5c809b6984d84d3748a9e7febb38c954c839104f assets/stellar_sorcery/models/item/nigella_damascena.json
 ae3c8b317ae8b00b27958da1a37eb07e70e6924b assets/stellar_sorcery/models/item/noctilume_bucket.json
+f47f8423da7f1188451832209cf447f2fc6da200 assets/stellar_sorcery/models/item/nullite_ingot.json
+036159dcba0b3cfa152cd33199d32c749c1bd962 assets/stellar_sorcery/models/item/nullite_nugget.json
 b8548e4f9e3ed07149ee3acc79021b5626999219 assets/stellar_sorcery/models/item/red_campion.json
 9c643e29ef9bff94717ef94d14a840f87dc08932 assets/stellar_sorcery/models/item/ritual_dagger.json
 ab886abd328a6fb7fb0dac837bba781917e8ecf2 assets/stellar_sorcery/models/item/root.json

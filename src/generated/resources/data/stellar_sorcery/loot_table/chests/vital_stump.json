@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "stellar_sorcery:smart_upgrade_template"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "stellar_sorcery:twig_clay_jar"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "stellar_sorcery:extracter_clay_jar"
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 1.0
+      }
+    }
+  ],
+  "random_sequence": "stellar_sorcery:chests/vital_stump"
+}

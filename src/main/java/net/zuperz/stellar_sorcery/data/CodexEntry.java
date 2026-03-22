@@ -10,6 +10,7 @@ public class CodexEntry {
     public String id;
     public List<String> search_items;
     public String title;
+    public String title_key;
     public String type;
     public String icon;
     public List<String> related;

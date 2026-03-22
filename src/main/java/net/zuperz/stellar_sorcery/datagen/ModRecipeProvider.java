@@ -964,6 +964,26 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         }
     }
 
+    protected static void nineBlockStorageRecipes(
+            RecipeOutput pWriter,
+            RecipeCategory smallCat, ItemLike small,
+            RecipeCategory largeCat, ItemLike large
+    ) {
+        // 9 nuggets -> 1 ingot
+        ShapelessRecipeBuilder.shapeless(largeCat, large)
+                .requires(small, 9)
+                .unlockedBy(getHasName(small), has(small))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID,
+                        getSimpleRecipeName(large) + "_from_" + getSimpleRecipeName(small)));
+
+        // 1 ingot -> 9 nuggets
+        ShapelessRecipeBuilder.shapeless(smallCat, small, 9)
+                .requires(large)
+                .unlockedBy(getHasName(large), has(large))
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID,
+                        getSimpleRecipeName(small) + "_from_" + getSimpleRecipeName(large)));
+    }
+
     protected static void fourBlockStorageRecipes(
             RecipeOutput p_301057_, RecipeCategory p_251203_, ItemLike p_251689_, RecipeCategory p_251376_, ItemLike p_248771_
     ) {
@@ -987,14 +1007,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(p_251911_)
                 .group(p_250414_)
                 .unlockedBy(getHasName(p_251911_), has(p_251911_))
-                .save(p_301222_, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, p_252237_));
+                .save(p_301222_, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, p_252237_ + "_from_" + p_250475_));
         ShapedRecipeBuilder.shaped(p_248977_, p_251911_)
                 .define('#', p_250042_)
                 .pattern("##")
                 .pattern("##")
                 .group(p_248641_)
                 .unlockedBy(getHasName(p_250042_), has(p_250042_))
-                .save(p_301222_, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, p_250475_));
+                .save(p_301222_, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, p_250475_ + "_from_" + p_252237_));
     }
 
     public static void rawToIngot(ItemLike rawItem, RecipeCategory category, String ingot, float experience, int cookingTime, RecipeOutput pWriter) {

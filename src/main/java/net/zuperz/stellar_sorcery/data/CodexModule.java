@@ -7,6 +7,7 @@ public class CodexModule {
     public String module_type; // fx "text", "recipe", "furnace_recipe"
 
     public String text;
+    public String text_key;
 
     // Crafting recipe
     public String recipe_type; // fx "crafting_table"

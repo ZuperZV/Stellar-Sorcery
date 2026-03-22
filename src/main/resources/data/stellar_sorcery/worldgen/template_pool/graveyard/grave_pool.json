@@ -1,0 +1,1464 @@
+{
+  "fallback": "minecraft:empty",
+
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_1",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_2",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_3",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_4",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_5",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_6",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_7",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_8",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "stellar_sorcery:grave_9",
+        "processors": [
+        {
+          "processor_type": "minecraft:block_age",
+          "rules": [
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "stellar_sorcery:vital_stump",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "stellar_sorcery:vital_stump"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "stellar_sorcery:vile_stump/stump"
+              }
+            }
+          ],
+          "mossiness": 0.1
+        },
+        {
+          "processor_type": "minecraft:rule",
+          "rules": [
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.4
+              },
+              "output_state": {
+                "Name": "minecraft:dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.2
+              },
+              "output_state": {
+                "Name": "minecraft:rooted_dirt"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.15
+              },
+              "output_state": {
+                "Name": "minecraft:mud"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.1
+              },
+              "output_state": {
+                "Name": "minecraft:clay"
+              }
+            },
+
+            {
+              "location_predicate": {
+                "predicate_type": "minecraft:always_true"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:random_block_match",
+                "block": "minecraft:coarse_dirt",
+                "probability": 0.05
+              },
+              "output_state": {
+                "Name": "minecraft:terracotta"
+              }
+            },
+
+            {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wither_rose",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:calendula",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:red_campion",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:nigella_damascena",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      }
+
+          ]
+        }
+      ],
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

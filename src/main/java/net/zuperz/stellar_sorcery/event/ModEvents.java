@@ -19,6 +19,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,6 +38,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.block.custom.SmartSpawnerBlock;
+import net.zuperz.stellar_sorcery.block.entity.custom.SmartSpawnerBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.AstralAltarBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
@@ -178,12 +182,40 @@ public class ModEvents {
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Level world = event.getEntity().getCommandSenderWorld();
         BlockPos pos = event.getPos();
+        BlockState state = world.getBlockState(pos);
+        Player player = event.getEntity();
+
+        if (state.is(Blocks.SPAWNER) && event.getItemStack().is(ModItems.SMART_UPGRADE_TEMPLATE.get())) {
+            if (!world.isClientSide) {
+                if (upgradeSpawner(world, pos, player, event.getItemStack())) {
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    return;
+                }
+            } else {
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+                return;
+            }
+        }
+
+        if (state.is(ModBlocks.SMART_SPAWNER.get()) && player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
+                if (downgradeSpawner(world, pos, player)) {
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    return;
+                }
+            } else {
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+                return;
+            }
+        }
 
         if (world.getBlockState(pos).getBlock() == ModBlocks.DRIFTSOIL.get()) {
             ItemStack itemStack = event.getItemStack();
             if (itemStack.canPerformAction(ItemAbilities.HOE_TILL)) {
-
-                Player player = event.getEntity();
                 itemStack.hurtAndBreak(1, player,
                         LivingEntity.getSlotForHand(event.getHand()));
 
@@ -193,6 +225,57 @@ public class ModEvents {
                 event.setCanceled(true);
             }
         }
+    }
+
+    private static boolean upgradeSpawner(Level level, BlockPos pos, Player player, ItemStack templateStack) {
+        BlockEntity existing = level.getBlockEntity(pos);
+        if (!(existing instanceof SpawnerBlockEntity spawner)) return false;
+
+        var registryAccess = level.registryAccess();
+        var tag = spawner.saveCustomOnly(registryAccess);
+
+        BlockState newState = ModBlocks.SMART_SPAWNER.get()
+                .defaultBlockState()
+                .setValue(SmartSpawnerBlock.ACTIVATED, level.hasNeighborSignal(pos));
+
+        level.setBlock(pos, newState, 3);
+
+        BlockEntity newEntity = level.getBlockEntity(pos);
+        if (newEntity != null) {
+            newEntity.loadCustomOnly(tag, registryAccess);
+            newEntity.setChanged();
+        }
+
+        if (!player.getAbilities().instabuild) {
+            templateStack.shrink(1);
+        }
+
+        return true;
+    }
+
+    private static boolean downgradeSpawner(Level level, BlockPos pos, Player player) {
+        BlockEntity existing = level.getBlockEntity(pos);
+        if (!(existing instanceof SmartSpawnerBlockEntity smartSpawner)) return false;
+
+        var registryAccess = level.registryAccess();
+        var tag = smartSpawner.saveCustomOnly(registryAccess);
+
+        level.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 3);
+
+        BlockEntity newEntity = level.getBlockEntity(pos);
+        if (newEntity != null) {
+            newEntity.loadCustomOnly(tag, registryAccess);
+            newEntity.setChanged();
+        }
+
+        if (!player.getAbilities().instabuild) {
+            ItemStack template = new ItemStack(ModItems.SMART_UPGRADE_TEMPLATE.get());
+            if (!player.addItem(template)) {
+                player.drop(template, false);
+            }
+        }
+
+        return true;
     }
 
     private static void runSigilCommand(Player player, SoulCandleCommand cmd) {

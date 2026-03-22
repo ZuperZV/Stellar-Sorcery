@@ -122,7 +122,7 @@ public abstract class PlayerRendererArmAnimationMixin {
         ss$sleeveY = sleeve.y;
         ss$sleeveZ = sleeve.z;
 
-        ArmAnimationApplier.applyToArm(arm, sleeve, part, false);
+        ArmAnimationApplier.applyToArm(arm, sleeve, part);
     }
 
     @Inject(method = "renderHand", at = @At("TAIL"))

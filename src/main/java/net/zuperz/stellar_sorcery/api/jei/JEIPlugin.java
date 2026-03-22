@@ -154,6 +154,8 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
+        r.addGuiContainerHandler(CodexArcanumScreen.class, new CodexArcanumGuiHandler());
+
         r.addGuiScreenHandler(CodexArcanumScreen.class, s -> {
             int Ekstra = 20;
             int left = s.getGuiLeft() - Ekstra;

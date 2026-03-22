@@ -1,0 +1,134 @@
+[
+  {
+    "processor_type": "minecraft:rule",
+    "rules": [
+
+      // === 10% air ===
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 0.1
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+
+      // === 50% wheat ===
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "minecraft:wheat",
+          "Properties": { "age": "0" }
+        }
+      },
+
+      // === WHEAT ages ===
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wheat",
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "minecraft:wheat",
+          "Properties": { "age": "0" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wheat",
+          "probability": 0.4
+        },
+        "output_state": {
+          "Name": "minecraft:wheat",
+          "Properties": { "age": "1" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wheat",
+          "probability": 0.4
+        },
+        "output_state": {
+          "Name": "minecraft:wheat",
+          "Properties": { "age": "3" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:wheat",
+          "probability": 1.0
+        },
+        "output_state": {
+          "Name": "minecraft:wheat",
+          "Properties": { "age": "4" }
+        }
+      },
+
+      // === FRITILLARIA ages ===
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "stellar_sorcery:fritillaria_meleagris_crop",
+          "Properties": { "age": "0" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 0.4
+        },
+        "output_state": {
+          "Name": "stellar_sorcery:fritillaria_meleagris_crop",
+          "Properties": { "age": "1" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 0.4
+        },
+        "output_state": {
+          "Name": "stellar_sorcery:fritillaria_meleagris_crop",
+          "Properties": { "age": "3" }
+        }
+      },
+      {
+        "location_predicate": { "predicate_type": "minecraft:always_true" },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "stellar_sorcery:fritillaria_meleagris_crop",
+          "probability": 1.0
+        },
+        "output_state": {
+          "Name": "stellar_sorcery:fritillaria_meleagris_crop",
+          "Properties": { "age": "4" }
+        }
+      }
+    ]
+  }
+]

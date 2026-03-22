@@ -2,12 +2,18 @@ package net.zuperz.stellar_sorcery.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayoutDrawable;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IFocusFactory;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.AdvancementHolder;
@@ -23,13 +29,13 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -58,6 +64,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,6 +81,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private final boolean playTurnSound;
     private List<CodexEntry> entryList = List.of();
     private ItemStack hoveredStack = ItemStack.EMPTY;
+    private final List<ClickableItemRegion> clickableItemRegions = new ArrayList<>();
+    private final List<TextLinkRegion> textLinkRegions = new ArrayList<>();
+    private final List<RenderedJeiLayout> renderedJeiLayouts = new ArrayList<>();
+    private final Map<String, Optional<IRecipeLayoutDrawable<?>>> jeiLayoutCache = new HashMap<>();
     public static final ResourceLocation BOOK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/book.png");
     public static final ResourceLocation BOOK_TEXTURE_GRAY =
@@ -119,6 +130,15 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private static final int SLOT_SPACING = 2;
     private static final int ITEM_SIZE = 16;
     private static final int ITEM_PADDING = 2;
+    private static final int LINE_HEIGHT = 10;
+    private static final int TEXT_COLOR = 0x282828;
+    private static final int LINK_COLOR = 0x1f1f1f;
+    private static final int LINK_COLOR_LOCKED = 0x141414;
+    private static final int LINK_COLOR_HOVER = 0x3a3a3a;
+    private static final int LINK_UNDERLINE_OFFSET = 9;
+    private static final int SLOT_BORDER_COLOR = 0xFF1B1B1B;
+
+    private static final Pattern LINK_PATTERN = Pattern.compile("\\[\\[(.+?)]]");
 
     public CodexArcanumScreen(CodexArcanumMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
@@ -402,23 +422,17 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int drawY = 0;
 
         for (CodexModule module : page.modules) {
-            if (module.text != null && !module.text.isEmpty()) {
-                List<FormattedCharSequence> lines = this.font.split(Component.literal(module.text), areaW - 4);
-                drawY += lines.size() * 10 + 4;
+            if ("text".equals(module.module_type)) {
+                drawY += measureTextHeight(getModuleText(module), areaW - 4);
                 continue;
             }
 
-            if (module.result != null) {
-                drawY += 18 * 3 + 25 + 12;
+            if ("recipe".equals(module.module_type) || "furnace_recipe".equals(module.module_type)) {
+                drawY += getRecipeModuleHeight(module);
                 continue;
             }
 
-            if (module.input != null && module.output != null) {
-                drawY += 25 + 12;
-                continue;
-            }
-
-            drawY += 12;
+            drawY += LINE_HEIGHT + 2;
         }
         return drawY;
     }
@@ -510,6 +524,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.hoveredStack = ItemStack.EMPTY;
+        clearInteractiveRegions();
+
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
 
@@ -551,14 +568,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().popPose();
 
 
-        if (hoveredStack != null && !hoveredStack.isEmpty()) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
-            guiGraphics.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
-            guiGraphics.pose().popPose();
-            hoveredStack = ItemStack.EMPTY;
-        }
-
         if ((isInCategoryView) || (selectedCategory != null && selectedEntry == null)) {
             drawIconAndTitle(guiGraphics, mouseX, mouseY, x, y, getBookItem());
         }
@@ -577,6 +586,15 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         renderSearchBar(guiGraphics, mouseX, mouseY);
 
         renderBg(guiGraphics, delta, mouseX, mouseY);
+
+        renderJeiOverlays(guiGraphics, mouseX, mouseY);
+
+        if (hoveredStack != null && !hoveredStack.isEmpty()) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
+            guiGraphics.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
+            guiGraphics.pose().popPose();
+        }
     }
 
 
@@ -619,6 +637,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             }
 
             guiGraphics.renderItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
+            registerClickableItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2, ITEM_SIZE, ITEM_SIZE);
 
             Component message = Component.translatable("codex_arcanum.stellar_sorcery." + cat.id);
 
@@ -665,14 +684,17 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 guiGraphics.fill(areaX - 1, drawY - 1, areaX + SLOT_WIDTH + 1, drawY + SLOT_HEIGHT + 1, 0xAAFFFFFF);
             }
 
-            guiGraphics.renderItem(RecipeHelper.parseItem(entry.icon), areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
+            ItemStack entryIcon = RecipeHelper.parseItem(entry.icon);
+            guiGraphics.renderItem(entryIcon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
+            registerClickableItem(entryIcon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2, ITEM_SIZE, ITEM_SIZE);
 
             ItemStack stack = getBookItem().copy();
             stack.set(ModDataComponentTypes.CODEX_TIER.get(), new CodexTierData(entryTierValue));
 
             renderScaledItem(guiGraphics, stack, areaX + ITEM_PADDING + 8, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2 + 8, Z_TOOLTIP - 5, 10);
 
-            guiGraphics.drawString(font, entry.title, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
+            Component entryTitle = getEntryTitleComponent(entry);
+            guiGraphics.drawString(font, entryTitle, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
 
             guiGraphics.pose().popPose();
 
@@ -689,7 +711,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         int xIcon = x + 146;
 
 
-        guiGraphics.drawString(this.font, Component.literal(selectedEntry.title), x + 14, y + 14, ChatFormatting.DARK_GRAY.getColor(), false);
+        guiGraphics.drawString(this.font, getEntryTitleComponent(selectedEntry), x + 14, y + 14, ChatFormatting.DARK_GRAY.getColor(), false);
 
         if (selectedEntry.icon != null && !selectedEntry.icon.equals("")) {
             ItemStack iconStack = RecipeHelper.parseItem(selectedEntry.icon.toString());
@@ -729,80 +751,405 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             for (CodexModule module : page.modules) {
                 switch (module.module_type) {
                     case "text" -> {
-                        List<FormattedCharSequence> lines = this.font.split(Component.literal(module.text), areaW - 4);
-                        for (FormattedCharSequence line : lines) {
-                            guiGraphics.drawString(this.font, line, drawX, drawY, 0x282828, false);
-                            drawY += 10;
-                        }
-                        drawY += 4;
+                        drawY = renderTextModule(guiGraphics, module, drawX, drawY, areaW, mouseX, mouseY);
                     }
                     case "recipe" -> {
-                        guiGraphics.drawString(this.font, Component.literal("Crafting Recipe:"), drawX, drawY, 0xAAAAFF);
-                        drawY += 12;
-
-                        List<ItemStack> grid = RecipeHelper.buildCraftingGrid(module);
-                        ItemStack result = RecipeHelper.parseItem(module.result);
-
-                        int slotSize = 18;
-                        for (int row = 0; row < 3; row++) {
-                            for (int col = 0; col < 3; col++) {
-                                int index = row * 3 + col;
-                                ItemStack stack = grid.get(index);
-
-                                int xPos = drawX + col * slotSize;
-                                int yPos = drawY + row * slotSize;
-
-                                renderItem(guiGraphics, stack, xPos, yPos);
-
-                                guiGraphics.disableScissor();
-                                renderItemTooltip(guiGraphics, stack, xPos, yPos, mouseX, mouseY);
-                                guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
-                            }
-                        }
-
-                        int resultX = drawX + slotSize * 3 + 20;
-                        int resultY = drawY + slotSize;
-
-                        renderItem(guiGraphics, result, resultX, resultY);
-
-                        guiGraphics.disableScissor();
-                        renderItemTooltip(guiGraphics, result, resultX, resultY, mouseX, mouseY);
-                        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
-
-                        drawY += slotSize * 3 + 25;
+                        drawY = renderRecipeModule(guiGraphics, module, drawX, drawY, areaX, areaY, areaW, areaH, mouseX, mouseY);
                     }
                     case "furnace_recipe" -> {
-                        guiGraphics.drawString(this.font, Component.literal("Furnace Recipe:"), drawX, drawY, 0xFFAA00);
-                        drawY += 12;
-
-                        ItemStack input = RecipeHelper.parseItem(module.input);
-                        ItemStack output = RecipeHelper.parseItem(module.output);
-
-                        renderItem(guiGraphics, input, drawX, drawY);
-
-                        guiGraphics.disableScissor();
-                        renderItemTooltip(guiGraphics, input, drawX, drawY, mouseX, mouseY);
-                        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
-
-                        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/arrow.png"), drawX + 25, drawY + 4, 0, 0, 23, 15);
-
-                        renderItem(guiGraphics, output, drawX + 50, drawY);
-
-                        guiGraphics.disableScissor();
-                        renderItemTooltip(guiGraphics, output, drawX + 50, drawY, mouseX, mouseY);
-                        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
-
-                        drawY += 25;
+                        drawY = renderRecipeModule(guiGraphics, module, drawX, drawY, areaX, areaY, areaW, areaH, mouseX, mouseY);
                     }
                     default -> {
                         guiGraphics.drawString(this.font, Component.literal("Unknown module type: " + module.module_type), drawX, drawY, 0xFF0000);
-                        drawY += 12;
+                        drawY += LINE_HEIGHT + 2;
                     }
                 }
             }
         }
 
         guiGraphics.disableScissor();
+    }
+
+    private int renderTextModule(GuiGraphics guiGraphics, CodexModule module, int drawX, int drawY, int areaW, int mouseX, int mouseY) {
+        String text = getModuleText(module);
+        if (text.isEmpty()) {
+            return drawY;
+        }
+
+        TextLayout layout = layoutText(text, drawX, drawY, areaW - 4);
+        int playerTier = getPlayerTier();
+
+        for (PositionedTextToken token : layout.tokens) {
+            if (token.entry == null || !token.isLink) {
+                guiGraphics.drawString(this.font, token.text, token.x, token.y, TEXT_COLOR, false);
+                continue;
+            }
+
+            boolean locked = isEntryLocked(token.entry, playerTier);
+            boolean hovered = MouseUtil.isMouseOver(mouseX, mouseY, token.x, token.y, token.width, LINE_HEIGHT);
+            int color = locked ? LINK_COLOR_LOCKED : (hovered ? LINK_COLOR_HOVER : LINK_COLOR);
+
+            guiGraphics.drawString(this.font, token.text, token.x, token.y, color, false);
+            guiGraphics.hLine(token.x, token.x + token.width - 1, token.y + LINK_UNDERLINE_OFFSET, color);
+            textLinkRegions.add(new TextLinkRegion(token.entry, token.x, token.y, token.width, LINE_HEIGHT, locked));
+        }
+
+        return drawY + layout.height + 4;
+    }
+
+    private TextLayout layoutText(String text, int startX, int startY, int maxWidth) {
+        List<TextSegment> segments = parseTextSegments(text);
+        List<TextToken> tokens = tokenizeSegments(segments);
+        List<PositionedTextToken> positioned = new ArrayList<>();
+
+        int cursorX = startX;
+        int cursorY = startY;
+
+        for (TextToken token : tokens) {
+            if (token.newline) {
+                cursorX = startX;
+                cursorY += LINE_HEIGHT;
+                continue;
+            }
+
+            int tokenWidth = this.font.width(token.text);
+            if (!token.whitespace && cursorX > startX && cursorX - startX + tokenWidth > maxWidth) {
+                cursorX = startX;
+                cursorY += LINE_HEIGHT;
+            }
+
+            if (token.whitespace && cursorX == startX) {
+                continue;
+            }
+
+            if (!token.whitespace && !token.text.isEmpty()) {
+                positioned.add(new PositionedTextToken(token.text, cursorX, cursorY, tokenWidth, token.entry, token.link));
+            }
+
+            cursorX += tokenWidth;
+        }
+
+        int height = (cursorY - startY) + LINE_HEIGHT;
+        return new TextLayout(positioned, height);
+    }
+
+    private List<TextSegment> parseTextSegments(String text) {
+        List<TextSegment> segments = new ArrayList<>();
+        if (text == null || text.isEmpty()) return segments;
+
+        Matcher matcher = LINK_PATTERN.matcher(text);
+        int lastIndex = 0;
+
+        while (matcher.find()) {
+            if (matcher.start() > lastIndex) {
+                segments.add(new TextSegment(text.substring(lastIndex, matcher.start()), null, false));
+            }
+
+            String content = matcher.group(1).trim();
+            String display = null;
+            String ref = content;
+            int pipeIndex = content.indexOf('|');
+            if (pipeIndex >= 0) {
+                display = content.substring(0, pipeIndex).trim();
+                ref = content.substring(pipeIndex + 1).trim();
+            }
+
+            CodexEntry entry = findEntryForReference(ref);
+            if (entry != null) {
+                String displayText = (display != null && !display.isEmpty()) ? display : getEntryTitleString(entry);
+                if (displayText == null || displayText.isEmpty()) {
+                    displayText = ref;
+                }
+                segments.add(new TextSegment(displayText, entry, true));
+            } else {
+                segments.add(new TextSegment(matcher.group(0), null, false));
+            }
+
+            lastIndex = matcher.end();
+        }
+
+        if (lastIndex < text.length()) {
+            segments.add(new TextSegment(text.substring(lastIndex), null, false));
+        }
+
+        return segments;
+    }
+
+    private List<TextToken> tokenizeSegments(List<TextSegment> segments) {
+        List<TextToken> tokens = new ArrayList<>();
+        for (TextSegment segment : segments) {
+            String text = segment.text;
+            if (text == null || text.isEmpty()) continue;
+
+            int i = 0;
+            while (i < text.length()) {
+                char c = text.charAt(i);
+                if (c == '\n') {
+                    tokens.add(new TextToken("\n", segment.entry, segment.isLink, true, false));
+                    i++;
+                    continue;
+                }
+
+                if (Character.isWhitespace(c)) {
+                    int start = i;
+                    while (i < text.length()) {
+                        char wc = text.charAt(i);
+                        if (wc == '\n' || !Character.isWhitespace(wc)) break;
+                        i++;
+                    }
+                    tokens.add(new TextToken(text.substring(start, i), segment.entry, segment.isLink, false, true));
+                    continue;
+                }
+
+                int start = i;
+                while (i < text.length()) {
+                    char nc = text.charAt(i);
+                    if (Character.isWhitespace(nc) || nc == '\n') break;
+                    i++;
+                }
+                tokens.add(new TextToken(text.substring(start, i), segment.entry, segment.isLink, false, false));
+            }
+        }
+        return tokens;
+    }
+
+    private int measureTextHeight(String text, int maxWidth) {
+        if (text == null || text.isEmpty()) return 0;
+        TextLayout layout = layoutText(text, 0, 0, maxWidth);
+        return layout.height + 4;
+    }
+
+    private int renderRecipeModule(GuiGraphics guiGraphics, CodexModule module, int drawX, int drawY, int areaX, int areaY, int areaW, int areaH, int mouseX, int mouseY) {
+        boolean isFurnace = "furnace_recipe".equals(module.module_type);
+        String title = isFurnace ? "Furnace Recipe:" : "Crafting Recipe:";
+        int titleColor = isFurnace ? 0xFFAA00 : 0xAAAAFF;
+
+        guiGraphics.drawString(this.font, Component.literal(title), drawX, drawY, titleColor);
+        drawY += 12;
+
+        Optional<IRecipeLayoutDrawable<?>> jeiLayout = getJeiLayoutForModule(module);
+        if (jeiLayout.isPresent()) {
+            IRecipeLayoutDrawable<?> layout = jeiLayout.get();
+            Rect2i rect = layout.getRectWithBorder();
+            int layoutWidth = rect.getWidth();
+            int layoutHeight = rect.getHeight();
+            int layoutX = layoutWidth < areaW ? drawX + (areaW - layoutWidth) / 2 : drawX;
+            int layoutY = drawY;
+
+            layout.setPosition(layoutX, layoutY);
+            renderedJeiLayouts.add(new RenderedJeiLayout(layout, layoutX, layoutY));
+            layout.tick();
+            layout.drawRecipe(guiGraphics, mouseX, mouseY);
+
+            return drawY + layoutHeight + 6;
+        }
+
+        if (isFurnace) {
+            ItemStack input = RecipeHelper.parseItem(module.input);
+            ItemStack output = RecipeHelper.parseItem(module.output);
+
+            int slotX = drawX;
+            int slotY = drawY;
+            drawSlotBackground(guiGraphics, slotX, slotY);
+            renderItem(guiGraphics, input, slotX + 1, slotY + 1);
+
+            guiGraphics.disableScissor();
+            renderItemTooltip(guiGraphics, input, slotX + 1, slotY + 1, mouseX, mouseY);
+            guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "textures/gui/arrow.png"), drawX + 25, drawY + 4, 0, 0, 23, 15);
+
+            int outputX = drawX + 50;
+            drawSlotBackground(guiGraphics, outputX, slotY);
+            renderItem(guiGraphics, output, outputX + 1, slotY + 1);
+
+            guiGraphics.disableScissor();
+            renderItemTooltip(guiGraphics, output, outputX + 1, slotY + 1, mouseX, mouseY);
+            guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+            return drawY + 25;
+        }
+
+        List<ItemStack> grid = RecipeHelper.buildCraftingGrid(module);
+        ItemStack result = RecipeHelper.parseItem(module.result);
+
+        int slotSize = 18;
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                int index = row * 3 + col;
+                ItemStack stack = index < grid.size() ? grid.get(index) : ItemStack.EMPTY;
+
+                int slotX = drawX + col * slotSize;
+                int slotY = drawY + row * slotSize;
+
+                drawSlotBackground(guiGraphics, slotX, slotY);
+                renderItem(guiGraphics, stack, slotX + 1, slotY + 1);
+
+                guiGraphics.disableScissor();
+                renderItemTooltip(guiGraphics, stack, slotX + 1, slotY + 1, mouseX, mouseY);
+                guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+            }
+        }
+
+        int resultX = drawX + slotSize * 3 + 20;
+        int resultY = drawY + slotSize;
+
+        drawSlotBackground(guiGraphics, resultX, resultY);
+        renderItem(guiGraphics, result, resultX + 1, resultY + 1);
+
+        guiGraphics.disableScissor();
+        renderItemTooltip(guiGraphics, result, resultX + 1, resultY + 1, mouseX, mouseY);
+        guiGraphics.enableScissor(areaX, areaY, areaX + areaW, areaY + areaH);
+
+        return drawY + slotSize * 3 + 25;
+    }
+
+    private int getRecipeModuleHeight(CodexModule module) {
+        int titleHeight = 12;
+        Optional<IRecipeLayoutDrawable<?>> jeiLayout = getJeiLayoutForModule(module);
+        if (jeiLayout.isPresent()) {
+            int layoutHeight = jeiLayout.get().getRectWithBorder().getHeight();
+            return titleHeight + layoutHeight + 6;
+        }
+
+        if ("furnace_recipe".equals(module.module_type)) {
+            return titleHeight + 25;
+        }
+
+        if ("recipe".equals(module.module_type)) {
+            return titleHeight + 18 * 3 + 25;
+        }
+
+        return titleHeight + LINE_HEIGHT;
+    }
+
+    private Optional<IRecipeLayoutDrawable<?>> getJeiLayoutForModule(CodexModule module) {
+        if (module == null) return Optional.empty();
+        if (JEIPlugin.getJeiRuntime() == null) return Optional.empty();
+
+        String key = buildJeiLayoutKey(module);
+        return jeiLayoutCache.computeIfAbsent(key, k -> createJeiLayoutForModule(module));
+    }
+
+    private String buildJeiLayoutKey(CodexModule module) {
+        return String.valueOf(module.module_type) + "|" +
+                String.valueOf(module.recipe_type) + "|" +
+                String.valueOf(module.result) + "|" +
+                String.valueOf(module.input) + "|" +
+                String.valueOf(module.output);
+    }
+
+    private Optional<IRecipeLayoutDrawable<?>> createJeiLayoutForModule(CodexModule module) {
+        IJeiRuntime runtime = JEIPlugin.getJeiRuntime();
+        if (runtime == null) return Optional.empty();
+
+        JeiFocusData focusData = getJeiFocusData(module);
+        if (focusData == null || focusData.stack.isEmpty()) return Optional.empty();
+
+        Optional<ITypedIngredient<ItemStack>> typed = runtime.getIngredientManager()
+                .createTypedIngredient(VanillaTypes.ITEM_STACK, focusData.stack);
+        if (typed.isEmpty()) return Optional.empty();
+
+        IFocusFactory focusFactory = runtime.getJeiHelpers().getFocusFactory();
+        IFocus<ItemStack> focus = focusFactory.createFocus(focusData.role, typed.get());
+        IFocusGroup focusGroup = focusFactory.createFocusGroup(List.of(focus));
+
+        List<RecipeType<?>> preferredTypes = getPreferredRecipeTypes(module);
+        return createJeiLayoutForFocus(focus, focusGroup, preferredTypes);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Optional<IRecipeLayoutDrawable<?>> createJeiLayoutForFocus(IFocus<?> focus, IFocusGroup focusGroup, List<RecipeType<?>> preferredTypes) {
+        IJeiRuntime runtime = JEIPlugin.getJeiRuntime();
+        if (runtime == null) return Optional.empty();
+
+        var recipeManager = runtime.getRecipeManager();
+        List<IRecipeCategory<?>> categories = new ArrayList<>();
+
+        for (RecipeType<?> type : preferredTypes) {
+            try {
+                IRecipeCategory category = recipeManager.getRecipeCategory((RecipeType) type);
+                if (category != null) {
+                    categories.add(category);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (categories.isEmpty()) {
+            categories.addAll(recipeManager.createRecipeCategoryLookup()
+                    .limitFocus(List.of(focus))
+                    .get()
+                    .toList());
+        }
+
+        for (IRecipeCategory category : categories) {
+            RecipeType type = category.getRecipeType();
+            Optional recipe = recipeManager.createRecipeLookup(type)
+                    .limitFocus(List.of(focus))
+                    .get()
+                    .findFirst();
+
+            if (recipe.isEmpty()) continue;
+
+            Optional layout = recipeManager.createRecipeLayoutDrawable(category, recipe.get(), focusGroup);
+            if (layout.isPresent()) {
+                return layout;
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private void renderJeiOverlays(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (renderedJeiLayouts.isEmpty()) return;
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
+        for (RenderedJeiLayout rendered : renderedJeiLayouts) {
+            rendered.layout.drawOverlays(guiGraphics, mouseX, mouseY);
+        }
+        guiGraphics.pose().popPose();
+    }
+
+    private List<RecipeType<?>> getPreferredRecipeTypes(CodexModule module) {
+        List<RecipeType<?>> types = new ArrayList<>();
+        if ("recipe".equals(module.module_type)) {
+            String type = module.recipe_type == null ? "" : module.recipe_type.toLowerCase();
+            if (type.isEmpty() || "crafting_table".equals(type)) {
+                types.add(RecipeTypes.CRAFTING);
+            } else if ("stonecutting".equals(type)) {
+                types.add(RecipeTypes.STONECUTTING);
+            } else if ("smithing".equals(type)) {
+                types.add(RecipeTypes.SMITHING);
+            }
+        } else if ("furnace_recipe".equals(module.module_type)) {
+            types.add(RecipeTypes.SMELTING);
+            types.add(RecipeTypes.BLASTING);
+            types.add(RecipeTypes.SMOKING);
+            types.add(RecipeTypes.CAMPFIRE_COOKING);
+        }
+        return types;
+    }
+
+    private JeiFocusData getJeiFocusData(CodexModule module) {
+        if ("furnace_recipe".equals(module.module_type) && module.input != null) {
+            ItemStack input = RecipeHelper.parseItem(module.input);
+            if (!input.isEmpty()) {
+                return new JeiFocusData(input, RecipeIngredientRole.INPUT);
+            }
+        }
+
+        String resultId = module.result != null ? module.result : module.output;
+        ItemStack result = RecipeHelper.parseItem(resultId);
+        if (!result.isEmpty()) {
+            return new JeiFocusData(result, RecipeIngredientRole.OUTPUT);
+        }
+
+        return null;
+    }
+
+    private void drawSlotBackground(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.fill(x, y, x + 18, y + 18, SLOT_BORDER_COLOR);
     }
 
     private void renderItemWithTooltip(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int mouseX, int mouseY) {
@@ -813,6 +1160,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().translate(0, 0, Z_TOOLTIP + 100);
         guiGraphics.renderItemDecorations(this.font, stack, x, y, null);
         guiGraphics.pose().popPose();
+
+        registerClickableItem(stack, x, y, 16, 16);
 
         if (mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16 && !stack.isEmpty()) {
             hoveredStack = stack;
@@ -827,12 +1176,60 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().translate(0, 0, Z_TOOLTIP + 100);
         guiGraphics.renderItemDecorations(this.font, stack, x, y, null);
         guiGraphics.pose().popPose();
+
+        registerClickableItem(stack, x, y, 16, 16);
     }
 
     private void renderItemTooltip(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int mouseX, int mouseY) {
         if (mouseX >= x && mouseX <= x + 16 && mouseY >= y && mouseY <= y + 16 && !stack.isEmpty()) {
             hoveredStack = stack;
         }
+    }
+
+    private void clearInteractiveRegions() {
+        clickableItemRegions.clear();
+        textLinkRegions.clear();
+        renderedJeiLayouts.clear();
+    }
+
+    private void registerClickableItem(ItemStack stack, int x, int y, int width, int height) {
+        if (stack == null || stack.isEmpty()) return;
+        clickableItemRegions.add(new ClickableItemRegion(stack, x, y, width, height));
+    }
+
+    public Optional<IClickableIngredient<?>> getJeiClickableIngredient(double mouseX, double mouseY) {
+        IJeiRuntime runtime = JEIPlugin.getJeiRuntime();
+        if (runtime == null) return Optional.empty();
+
+        for (int i = renderedJeiLayouts.size() - 1; i >= 0; i--) {
+            RenderedJeiLayout rendered = renderedJeiLayouts.get(i);
+            Optional<mezz.jei.api.gui.inputs.RecipeSlotUnderMouse> slotUnderMouse =
+                    rendered.layout.getSlotUnderMouse(mouseX, mouseY);
+            if (slotUnderMouse.isEmpty()) continue;
+
+            var slot = slotUnderMouse.get().slot();
+            Optional<ITypedIngredient<?>> displayed = slot.getDisplayedIngredient();
+            if (displayed.isEmpty()) continue;
+
+            Rect2i rect = slot.getAreaIncludingBackground();
+            Rect2i area = new Rect2i(rendered.x + rect.getX(), rendered.y + rect.getY(), rect.getWidth(), rect.getHeight());
+            return createClickableIngredient(runtime, displayed.get(), area);
+        }
+
+        var ingredientManager = runtime.getIngredientManager();
+        for (int i = clickableItemRegions.size() - 1; i >= 0; i--) {
+            ClickableItemRegion region = clickableItemRegions.get(i);
+            if (!MouseUtil.isMouseOver(mouseX, mouseY, region.x, region.y, region.width, region.height)) continue;
+
+            Rect2i area = new Rect2i(region.x, region.y, region.width, region.height);
+            Optional<IClickableIngredient<ItemStack>> clickable =
+                    ingredientManager.createClickableIngredient(VanillaTypes.ITEM_STACK, region.stack, area, true);
+            if (clickable.isPresent()) {
+                return Optional.of(clickable.get());
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -860,7 +1257,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             int advW = 92;
             int advH = 138;
 
-            if (MouseUtil.isMouseOver(mouseX, mouseY, advX, advY, advW, advH)) {
+            //if (MouseUtil.isMouseOver(mouseX, mouseY, advX, advY, advW, advH)) {
 
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(advancementX, advancementY, 0);
@@ -876,7 +1273,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                 );
 
                 guiGraphics.pose().popPose();
-            }
+            //}
         }
     }
 
@@ -884,6 +1281,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
+
+        if (handleTextLinkClick(mouseX, mouseY)) {
+            return true;
+        }
 
         if (!searchResults.isEmpty()) {
 
@@ -1011,6 +1412,38 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private boolean handleTextLinkClick(double mouseX, double mouseY) {
+        if (textLinkRegions.isEmpty() || this.minecraft == null) return false;
+
+        for (int i = textLinkRegions.size() - 1; i >= 0; i--) {
+            TextLinkRegion region = textLinkRegions.get(i);
+            if (!MouseUtil.isMouseOver(mouseX, mouseY, region.x, region.y, region.width, region.height)) {
+                continue;
+            }
+
+            if (region.locked) {
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1.0F));
+                return true;
+            }
+
+            openEntry(region.entry);
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
+            return true;
+        }
+
+        return false;
+    }
+
+    private void openEntry(CodexEntry entry) {
+        if (entry == null) return;
+        this.selectedEntry = entry;
+        this.selectedCategory = getCategoryForEntry(entry);
+        this.selectedPage = 0;
+        this.scrollOffset = 0;
+        this.isInCategoryView = false;
+        updateButtonVisibility();
     }
 
     @Override
@@ -1238,6 +1671,8 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private void renderScaledItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y, int z, int size) {
         if (stack.isEmpty()) return;
 
+        registerClickableItem(stack, x, y, size, size);
+
         float scale = size / 16.0f;
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, z);
@@ -1252,12 +1687,25 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         String lowerQuery = query.toLowerCase();
         for (CodexEntry entry : entryList) {
-            if (entry.search_items == null) continue;
-            for (String tag : entry.search_items) {
-                if (tag.toLowerCase().contains(lowerQuery)) {
-                    searchResults.add(entry);
-                    break;
+            boolean matched = false;
+            if (entry.search_items != null) {
+                for (String tag : entry.search_items) {
+                    if (tag.toLowerCase().contains(lowerQuery)) {
+                        matched = true;
+                        break;
+                    }
                 }
+            }
+
+            if (!matched) {
+                String title = getEntryTitleString(entry);
+                if (!title.isBlank() && title.toLowerCase().contains(lowerQuery)) {
+                    matched = true;
+                }
+            }
+
+            if (matched) {
+                searchResults.add(entry);
             }
         }
     }
@@ -1302,8 +1750,6 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.pose().translate(advancementX, advancementY, 200);
             guiGraphics.pose().popPose();
         }
-
-
     }
 
     private void renderSearchResults(GuiGraphics guiGraphics, int baseX, int baseY, int mouseX, int mouseY) {
@@ -1319,24 +1765,27 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         for (int i = 0; i < shown; i++) {
             CodexEntry entry = searchResults.get(i);
-
-            if (this.font.width(entry.title) > width) {
-                width = this.font.width(entry.title);
+            Component title = getEntryTitleComponent(entry);
+            int titleWidth = this.font.width(title);
+            if (titleWidth > width) {
+                width = titleWidth;
             }
         }
 
         for (int i = 0; i < shown; i++) {
             CodexEntry entry = searchResults.get(i);
             int yPos = startY + i * lineHeight;
+            Component title = getEntryTitleComponent(entry);
+            int titleWidth = this.font.width(title);
 
-            if (this.font.width(entry.title) > width) {
-                width = this.font.width(entry.title);
+            if (titleWidth > width) {
+                width = titleWidth;
             }
 
             boolean hover = mouseX >= startX && mouseX <= startX + width && mouseY >= yPos && mouseY <= yPos + lineHeight;
             int color = hover ? 0xFFFFFF55 : 0xFFFFFFFF;
 
-            guiGraphics.drawString(font, entry.title, startX, yPos, color);
+            guiGraphics.drawString(font, title, startX, yPos, color);
         }
 
         guiGraphics.fill(startX - 2, startY - 2, startX + width, startY + shown * lineHeight + 2, 0xCC000000);
@@ -1420,6 +1869,80 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         return stack;
     }
 
+    private Component getEntryTitleComponent(CodexEntry entry) {
+        if (entry == null) return Component.empty();
+        if (entry.title_key != null && !entry.title_key.isBlank()) {
+            return Component.translatable(entry.title_key);
+        }
+        if (entry.title != null && !entry.title.isBlank()) {
+            return Component.literal(entry.title);
+        }
+        return Component.empty();
+    }
+
+    private String getEntryTitleString(CodexEntry entry) {
+        return getEntryTitleComponent(entry).getString();
+    }
+
+    private String getModuleText(CodexModule module) {
+        if (module == null) return "";
+        if (module.text_key != null && !module.text_key.isBlank()) {
+            return Component.translatable(module.text_key).getString();
+        }
+        return module.text != null ? module.text : "";
+    }
+
+    private int getPlayerTier() {
+        CodexTierData tierData = getBookItem().getComponents().get(ModDataComponentTypes.CODEX_TIER.get());
+        return tierData != null ? tierData.getTier() : 0;
+    }
+
+    private boolean isEntryLocked(CodexEntry entry, int playerTier) {
+        int entryTier = getTierForEntry(entry);
+        return entryTier >= 0 && entryTier > playerTier;
+    }
+
+    private CodexEntry findEntryForReference(String reference) {
+        if (reference == null || reference.isBlank()) return null;
+
+        String ref = reference.trim();
+        for (CodexEntry entry : entryList) {
+            if (entry != null && entry.id != null && entry.id.equalsIgnoreCase(ref)) {
+                return entry;
+            }
+        }
+
+        String normalizedRef = normalizeItemId(ref);
+        for (CodexEntry entry : entryList) {
+            if (entry == null) continue;
+
+            if (entry.icon != null && normalizeItemId(entry.icon).equalsIgnoreCase(normalizedRef)) {
+                return entry;
+            }
+
+            if (entry.search_items != null) {
+                for (String tag : entry.search_items) {
+                    if (tag != null && (tag.equalsIgnoreCase(ref) || tag.equalsIgnoreCase(normalizedRef))) {
+                        return entry;
+                    }
+                }
+            }
+
+            String title = getEntryTitleString(entry);
+            if (!title.isBlank() && title.equalsIgnoreCase(ref)) {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
+    private String normalizeItemId(String id) {
+        if (id == null || id.isBlank()) return "";
+        String trimmed = id.trim();
+        return trimmed.contains(":") ? trimmed : "minecraft:" + trimmed;
+    }
+
     public int getTierForEntry(CodexEntry entry) {
         if (entry == null || entry.id == null) return -1;
         if (categories == null || categories.isEmpty()) return -1;
@@ -1460,6 +1983,128 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         return null;
+    }
+
+    private static class ClickableItemRegion {
+        private final ItemStack stack;
+        private final int x;
+        private final int y;
+        private final int width;
+        private final int height;
+
+        private ClickableItemRegion(ItemStack stack, int x, int y, int width, int height) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
+    private static class TextLinkRegion {
+        private final CodexEntry entry;
+        private final int x;
+        private final int y;
+        private final int width;
+        private final int height;
+        private final boolean locked;
+
+        private TextLinkRegion(CodexEntry entry, int x, int y, int width, int height, boolean locked) {
+            this.entry = entry;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.locked = locked;
+        }
+    }
+
+    private static class RenderedJeiLayout {
+        private final IRecipeLayoutDrawable<?> layout;
+        private final int x;
+        private final int y;
+
+        private RenderedJeiLayout(IRecipeLayoutDrawable<?> layout, int x, int y) {
+            this.layout = layout;
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    private static class TextSegment {
+        private final String text;
+        private final CodexEntry entry;
+        private final boolean isLink;
+
+        private TextSegment(String text, CodexEntry entry, boolean isLink) {
+            this.text = text;
+            this.entry = entry;
+            this.isLink = isLink;
+        }
+    }
+
+    private static class TextToken {
+        private final String text;
+        private final CodexEntry entry;
+        private final boolean link;
+        private final boolean newline;
+        private final boolean whitespace;
+
+        private TextToken(String text, CodexEntry entry, boolean link, boolean newline, boolean whitespace) {
+            this.text = text;
+            this.entry = entry;
+            this.link = link;
+            this.newline = newline;
+            this.whitespace = whitespace;
+        }
+    }
+
+    private static class PositionedTextToken {
+        private final String text;
+        private final int x;
+        private final int y;
+        private final int width;
+        private final CodexEntry entry;
+        private final boolean isLink;
+
+        private PositionedTextToken(String text, int x, int y, int width, CodexEntry entry, boolean isLink) {
+            this.text = text;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.entry = entry;
+            this.isLink = isLink;
+        }
+    }
+
+    private static class TextLayout {
+        private final List<PositionedTextToken> tokens;
+        private final int height;
+
+        private TextLayout(List<PositionedTextToken> tokens, int height) {
+            this.tokens = tokens;
+            this.height = height;
+        }
+    }
+
+    private static class JeiFocusData {
+        private final ItemStack stack;
+        private final RecipeIngredientRole role;
+
+        private JeiFocusData(ItemStack stack, RecipeIngredientRole role) {
+            this.stack = stack;
+            this.role = role;
+        }
+    }
+
+    private static <T> Optional<IClickableIngredient<?>> createClickableIngredient(
+            IJeiRuntime runtime,
+            ITypedIngredient<T> typedIngredient,
+            Rect2i area
+    ) {
+        return runtime.getIngredientManager()
+                .createClickableIngredient(typedIngredient.getType(), typedIngredient.getIngredient(), area, true)
+                .map(clickable -> (IClickableIngredient<?>) clickable);
     }
 
     private List<CodexEntry> getAvailableEntries() {
