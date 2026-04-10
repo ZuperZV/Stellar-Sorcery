@@ -1,0 +1,50 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:smart_upgrade_template",
+  "id": "smart_upgrade_template",
+  "related": [
+    "smart_spawner",
+    "arcforge"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:diamond",
+            "B": "stellar_sorcery:nullite_block",
+            "C": "stellar_sorcery:smart_upgrade_template"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "ACA",
+            "ABA",
+            "AAA"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:smart_upgrade_template"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:smart_upgrade_template",
+    "template",
+    "smart spawner",
+    "nullite",
+    "upgrade"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.title"
+}

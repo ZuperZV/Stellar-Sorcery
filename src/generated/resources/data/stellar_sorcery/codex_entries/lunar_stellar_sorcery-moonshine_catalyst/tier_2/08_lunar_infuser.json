@@ -1,0 +1,53 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:lunar_infuser",
+  "id": "lunar_infuser",
+  "related": [
+    "lunar_jar",
+    "lunar_light_beam_emitter",
+    "astral_altar"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.lunar_infuser.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:amethyst_shard",
+            "B": "stellar_sorcery:moonshine_shard",
+            "C": "minecraft:copper_ingot",
+            "D": "stellar_sorcery:light_infuser",
+            "E": "stellar_sorcery:lunar_jar"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "ABA",
+            "CDC",
+            "AEA"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:lunar_infuser"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.lunar_infuser.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:lunar_infuser",
+    "lunar infuser",
+    "machine",
+    "moon",
+    "noctilume"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.lunar_infuser.title"
+}

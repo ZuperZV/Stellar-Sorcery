@@ -1,0 +1,31 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:calendula",
+  "id": "calendula",
+  "related": [
+    "fritillaria_meleagris",
+    "root"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.calendula.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.calendula.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:calendula",
+    "calendula",
+    "flower",
+    "luck",
+    "day"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.calendula.title"
+}

@@ -13,22 +13,15 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class CodexDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Map<Integer, CodexEntry> entriesById = new HashMap<>();
     private static final Map<String, Integer> idToInt = new HashMap<>();
+    private static final List<String> CATEGORY_ORDER = List.of("codex", "flora", "rituals", "lunar", "astral");
 
     public static void load() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
@@ -38,7 +31,15 @@ public class CodexDataLoader {
         int nextId = 0;
 
         Map<ResourceLocation, Resource> resources = resourceManager.listResources("codex_entries", path -> path.getPath().endsWith(".json"));
-        for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
+        List<Map.Entry<ResourceLocation, Resource>> sortedResources = new ArrayList<>(resources.entrySet());
+        sortedResources.sort(Comparator.comparing(entry -> entry.getKey().getPath()));
+
+        for (Map.Entry<ResourceLocation, Resource> entry : sortedResources) {
+            String path = entry.getKey().getPath();
+            if (!isSupportedCategoryPath(path)) {
+                continue;
+            }
+
             try (InputStreamReader reader = new InputStreamReader(entry.getValue().open())) {
                 JsonElement root = JsonParser.parseReader(reader);
                 if (root.isJsonArray()) {
@@ -86,12 +87,23 @@ public class CodexDataLoader {
             if (split.length < 3) continue;
 
             String category = split[0];
+            if (!isSupportedCategoryFolder(category)) continue;
             categoryToFiles.computeIfAbsent(category, k -> new ArrayList<>()).add(rl);
         }
 
         Set<String> foundFolders = new HashSet<>();
 
-        for (String folderName : categoryToFiles.keySet()) {
+        List<String> sortedFolders = new ArrayList<>(categoryToFiles.keySet());
+        sortedFolders.sort(Comparator
+                .<String>comparingInt(folderName -> {
+                    String[] parts = folderName.split("_", 2);
+                    String id = parts.length > 0 ? parts[0] : folderName;
+                    int index = CATEGORY_ORDER.indexOf(id);
+                    return index >= 0 ? index : Integer.MAX_VALUE;
+                })
+                .thenComparing(folder -> folder));
+
+        for (String folderName : sortedFolders) {
             if (!foundFolders.add(folderName)) continue;
 
             String[] parts = folderName.split("_", 2);
@@ -118,7 +130,10 @@ public class CodexDataLoader {
             List<CodexEntry> entries = new ArrayList<>();
             List<Integer> tiers = new ArrayList<>();
 
-            for (ResourceLocation fileRL : categoryToFiles.get(folderName)) {
+            List<ResourceLocation> sortedFiles = new ArrayList<>(categoryToFiles.get(folderName));
+            sortedFiles.sort(Comparator.comparing(ResourceLocation::getPath));
+
+            for (ResourceLocation fileRL : sortedFiles) {
                 String relative = fileRL.getPath().substring("codex_entries/".length());
                 String[] split = relative.split("/");
 
@@ -165,5 +180,28 @@ public class CodexDataLoader {
 
     public static Collection<CodexEntry> getAllEntries() {
         return entriesById.values();
+    }
+
+    private static boolean isSupportedCategoryPath(String fullPath) {
+        if (!fullPath.startsWith("codex_entries/")) {
+            return false;
+        }
+
+        String relative = fullPath.substring("codex_entries/".length());
+        String[] split = relative.split("/");
+        if (split.length < 3) {
+            return false;
+        }
+
+        return isSupportedCategoryFolder(split[0]);
+    }
+
+    private static boolean isSupportedCategoryFolder(String folderName) {
+        String[] parts = folderName.split("_", 2);
+        if (parts.length < 2 || !parts[1].contains("-")) {
+            return false;
+        }
+
+        return CATEGORY_ORDER.contains(parts[0]);
     }
 }

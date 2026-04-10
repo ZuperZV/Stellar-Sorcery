@@ -1,0 +1,31 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:wraith_cloak",
+  "id": "wraith_cloak",
+  "related": [
+    "soul_candle",
+    "arcforge"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.wraith_cloak.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.wraith_cloak.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:wraith_cloak",
+    "wraith cloak",
+    "cloak",
+    "wraith",
+    "invisible"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.wraith_cloak.title"
+}

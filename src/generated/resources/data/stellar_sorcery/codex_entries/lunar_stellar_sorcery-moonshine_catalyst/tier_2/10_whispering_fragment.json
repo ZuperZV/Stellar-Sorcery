@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:whispering_fragment",
+  "id": "whispering_fragment",
+  "related": [
+    "astral_altar",
+    "budding_moonshine",
+    "moonshine_shard"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.whispering_fragment.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.whispering_fragment.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:whispering_fragment",
+    "whispering fragment",
+    "astral",
+    "shard",
+    "ritual"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.whispering_fragment.title"
+}

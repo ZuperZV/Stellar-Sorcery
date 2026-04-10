@@ -1,0 +1,31 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:voodoo_doll",
+  "id": "voodoo_doll",
+  "related": [
+    "blood_vial",
+    "soul_candle"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.voodoo_doll.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.voodoo_doll.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:voodoo_doll",
+    "voodoo doll",
+    "effigy",
+    "curse",
+    "ritual"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.voodoo_doll.title"
+}

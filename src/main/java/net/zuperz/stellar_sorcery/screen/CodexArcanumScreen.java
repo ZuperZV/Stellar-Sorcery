@@ -1269,7 +1269,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
                         mouseY - advancementY,
                         (this.width - 252) / 2,
                         (this.height - 140) / 2,
-                        this
+                        this,
+                        x,
+                        y
                 );
 
                 guiGraphics.pose().popPose();

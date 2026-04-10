@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:noctilume_bucket",
+  "id": "noctilume_bucket",
+  "related": [
+    "light_infuser",
+    "light_jar",
+    "lunar_infuser"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:noctilume_bucket",
+    "noctilume",
+    "bucket",
+    "fluid",
+    "light"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.title"
+}

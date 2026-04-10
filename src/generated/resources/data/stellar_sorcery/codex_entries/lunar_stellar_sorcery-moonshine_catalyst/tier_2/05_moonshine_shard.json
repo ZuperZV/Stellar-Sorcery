@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:moonshine_shard",
+  "id": "moonshine_shard",
+  "related": [
+    "budding_moonshine",
+    "bluestone_dust",
+    "whispering_fragment"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.moonshine_shard.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.moonshine_shard.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:moonshine_shard",
+    "moonshine shard",
+    "crystal",
+    "ritual",
+    "lunar"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.moonshine_shard.title"
+}

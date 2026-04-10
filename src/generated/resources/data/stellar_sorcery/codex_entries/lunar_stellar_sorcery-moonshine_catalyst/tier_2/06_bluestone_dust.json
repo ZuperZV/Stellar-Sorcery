@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:bluestone_dust",
+  "id": "bluestone_dust",
+  "related": [
+    "lunar_jar",
+    "lunar_infuser",
+    "arcforge"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.bluestone_dust.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.bluestone_dust.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:bluestone_dust",
+    "bluestone dust",
+    "powder",
+    "lunar",
+    "upgrade"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.bluestone_dust.title"
+}

@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:fritillaria_meleagris",
+  "id": "fritillaria_meleagris",
+  "related": [
+    "fritillaria_meleagris_seeds",
+    "calendula",
+    "red_campion"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:fritillaria_meleagris",
+    "fritillaria",
+    "flower",
+    "nature",
+    "essence"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.title"
+}

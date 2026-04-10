@@ -1,0 +1,53 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:arcforge",
+  "id": "arcforge",
+  "related": [
+    "augment_forge",
+    "celestial_blade"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.arcforge.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:netherite_ingot",
+            "B": "stellar_sorcery:moonshine_shard",
+            "C": "stellar_sorcery:lunar_light_beam_emitter",
+            "D": "stellar_sorcery:astral_altar",
+            "E": "minecraft:blaze_rod",
+            "F": "stellar_sorcery:bluestone_dust"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "ABA",
+            "CDC",
+            "EFE"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:arcforge"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.arcforge.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:arcforge",
+    "arcforge",
+    "forge",
+    "astral",
+    "late game"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.arcforge.title"
+}

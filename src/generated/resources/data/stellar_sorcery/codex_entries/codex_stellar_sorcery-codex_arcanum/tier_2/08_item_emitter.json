@@ -1,0 +1,49 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:item_emitter",
+  "id": "item_emitter",
+  "related": [
+    "light_beam_emitter",
+    "astral_altar"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.item_emitter.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:spider_eye",
+            "B": "minecraft:amethyst_shard",
+            "C": "minecraft:oak_log"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            " A ",
+            "BCB"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:item_emitter"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.item_emitter.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:item_emitter",
+    "item emitter",
+    "automation",
+    "beam",
+    "transport"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.item_emitter.title"
+}

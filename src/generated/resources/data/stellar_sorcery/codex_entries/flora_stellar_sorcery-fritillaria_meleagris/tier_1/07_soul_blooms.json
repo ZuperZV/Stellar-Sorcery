@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:soul_blooms",
+  "id": "soul_blooms",
+  "related": [
+    "soul_bloom_seeds",
+    "soul_candle",
+    "whispering_fragment"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.soul_blooms.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.soul_blooms.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:soul_blooms",
+    "soul blooms",
+    "ritual flower",
+    "soul",
+    "dark"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.soul_blooms.title"
+}

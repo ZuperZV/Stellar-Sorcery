@@ -1,0 +1,53 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:light_infuser",
+  "id": "light_infuser",
+  "related": [
+    "light_jar",
+    "light_beam_emitter",
+    "moonshine_catalyst"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.light_infuser.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:oak_log",
+            "B": "stellar_sorcery:wind_clay_jar",
+            "C": "stellar_sorcery:calendula",
+            "D": "stellar_sorcery:nigella_damascena",
+            "E": "minecraft:spider_eye"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            " B ",
+            "CEC",
+            "ADA"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:light_infuser"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.light_infuser.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:light_infuser",
+    "light infuser",
+    "machine",
+    "noctilume",
+    "infuse"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.light_infuser.title"
+}

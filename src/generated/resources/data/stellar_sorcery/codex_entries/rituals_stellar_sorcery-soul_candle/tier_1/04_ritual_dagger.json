@@ -1,0 +1,50 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:ritual_dagger",
+  "id": "ritual_dagger",
+  "related": [
+    "blood_vial",
+    "soul_candle"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.ritual_dagger.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:iron_ingot",
+            "B": "stellar_sorcery:blood_vial",
+            "C": "minecraft:stick"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "A",
+            "B",
+            "C"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:ritual_dagger"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.ritual_dagger.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:ritual_dagger",
+    "dagger",
+    "blood",
+    "ritual",
+    "knife"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.ritual_dagger.title"
+}

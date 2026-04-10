@@ -1,0 +1,31 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:chalk_canister",
+  "id": "chalk_canister",
+  "related": [
+    "white_chalk_stick",
+    "soul_candle"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.chalk_canister.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.chalk_canister.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:chalk_canister",
+    "chalk canister",
+    "circle",
+    "ritual",
+    "chalk"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.chalk_canister.title"
+}

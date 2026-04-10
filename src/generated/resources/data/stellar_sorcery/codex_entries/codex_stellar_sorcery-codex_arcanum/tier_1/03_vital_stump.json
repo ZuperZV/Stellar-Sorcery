@@ -1,0 +1,51 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:vital_stump",
+  "id": "vital_stump",
+  "related": [
+    "stump",
+    "moonshine_catalyst",
+    "calendula"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.vital_stump.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "stellar_sorcery:stump",
+            "B": "stellar_sorcery:calendula",
+            "C": "stellar_sorcery:red_campion",
+            "D": "minecraft:gold_ingot"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "DCD",
+            "BAB"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:vital_stump"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.vital_stump.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:vital_stump",
+    "vital stump",
+    "stump",
+    "ritual",
+    "flora"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.vital_stump.title"
+}

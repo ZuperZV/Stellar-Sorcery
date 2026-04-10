@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:root",
+  "id": "root",
+  "related": [
+    "moonshine_catalyst",
+    "twig_clay_jar",
+    "red_campion"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.root.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.root.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:root",
+    "root",
+    "reagent",
+    "wood",
+    "stump"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.root.title"
+}

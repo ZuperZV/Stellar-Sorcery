@@ -1,0 +1,54 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:essence_boiler",
+  "id": "essence_boiler",
+  "related": [
+    "root",
+    "moonshine_catalyst",
+    "whispering_fragment"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.2"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:iron_ingot",
+            "B": "minecraft:campfire"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "A A",
+            "AAA",
+            "ABA"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:essence_boiler"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.3"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:essence_boiler",
+    "essence boiler",
+    "infusion",
+    "brew",
+    "alchemy"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.essence_boiler.title"
+}

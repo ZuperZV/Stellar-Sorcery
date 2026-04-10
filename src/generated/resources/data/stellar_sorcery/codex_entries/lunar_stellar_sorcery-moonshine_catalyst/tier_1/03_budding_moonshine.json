@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:budding_moonshine",
+  "id": "budding_moonshine",
+  "related": [
+    "moonshine_catalyst",
+    "moonshine_shard",
+    "whispering_fragment"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.budding_moonshine.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.budding_moonshine.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:budding_moonshine",
+    "budding moonshine",
+    "amethyst",
+    "moonshine",
+    "cluster"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.budding_moonshine.title"
+}

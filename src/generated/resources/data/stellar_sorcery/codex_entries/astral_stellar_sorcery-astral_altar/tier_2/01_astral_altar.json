@@ -1,0 +1,54 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:astral_altar",
+  "id": "astral_altar",
+  "related": [
+    "astral_nexus",
+    "lunar_infuser",
+    "whispering_fragment"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.astral_altar.text.1"
+        }
+      ]
+    },
+    {
+      "modules": [
+        {
+          "key": {
+            "A": "minecraft:polished_deepslate",
+            "B": "stellar_sorcery:whispering_fragment",
+            "C": "stellar_sorcery:lunar_jar",
+            "D": "stellar_sorcery:vital_stump",
+            "E": "stellar_sorcery:soul_candle",
+            "F": "stellar_sorcery:lunar_infuser"
+          },
+          "module_type": "recipe",
+          "pattern": [
+            "ABA",
+            "CDC",
+            "EFE"
+          ],
+          "recipe_type": "crafting_table",
+          "result": "stellar_sorcery:astral_altar"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.astral_altar.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:astral_altar",
+    "astral altar",
+    "altar",
+    "astral",
+    "crafting"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.astral_altar.title"
+}

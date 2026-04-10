@@ -1,0 +1,32 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:red_campion",
+  "id": "red_campion",
+  "related": [
+    "root",
+    "vital_stump",
+    "blood_vial"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.red_campion.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.red_campion.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:red_campion",
+    "red campion",
+    "flower",
+    "blood",
+    "stump"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.red_campion.title"
+}

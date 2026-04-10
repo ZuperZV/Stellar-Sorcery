@@ -1,0 +1,31 @@
+{
+  "type": "item",
+  "icon": "stellar_sorcery:fritillaria_meleagris_seeds",
+  "id": "fritillaria_meleagris_seeds",
+  "related": [
+    "fritillaria_meleagris",
+    "vital_stump"
+  ],
+  "right_side": [
+    {
+      "modules": [
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.text.1"
+        },
+        {
+          "module_type": "text",
+          "text_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.text.2"
+        }
+      ]
+    }
+  ],
+  "search_items": [
+    "stellar_sorcery:fritillaria_meleagris_seeds",
+    "fritillaria",
+    "seeds",
+    "crop",
+    "flower"
+  ],
+  "title_key": "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.title"
+}

@@ -490,5 +490,172 @@
   "codex_arcanum.stellar_sorcery.entry.sigil_overlay_leggings.title": "Sigil Overlay (Leggings)",
   "codex_arcanum.stellar_sorcery.entry.sigil_overlay_leggings.text.1": "An overlay that lets leggings carry sigils. Origin: crafted; see JEI. Use: combine with armor to focus sigil effects.",
   "codex_arcanum.stellar_sorcery.entry.sigil_overlay_boots.title": "Sigil Overlay (Boots)",
-  "codex_arcanum.stellar_sorcery.entry.sigil_overlay_boots.text.1": "An overlay that lets boots carry sigils. Origin: crafted; see JEI. Use: combine with armor to focus sigil effects."
+  "codex_arcanum.stellar_sorcery.entry.sigil_overlay_boots.text.1": "An overlay that lets boots carry sigils. Origin: crafted; see JEI. Use: combine with armor to focus sigil effects.",
+
+  "codex_arcanum.stellar_sorcery.codex": "Codex Path",
+  "codex_arcanum.stellar_sorcery.lunar": "Lunar Craft",
+  "codex_arcanum.stellar_sorcery.astral": "Astral Works",
+
+  "codex_arcanum.stellar_sorcery.guide.codex_arcanum.title": "Codex Arcanum",
+  "codex_arcanum.stellar_sorcery.guide.codex_arcanum.text.1": "The Codex does not hand out power; it teaches the order in which power stops exploding in your hands. Read it as a field journal: flora first, rites second, moonwork third.",
+  "codex_arcanum.stellar_sorcery.guide.codex_arcanum.text.2": "Each unlocked tier marks a deeper layer of trust between you and the book. When a page appears, it means the stars believe you can survive the lesson.",
+  "codex_arcanum.stellar_sorcery.guide.codex_arcanum.text.3": "Follow the linked entries like a chain: [[stump]] feeds [[vital_stump]], which feeds [[light_infuser]], which eventually opens the way to [[astral_altar]].",
+
+  "codex_arcanum.stellar_sorcery.guide.stump.title": "Stump",
+  "codex_arcanum.stellar_sorcery.guide.stump.text.1": "The Stump is the first quiet altar of the mod. It accepts simple offerings and teaches plants to become stranger versions of themselves.",
+  "codex_arcanum.stellar_sorcery.guide.stump.text.2": "Treat it like living wood, not a crafting table. Place the ingredients, respect the time of day, and let the rite finish before touching the result.",
+
+  "codex_arcanum.stellar_sorcery.guide.vital_stump.title": "Vital Stump",
+  "codex_arcanum.stellar_sorcery.guide.vital_stump.text.1": "A Vital Stump is a Stump that has learned to drink gold, blossoms, and breath. It is the proper root of your early ritual garden.",
+  "codex_arcanum.stellar_sorcery.guide.vital_stump.text.2": "Use the Vital Stump when the plain Stump feels too weak. Many of the mod's living transformations become reliable once this altar is in place.",
+
+  "codex_arcanum.stellar_sorcery.guide.clay_jar.title": "Clay Jar",
+  "codex_arcanum.stellar_sorcery.guide.clay_jar.text.1": "The Clay Jar is your first stable vessel for captured forces. Fire hardens the mud, and hardening lets magic remain where you told it to remain.",
+  "codex_arcanum.stellar_sorcery.guide.clay_jar.text.2": "Most later jars are not crafted from scratch; they are persuaded out of this fired shell by ritual work. Keep several ready.",
+
+  "codex_arcanum.stellar_sorcery.guide.light_jar.title": "Light Jar",
+  "codex_arcanum.stellar_sorcery.guide.light_jar.text.1": "The Light Jar is a lantern, reservoir, and promise all at once. It stores your first refined streams of bright magic for later machines.",
+  "codex_arcanum.stellar_sorcery.guide.light_jar.text.2": "Place it near your early setup and think of it as a buffer. When your network flickers, the jar is usually the part that needed to be there first.",
+
+  "codex_arcanum.stellar_sorcery.guide.light_infuser.title": "Light Infuser",
+  "codex_arcanum.stellar_sorcery.guide.light_infuser.text.1": "The Light Infuser teaches raw materials to dissolve into luminous current. It is the hinge between flower work and true machine work.",
+  "codex_arcanum.stellar_sorcery.guide.light_infuser.text.2": "Once built, feed it gently and route the output into a [[light_jar]] or beam line. It is your first repeatable source of flowing magic.",
+
+  "codex_arcanum.stellar_sorcery.guide.light_beam_emitter.title": "Light Beam Emitter",
+  "codex_arcanum.stellar_sorcery.guide.light_beam_emitter.text.1": "This emitter forces light to travel as a disciplined line instead of a wandering glow. It is the start of real transport and layout planning.",
+  "codex_arcanum.stellar_sorcery.guide.light_beam_emitter.text.2": "Set it where straight sightlines matter. If your machines are not sharing their fluid, the beam path is the first thing to inspect.",
+
+  "codex_arcanum.stellar_sorcery.guide.item_emitter.title": "Item Emitter",
+  "codex_arcanum.stellar_sorcery.guide.item_emitter.text.1": "Where the beam emitter moves fluid, the item emitter moves offerings. It turns ritual clutter into deliberate logistics.",
+  "codex_arcanum.stellar_sorcery.guide.item_emitter.text.2": "Use it when altars need a timed handoff or when your machine line should feed itself instead of waiting for you.",
+
+  "codex_arcanum.stellar_sorcery.guide.essence_boiler.title": "Essence Boiler",
+  "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.1": "The boiler is where liquid magic stops being myth and becomes ingredient. It distills aligned trios of matter into the infusions that many stump rites quietly expect.",
+  "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.2": "Do not think of it as a side system. If a later recipe feels like it wants a mood rather than a material, the answer usually began here.",
+  "codex_arcanum.stellar_sorcery.guide.essence_boiler.text.3": "You asked not to flood the codex with bottle and amulet pages, so the important rule lives here instead: brew the matching infusion first, then carry it into the rite that names it.",
+
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.title": "Fritillaria Seeds",
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.text.1": "These seeds begin the civil side of Stellar Sorcery. Plant them early, harvest them often, and let them be your baseline bloom for comparisons.",
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris_seeds.text.2": "If you are unsure whether a ritual garden is working, Fritillaria is the flower to test with because it appears in several early infusions and transformations.",
+
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.title": "Fritillaria Meleagris",
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.text.1": "A soft checkered flower with deceptively broad use. It anchors calm, living recipes and keeps your early alchemy from drifting into harsher schools too soon.",
+  "codex_arcanum.stellar_sorcery.guide.fritillaria_meleagris.text.2": "Keep a stockpile. The mod treats it less like decoration and more like proof that your garden has started speaking the right language.",
+
+  "codex_arcanum.stellar_sorcery.guide.calendula.title": "Calendula",
+  "codex_arcanum.stellar_sorcery.guide.calendula.text.1": "Calendula carries bright luck and daytime steadiness. It appears in early living infusions and helps soften rougher ritual ingredients.",
+  "codex_arcanum.stellar_sorcery.guide.calendula.text.2": "When a recipe wants growth or gentle alignment, think of Calendula. It is one of the flowers that makes wild magic behave like cultivated magic.",
+
+  "codex_arcanum.stellar_sorcery.guide.red_campion.title": "Red Campion",
+  "codex_arcanum.stellar_sorcery.guide.red_campion.text.1": "Red Campion is the flower of heat, blood, and insistence. It often marks the moment a rite stops being pretty and starts being effective.",
+  "codex_arcanum.stellar_sorcery.guide.red_campion.text.2": "Use it when recipes lean toward roots, blood, or violent change. It is especially important in the steps that prepare [[root]] and stronger stump work.",
+
+  "codex_arcanum.stellar_sorcery.guide.nigella_damascena.title": "Nigella Damascena",
+  "codex_arcanum.stellar_sorcery.guide.nigella_damascena.text.1": "Nigella is a flower of nocturnal refinement. It appears where moonwork, shadow, and concentrated change need a floral witness.",
+  "codex_arcanum.stellar_sorcery.guide.nigella_damascena.text.2": "If the recipe feels lunar or secretive, keep Nigella nearby. The mod uses it as a sign that the ritual should leave daylight behind.",
+
+  "codex_arcanum.stellar_sorcery.guide.soul_bloom_seeds.title": "Soul Bloom Seeds",
+  "codex_arcanum.stellar_sorcery.guide.soul_bloom_seeds.text.1": "Soul Bloom Seeds mark the shift from pleasant witchcraft to haunted horticulture. Grow them when your ritual setup is already stable.",
+  "codex_arcanum.stellar_sorcery.guide.soul_bloom_seeds.text.2": "They support darker recipes later on, so planting them before you need them saves a surprising amount of waiting.",
+
+  "codex_arcanum.stellar_sorcery.guide.soul_blooms.title": "Soul Blooms",
+  "codex_arcanum.stellar_sorcery.guide.soul_blooms.text.1": "Soul Blooms are the flowers that keep one eye on the living and one on the dead. They belong near candles, chalk, and night work.",
+  "codex_arcanum.stellar_sorcery.guide.soul_blooms.text.2": "Use them as ritual stock, not just harvest. Several stronger pages feel much easier once a patch of these is already growing.",
+
+  "codex_arcanum.stellar_sorcery.guide.soul_candle.title": "Soul Candle",
+  "codex_arcanum.stellar_sorcery.guide.soul_candle.text.1": "The Soul Candle is the anchor point for your dark rites. Place it at the heart of chalk circles and treat it as the ritual's listening ear.",
+  "codex_arcanum.stellar_sorcery.guide.soul_candle.text.2": "Many recipes around it are not crafting recipes but arrangements: chalk on the ground, ingredients offered at night, and patience while the rite resolves.",
+  "codex_arcanum.stellar_sorcery.guide.soul_candle.text.3": "Once you understand the Soul Candle, entries like [[blood_vial]], [[chalk_canister]], and [[moonshine_shard]] stop feeling mysterious and start feeling procedural.",
+
+  "codex_arcanum.stellar_sorcery.guide.white_chalk_stick.title": "White Chalk Stick",
+  "codex_arcanum.stellar_sorcery.guide.white_chalk_stick.text.1": "This is the tool that turns intention into geometry. Right-click the ground to lay the white marks that soul rites read as law.",
+  "codex_arcanum.stellar_sorcery.guide.white_chalk_stick.text.2": "Small circles are enough for early work. Large rites can wait until you have a faster drawing tool.",
+
+  "codex_arcanum.stellar_sorcery.guide.chalk_canister.title": "Chalk Canister",
+  "codex_arcanum.stellar_sorcery.guide.chalk_canister.text.1": "The canister is the grown-up version of the chalk stick. It lets you pour larger diagrams without tracing every line by hand.",
+  "codex_arcanum.stellar_sorcery.guide.chalk_canister.text.2": "Its own creation is a Soul Candle rite, which is exactly the point: larger circles are earned by already understanding smaller ones.",
+
+  "codex_arcanum.stellar_sorcery.guide.ritual_dagger.title": "Ritual Dagger",
+  "codex_arcanum.stellar_sorcery.guide.ritual_dagger.text.1": "The dagger is a consent tool, not a weapon first. It signs you into blood-bound rites by turning your health into a material component.",
+  "codex_arcanum.stellar_sorcery.guide.ritual_dagger.text.2": "Right-click when you are ready to pay the price and pair it with a [[blood_vial]] when the recipe wants your mark preserved.",
+
+  "codex_arcanum.stellar_sorcery.guide.blood_vial.title": "Blood Vial",
+  "codex_arcanum.stellar_sorcery.guide.blood_vial.text.1": "A Blood Vial stores the part of a rite that cannot be faked: identity. It is how a ritual remembers who offered themselves.",
+  "codex_arcanum.stellar_sorcery.guide.blood_vial.text.2": "Fill it through the Soul Candle rite, then carry it into recipes that want personal binding instead of anonymous power.",
+
+  "codex_arcanum.stellar_sorcery.guide.voodoo_doll.title": "Voodoo Doll",
+  "codex_arcanum.stellar_sorcery.guide.voodoo_doll.text.1": "The doll is an address written in cloth. It is only meaningful once you pair it with blood and a ritual context strong enough to answer.",
+  "codex_arcanum.stellar_sorcery.guide.voodoo_doll.text.2": "Keep it for targeted rites rather than casual use. It exists for intention, not throughput.",
+
+  "codex_arcanum.stellar_sorcery.guide.root.title": "Root",
+  "codex_arcanum.stellar_sorcery.guide.root.text.1": "Root is what happens when common wood is rewritten by living magic. It is humble in appearance and central in progression.",
+  "codex_arcanum.stellar_sorcery.guide.root.text.2": "Prepare it through stump work before chasing bigger lunar materials. Several strong recipes quietly assume you already learned this small lesson.",
+
+  "codex_arcanum.stellar_sorcery.guide.moonshine_catalyst.title": "Moonshine Catalyst",
+  "codex_arcanum.stellar_sorcery.guide.moonshine_catalyst.text.1": "The Moonshine Catalyst is condensed permission for amethyst to become something stranger. It is born from a night rite on the Vital Stump and marks your first proper lunar reagent.",
+  "codex_arcanum.stellar_sorcery.guide.moonshine_catalyst.text.2": "Use it by right-clicking a vanilla Budding Amethyst. In-world, imagine the catalyst drawing the river of liquid night into physical motes that infest the crystal until it remembers the moon.",
+
+  "codex_arcanum.stellar_sorcery.guide.budding_moonshine.title": "Budding Moonshine",
+  "codex_arcanum.stellar_sorcery.guide.budding_moonshine.text.1": "Budding Moonshine is not crafted on a table. It is made in the world when you touch a Budding Amethyst with a [[moonshine_catalyst]].",
+  "codex_arcanum.stellar_sorcery.guide.budding_moonshine.text.2": "The practical rule is simple: right-click the amethyst bud source and it converts. The lore rule is that flowing lunar magic is forced into particles, and those particles seed the crystal with a new hunger.",
+
+  "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.title": "Noctilume Bucket",
+  "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.text.1": "Noctilume is the fluid form of your machine progress. Once bucketed, it becomes much easier to move, test, and reason about the network.",
+  "codex_arcanum.stellar_sorcery.guide.noctilume_bucket.text.2": "If a setup needs light-based throughput, think in terms of Noctilume production, storage, and beam routing rather than individual machines.",
+
+  "codex_arcanum.stellar_sorcery.guide.moonshine_shard.title": "Moonshine Shard",
+  "codex_arcanum.stellar_sorcery.guide.moonshine_shard.text.1": "Moonshine Shards are the first hard proof that your lunar chain works. They are usually earned through Soul Candle rites and then spent on stronger machine bodies.",
+  "codex_arcanum.stellar_sorcery.guide.moonshine_shard.text.2": "Treat each shard as advanced infrastructure, not decoration. Once you can make them reliably, tier two of the mod opens quickly.",
+
+  "codex_arcanum.stellar_sorcery.guide.bluestone_dust.title": "Bluestone Dust",
+  "codex_arcanum.stellar_sorcery.guide.bluestone_dust.text.1": "Bluestone Dust is refined celestial grit, the sort of powder that tells ordinary copper and crystal to start behaving like lunar machinery.",
+  "codex_arcanum.stellar_sorcery.guide.bluestone_dust.text.2": "Keep it reserved for upgrades and late stations. The dust is where your build begins to look engineered instead of improvised.",
+
+  "codex_arcanum.stellar_sorcery.guide.lunar_jar.title": "Lunar Jar",
+  "codex_arcanum.stellar_sorcery.guide.lunar_jar.text.1": "The Lunar Jar is the mature version of the Light Jar. It holds more, leaks less, and belongs in any network you intend to keep.",
+  "codex_arcanum.stellar_sorcery.guide.lunar_jar.text.2": "Upgrade into it once your Moonshine Shards and Bluestone Dust exist in quantity. Past this point, the mod expects you to build systems, not one-off machines.",
+
+  "codex_arcanum.stellar_sorcery.guide.lunar_infuser.title": "Lunar Infuser",
+  "codex_arcanum.stellar_sorcery.guide.lunar_infuser.text.1": "The Lunar Infuser is where your early lightcraft matures into celestial industry. It takes the old frame and teaches it to answer the moon instead of simple glow.",
+  "codex_arcanum.stellar_sorcery.guide.lunar_infuser.text.2": "Build it as a direct upgrade path from the Light Infuser. Once active, it becomes one of the gates to [[astral_altar]] and the wider late game.",
+
+  "codex_arcanum.stellar_sorcery.guide.lunar_light_beam_emitter.title": "Lunar Light Beam Emitter",
+  "codex_arcanum.stellar_sorcery.guide.lunar_light_beam_emitter.text.1": "This is the precise transport line for advanced setups. Where the early emitter is practical, the lunar version is authoritative.",
+  "codex_arcanum.stellar_sorcery.guide.lunar_light_beam_emitter.text.2": "Use it when your network spans real distance or when weak routing starts throttling a strong production chain.",
+
+  "codex_arcanum.stellar_sorcery.guide.whispering_fragment.title": "Whispering Fragment",
+  "codex_arcanum.stellar_sorcery.guide.whispering_fragment.text.1": "A Whispering Fragment is an astral remainder pulled from a dangerous stump rite. It is one of the first materials that feels unmistakably late game.",
+  "codex_arcanum.stellar_sorcery.guide.whispering_fragment.text.2": "The recipe asks for Moonshine, night bloom, a prepared infusion, and a Budding Moonshine anchor because the fragment is less crafted than torn loose.",
+
+  "codex_arcanum.stellar_sorcery.guide.astral_altar.title": "Astral Altar",
+  "codex_arcanum.stellar_sorcery.guide.astral_altar.text.1": "The Astral Altar is the point where your mod progression stops being local and starts becoming ceremonial architecture. It wants your best lunar pieces arranged into one deliberate center.",
+  "codex_arcanum.stellar_sorcery.guide.astral_altar.text.2": "Think of it as a convergence block. Earlier stations prepare fuel and reagents; the altar decides that those preparations are finally worthy of greater transformation.",
+
+  "codex_arcanum.stellar_sorcery.guide.astral_nexus.title": "Astral Nexus",
+  "codex_arcanum.stellar_sorcery.guide.astral_nexus.text.1": "The Nexus is the altar's organizing mind. It binds the ritual center to sightlines, movement, and the next stage of machine intent.",
+  "codex_arcanum.stellar_sorcery.guide.astral_nexus.text.2": "Once you have it, your astral setup stops feeling like a shrine and starts feeling like a system.",
+
+  "codex_arcanum.stellar_sorcery.guide.arcforge.title": "Arcforge",
+  "codex_arcanum.stellar_sorcery.guide.arcforge.text.1": "The Arcforge is built out of things you could only have produced by understanding the mod correctly. That is why it feels like a milestone instead of another workstation.",
+  "codex_arcanum.stellar_sorcery.guide.arcforge.text.2": "Use it as your late-game center of gravity. If a relic or upgrade sounds too important for ordinary crafting, it likely belongs here or after it.",
+
+  "codex_arcanum.stellar_sorcery.guide.augment_forge.title": "Augment Forge",
+  "codex_arcanum.stellar_sorcery.guide.augment_forge.text.1": "The Augment Forge finalizes the transition from crafting to enhancement. It is where your strongest loops become permanent advantages.",
+  "codex_arcanum.stellar_sorcery.guide.augment_forge.text.2": "Its recipe still references an amulet because the system uses stored essence as a stabilizer, but the codex keeps that detail folded into the station instead of giving it its own chapter.",
+
+  "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.title": "Smart Upgrade Template",
+  "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.text.1": "This template teaches a vanilla spawner how to obey. It is less a material and more a permission slip etched in Nullite logic.",
+  "codex_arcanum.stellar_sorcery.guide.smart_upgrade_template.text.2": "Right-click a normal spawner with the template to convert it. Shift-right-click the smart version later if you want the template back without erasing the spawner's memory.",
+
+  "codex_arcanum.stellar_sorcery.guide.smart_spawner.title": "Smart Spawner",
+  "codex_arcanum.stellar_sorcery.guide.smart_spawner.text.1": "A Smart Spawner is a tamed monster engine. It keeps the soul of the original spawner but finally accepts automation and intent.",
+  "codex_arcanum.stellar_sorcery.guide.smart_spawner.text.2": "Use it where controlled mob production matters. It is one of the clearest signs that your magic has turned industrial.",
+
+  "codex_arcanum.stellar_sorcery.guide.celestial_blade.title": "Celestial Blade",
+  "codex_arcanum.stellar_sorcery.guide.celestial_blade.text.1": "The Celestial Blade is forged through higher ritual rather than simple smithing. It represents the mod's answer to a weapon that feels earned by progression, not found by luck.",
+  "codex_arcanum.stellar_sorcery.guide.celestial_blade.text.2": "Expect it after you understand roots, night infusions, and lunar catalysts. It is a relic of mastery, not a starter sword.",
+
+  "codex_arcanum.stellar_sorcery.guide.wraith_cloak.title": "Wraith Cloak",
+  "codex_arcanum.stellar_sorcery.guide.wraith_cloak.text.1": "The Wraith Cloak is sewn through a Soul Candle rite using Wraith String and shadow-aligned matter. It rewards players who already trust dark circles more than bright machines.",
+  "codex_arcanum.stellar_sorcery.guide.wraith_cloak.text.2": "Use it when you want presence without visibility. Like most strong ritual gear, it feels better once the surrounding infrastructure already exists."
 }

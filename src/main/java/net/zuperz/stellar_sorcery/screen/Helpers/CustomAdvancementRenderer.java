@@ -13,12 +13,13 @@ import net.minecraft.util.Mth;
 import net.zuperz.stellar_sorcery.mixin.AdvancementTabMixin;
 import net.zuperz.stellar_sorcery.mixin.AdvancementsScreenMixin;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
+import net.zuperz.stellar_sorcery.util.MouseUtil;
 
 import java.util.Map;
 
 public class CustomAdvancementRenderer {
 
-    public static void renderTooltipsOnly(AdvancementsScreen screen, GuiGraphics graphics, int mouseX, int mouseY, int guiLeft, int guiTop, CodexArcanumScreen codexScreen) {
+    public static void renderTooltipsOnly(AdvancementsScreen screen, GuiGraphics graphics, int mouseX, int mouseY, int guiLeft, int guiTop, CodexArcanumScreen codexScreen, int X, int Y) {
         AdvancementTab selected = getSelectedTab(screen);
         if (selected == null) return;
 
@@ -43,14 +44,18 @@ public class CustomAdvancementRenderer {
             graphics.pose().popPose();
         }
 
-        AdvancementTabMixin tabMixin = (AdvancementTabMixin) selected;
-        AdvancementsScreenMixin screenMixin = (AdvancementsScreenMixin) screen;
-
         graphics.pose().pushPose();
         graphics.pose().translate(x, y, 900.0F);
         RenderSystem.enableDepthTest();
 
-        drawTooltips(graphics, mouseX - x, mouseY - y, x, y, selected);
+        int advX = X - 20;
+        int advY = Y + 10;
+        int advW = 99;
+        int advH = 127;
+
+        if (MouseUtil.isMouseOver(mouseX, mouseY, advX, advY, advW, advH)) {
+            drawTooltips(graphics, mouseX - x, mouseY - y, x, y, selected);
+        }
 
         RenderSystem.disableDepthTest();
         graphics.pose().popPose();
