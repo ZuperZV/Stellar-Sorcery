@@ -8,15 +8,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.zuperz.stellar_sorcery.util.FyldeTilstand;
+import net.zuperz.stellar_sorcery.util.FyldeEnum;
 
 public class EldriteBlock extends Block {
-    public static final EnumProperty<FyldeTilstand> FYLDE = EnumProperty.create("fylde", FyldeTilstand.class);
-    public static final EnumProperty<FyldeTilstand> BEDROCK_FYLDE = EnumProperty.create("bedrock_fylde", FyldeTilstand.class);
+    public static final EnumProperty<FyldeEnum> FYLDE = EnumProperty.create("fylde", FyldeEnum.class);
+    public static final EnumProperty<FyldeEnum> BEDROCK_FYLDE = EnumProperty.create("bedrock_fylde", FyldeEnum.class);
 
     public EldriteBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FYLDE, FyldeTilstand.EMPTY).setValue(BEDROCK_FYLDE, FyldeTilstand.EMPTY));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FYLDE, FyldeEnum.EMPTY).setValue(BEDROCK_FYLDE, FyldeEnum.EMPTY));
     }
 
     @Override
@@ -26,7 +26,7 @@ public class EldriteBlock extends Block {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return this.defaultBlockState().setValue(FYLDE, FyldeTilstand.EMPTY).setValue(BEDROCK_FYLDE, FyldeTilstand.EMPTY);
+        return this.defaultBlockState().setValue(FYLDE, FyldeEnum.EMPTY).setValue(BEDROCK_FYLDE, FyldeEnum.EMPTY);
     }
 
     @Override
@@ -47,8 +47,8 @@ public class EldriteBlock extends Block {
 
     @Override
     protected boolean isRandomlyTicking(BlockState blockState) {
-        return blockState.getValue(FYLDE) != FyldeTilstand.FULL
-                || blockState.getValue(BEDROCK_FYLDE) != FyldeTilstand.FULL;
+        return blockState.getValue(FYLDE) != FyldeEnum.FULL
+                || blockState.getValue(BEDROCK_FYLDE) != FyldeEnum.FULL;
     }
 
     private boolean hasValidBlockAbove(ServerLevel level, BlockPos pos) {
@@ -57,16 +57,16 @@ public class EldriteBlock extends Block {
 
         BlockState state1 = level.getBlockState(above1);
         if (state1.getBlock() instanceof EldriteBlock eld1) {
-            FyldeTilstand fylde1 = state1.getValue(FYLDE);
-            if (fylde1 == FyldeTilstand.HALF || fylde1 == FyldeTilstand.FULL) {
+            FyldeEnum fylde1 = state1.getValue(FYLDE);
+            if (fylde1 == FyldeEnum.HALF || fylde1 == FyldeEnum.FULL) {
                 return true;
             }
         }
 
         BlockState state2 = level.getBlockState(above2);
         if (state2.getBlock() instanceof EldriteBlock eld2) {
-            FyldeTilstand fylde2 = state2.getValue(FYLDE);
-            if (fylde2 == FyldeTilstand.FULL) {
+            FyldeEnum fylde2 = state2.getValue(FYLDE);
+            if (fylde2 == FyldeEnum.FULL) {
                 return true;
             }
         }
@@ -83,8 +83,8 @@ public class EldriteBlock extends Block {
         }
 
         if (belowState.getBlock() instanceof EldriteBlock) {
-            FyldeTilstand fylde = belowState.getValue(BEDROCK_FYLDE);
-            if (fylde == FyldeTilstand.HALF || fylde == FyldeTilstand.FULL) {
+            FyldeEnum fylde = belowState.getValue(BEDROCK_FYLDE);
+            if (fylde == FyldeEnum.HALF || fylde == FyldeEnum.FULL) {
                 return true;
             }
         }
@@ -93,13 +93,13 @@ public class EldriteBlock extends Block {
     }
 
     public void addFylde(ServerLevel level, BlockPos pos, BlockState blockState) {
-        FyldeTilstand current = blockState.getValue(FYLDE);
-        FyldeTilstand newFylde = current;
+        FyldeEnum current = blockState.getValue(FYLDE);
+        FyldeEnum newFylde = current;
 
-        if (current == FyldeTilstand.EMPTY) {
-            newFylde = FyldeTilstand.HALF;
-        } else if (current == FyldeTilstand.HALF) {
-            newFylde = FyldeTilstand.FULL;
+        if (current == FyldeEnum.EMPTY) {
+            newFylde = FyldeEnum.HALF;
+        } else if (current == FyldeEnum.HALF) {
+            newFylde = FyldeEnum.FULL;
         }
 
         if (newFylde != current) {
@@ -110,8 +110,8 @@ public class EldriteBlock extends Block {
     }
 
     public void addBedrockFylde(ServerLevel level, BlockPos pos, BlockState blockState) {
-        FyldeTilstand current = blockState.getValue(BEDROCK_FYLDE);
-        FyldeTilstand newFylde = nextFylde(current);
+        FyldeEnum current = blockState.getValue(BEDROCK_FYLDE);
+        FyldeEnum newFylde = nextFylde(current);
 
         if (newFylde != current) {
             BlockState newState = blockState.setValue(BEDROCK_FYLDE, newFylde);
@@ -120,9 +120,9 @@ public class EldriteBlock extends Block {
         }
     }
 
-    private FyldeTilstand nextFylde(FyldeTilstand current) {
-        if (current == FyldeTilstand.EMPTY) return FyldeTilstand.HALF;
-        if (current == FyldeTilstand.HALF) return FyldeTilstand.FULL;
+    private FyldeEnum nextFylde(FyldeEnum current) {
+        if (current == FyldeEnum.EMPTY) return FyldeEnum.HALF;
+        if (current == FyldeEnum.HALF) return FyldeEnum.FULL;
         return current;
     }
 }

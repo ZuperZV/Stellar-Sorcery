@@ -68,6 +68,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.GLOOM_MOSS_CARPET.get());
         dropSelf(ModBlocks.ECHO_THORN.get());
         dropSelf(ModBlocks.ECHO_THORN_FLOWER.get());
+        dropSelf(ModBlocks.DEATH_BLOOM.get());
 
         dropSelf(ModBlocks.DRIFTSOIL.get());
         this.add(ModBlocks.TILLED_DRIFTSOIL.get(), createPotFlowerItemTable(ModBlocks.DRIFTSOIL));

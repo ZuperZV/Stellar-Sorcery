@@ -32,6 +32,7 @@ public class ModItemBlockRenderTypes {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ECHO_THORN_FLOWER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.TILLED_DRIFTSOIL.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMART_SPAWNER.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.DEATH_BLOOM.get(), RenderType.cutout());
 
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.HOLLOW_PORTAL.get(), RenderType.translucent());
 

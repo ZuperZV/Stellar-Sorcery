@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "placement_state=ground_bottom":  { "model": "stellar_sorcery:block/death_bloom_ground_top" },
+    "placement_state=bottom":  { "model": "stellar_sorcery:block/death_bloom_buttom" },
+    "placement_state=top": { "model": "stellar_sorcery:block/death_bloom_top" }
+  }
+}

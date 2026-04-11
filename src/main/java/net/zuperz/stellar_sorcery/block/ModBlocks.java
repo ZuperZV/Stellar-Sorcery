@@ -89,6 +89,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> POTTED_NIGELLA_DAMASCENA = BLOCKS.register("potted_nigella_damascena",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), NIGELLA_DAMASCENA, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_POPPY)));
 
+    public static final DeferredBlock<Block> DEATH_BLOOM = registerBlock("death_bloom",
+            () -> new DeathBloomBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SUNFLOWER)));
+
     public static final DeferredBlock<Block> BUDDING_MOONSHINE = registerBlock("budding_moonshine",
             () -> new MoonshineBuddingBlock(
                     BlockBehaviour.Properties.of()

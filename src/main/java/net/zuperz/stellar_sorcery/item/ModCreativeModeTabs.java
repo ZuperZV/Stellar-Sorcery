@@ -69,7 +69,6 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.LUNAR_LIGHT_BEAM_EMITTER.get());
 
                         pOutput.accept(ModBlocks.ITEM_EMITTER.get());
-
                         pOutput.accept(ModItems.ROOT.get());
                         pOutput.accept(ModItems.BLUESTONE_DUST.get());
 
@@ -118,6 +117,8 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModItems.WRAITH_STRING.get());
                         pOutput.accept(ModItems.WRAITH_CLOAK.get());
+
+                        pOutput.accept(ModBlocks.DEATH_BLOOM.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());

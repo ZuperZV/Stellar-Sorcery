@@ -2,14 +2,14 @@ package net.zuperz.stellar_sorcery.util;
 
 import net.minecraft.util.StringRepresentable;
 
-public enum FyldeTilstand implements StringRepresentable {
+public enum FyldeEnum implements StringRepresentable {
     FULL("full"),
     HALF("half"),
     EMPTY("empty");
 
     private final String name;
 
-    FyldeTilstand(String name) {
+    FyldeEnum(String name) {
         this.name = name;
     }
 
