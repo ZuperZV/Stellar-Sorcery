@@ -32,6 +32,9 @@ public class ModRecipes {
     public static final Supplier<RecipeType<EssenceRecipe>> ESSENCE_RECIPE_TYPE =
             RECIPE_TYPES.register("essence_recipe", () -> EssenceRecipe.Type.INSTANCE);
 
+    public static final Supplier<RecipeType<EssenceBoilerRecipe>> ESSENCE_BOILER_RECIPE_TYPE =
+            RECIPE_TYPES.register("essence_boiler", () -> EssenceBoilerRecipe.Type.INSTANCE);
+
     public static final Supplier<RecipeType<AmuletEssenceRecipe>> AMULET_ESSENCE_RECIPE_TYPE =
             RECIPE_TYPES.register("amulet_essence_recipe", () -> AmuletEssenceRecipe.Type.INSTANCE);
 
@@ -51,6 +54,9 @@ public class ModRecipes {
 
     public static final Supplier<RecipeSerializer<EssenceRecipe>> ESSENCE_SERIALIZER =
             SERIALIZERS.register("essence_recipe", () -> EssenceRecipe.Serializer.INSTANCE);
+
+    public static final Supplier<RecipeSerializer<EssenceBoilerRecipe>> ESSENCE_BOILER_SERIALIZER =
+            SERIALIZERS.register("essence_boiler", () -> EssenceBoilerRecipe.Serializer.INSTANCE);
 
     public static final Supplier<RecipeSerializer<AmuletEssenceRecipe>> AMULET_ESSENCE_SERIALIZER =
             SERIALIZERS.register("amulet_essence_recipe", () -> AmuletEssenceRecipe.Serializer.INSTANCE);

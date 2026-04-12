@@ -43,6 +43,7 @@ import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 
 public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<EssenceBoilerBlockEntity> {
     private final ItemRenderer itemRenderer;
+    float plusY = 0.2f;
 
     public EssenceBoilerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.itemRenderer = context.getItemRenderer();
@@ -57,6 +58,9 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         ItemStackHandler itemHandler = pBlockEntity.inventory;
 
         pPoseStack.pushPose();
+
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
 
         EssenceBoilerBlockEntity.WobbleStyle wobbleStyle = pBlockEntity.lastWobbleStyle;
         if (wobbleStyle != null && pBlockEntity.getLevel() != null) {
@@ -77,39 +81,48 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         // FLUID RENDERING
         FluidStack fluidStack = pBlockEntity.getFluidTank();
         if (!fluidStack.isEmpty()) {
-            IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-            ResourceLocation stillTexture = fluidTypeExtensions.getStillTexture(fluidStack);
-            if (stillTexture != null) {
-                FluidState state = fluidStack.getFluid().defaultFluidState();
-                TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(stillTexture);
-                int tintColor = fluidTypeExtensions.getTintColor(state, level, pos);
 
-                float yOffset = 0.2f;
+            IClientFluidTypeExtensions fluidType = IClientFluidTypeExtensions.of(fluidStack.getFluid());
 
-                VertexConsumer builder = pBufferSource.getBuffer(RenderType.translucent());
+            ResourceLocation stillTexture = fluidType.getStillTexture(fluidStack);
 
-                float xMin = 0.10f, xMax = 0.90f, zMin = 0.10f, zMax = 0.90f;
-                float yBase = 0.7f;
+            TextureAtlasSprite sprite = Minecraft.getInstance()
+                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    .apply(stillTexture);
 
-                float y00 = yBase + yOffset * 0.8f;
-                float y01 = yBase + yOffset * 1.0f;
-                float y11 = yBase + yOffset  * 0.6f;
-                float y10 = yBase + yOffset * 0.4f;
+            int color = fluidType.getTintColor(fluidStack.getFluid().defaultFluidState(), level, pos);
 
-                drawQuad(builder, pPoseStack, xMin, y00, zMin, xMax, y11, zMax,
-                        sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(),
-                        pPackedLight, tintColor);
-            }
+            RenderType renderType = RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
+            VertexConsumer builder = pBufferSource.getBuffer(renderType);
+
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+
+            float xMin = 0.10f, xMax = 0.90f;
+            float zMin = 0.10f, zMax = 0.90f;
+            float y = 0.7f + plusY;
+
+            drawQuad(
+                    builder,
+                    pPoseStack,
+                    xMin, y, zMin,
+                    xMax, y, zMax,
+                    sprite.getU0(), sprite.getV0(),
+                    sprite.getU1(), sprite.getV1(),
+                    pPackedLight,
+                    color
+            );
+
+            RenderSystem.disableBlend();
         }
 
         pPoseStack.popPose();
 
         // ITEMS RENDERING
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-
         pPoseStack.pushPose();
-        pPoseStack.translate(0.5, 0.7, 0.5);
+        pPoseStack.translate(0.5, 0.7 +plusY, 0.5);
         pPoseStack.scale(0.3f, 0.3f, 0.3f);
 
         float rotation = pBlockEntity.getRenderingRotation();
@@ -146,29 +159,21 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         }
 
         pPoseStack.popPose();
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
     }
 
-
-    private static void drawVertex(VertexConsumer builder, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, int color) {
-        builder.addVertex(poseStack.last().pose(), x, y, z)
-                .setColor(color)
-                .setUv(u, v)
-                .setLight(packedLight)
-                .setNormal(1, 0, 0);
-    }
-
-    private static void drawQuad(VertexConsumer builder, PoseStack poseStack,
-                                 float x0, float y0, float z0,
-                                 float x1, float y1, float z1,
-                                 float u0, float v0, float u1, float v1,
-                                 int packedLight, int color) {
-        drawVertex(builder, poseStack, x0, y0, z0, u0, v0, packedLight, color);
-        drawVertex(builder, poseStack, x0, y1, z1, u0, v1, packedLight, color);
-        drawVertex(builder, poseStack, x1, y1, z1, u1, v1, packedLight, color);
-        drawVertex(builder, poseStack, x1, y0, z0, u1, v0, packedLight, color);
+    private static void drawQuad(
+            VertexConsumer builder,
+            PoseStack poseStack,
+            float x0, float y, float z0,
+            float x1, float y2, float z1,
+            float u0, float v0, float u1, float v1,
+            int packedLight,
+            int color
+    ) {
+        builder.addVertex(poseStack.last(), x0, y,  z0).setColor(color).setUv(u0, v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(poseStack.last(), 0f, 1f, 0f);
+        builder.addVertex(poseStack.last(), x0, y2, z1).setColor(color).setUv(u0, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(poseStack.last(), 0f, 1f, 0f);
+        builder.addVertex(poseStack.last(), x1, y2, z1).setColor(color).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(poseStack.last(), 0f, 1f, 0f);
+        builder.addVertex(poseStack.last(), x1, y,  z0).setColor(color).setUv(u1, v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(poseStack.last(), 0f, 1f, 0f);
     }
 
     private int getLightLevel(Level level, BlockPos pos) {

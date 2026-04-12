@@ -12,7 +12,11 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -36,6 +40,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +52,7 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static BooleanProperty DONE = BooleanProperty.create("done");
+    public static BooleanProperty SYLPH_EMBER = BooleanProperty.create("sylph_ember");
 
     private static final VoxelShape SHAPE_NORTH = Shapes.or(
             box(0, 0.5, 10, 16, 4.5, 14),
@@ -70,7 +76,7 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
 
     public EssenceBoilerBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(DONE, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(DONE, false).setValue(SYLPH_EMBER, false));
     }
 
     @Override
@@ -106,12 +112,13 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
         return this.defaultBlockState()
                 .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
                 .setValue(LIT, true)
-                .setValue(DONE, false);
+                .setValue(DONE, false)
+                .setValue(SYLPH_EMBER, false);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING, LIT, DONE);
+        pBuilder.add(FACING, LIT, DONE, SYLPH_EMBER);
     }
 
     @Nullable
@@ -170,7 +177,7 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
             }
         } else if (!pStack.isEmpty() && pStack.is(ItemTags.SHOVELS) && pState.getValue(BlockStateProperties.LIT)) {
             if (pState.hasProperty(BlockStateProperties.LIT)) {
-                pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, false), 3);
+                pLevel.setBlock(pPos, pState.setValue(BlockStateProperties.LIT, false).setValue(SYLPH_EMBER, false), 3);
                 if (!pStack.isDamageableItem()) {
                     pStack.shrink(1);
                 } else {
@@ -375,6 +382,24 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
                 }
             }
         }
+    }
+
+    @Override
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+
+        if (entity instanceof ItemEntity itemEntity) {
+            ItemStack stack = itemEntity.getItem();
+
+            Item item = stack.getItem();
+            if (item == ModBlocks.DEATH_BLOOM.asItem() && level.getBlockState(pos).getValue(LIT)) {
+                entity.discard();
+
+                level.setBlock(pos, state.setValue(SYLPH_EMBER, true), 3);
+                level.playSound(null, pos, SoundEvents.ALLAY_DEATH, SoundSource.BLOCKS, 1f, 1f);
+            }
+        }
+
+        super.entityInside(state, level, pos, entity);
     }
 
     public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {

@@ -1,35 +1,72 @@
 {
   "variants": {
-    "facing=east,lit=false": {
+    "facing=east,lit=false,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler",
       "y": 90
     },
-    "facing=north,lit=false": {
+    "facing=north,lit=false,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler"
     },
-    "facing=south,lit=false": {
+    "facing=south,lit=false,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler",
       "y": 180
     },
-    "facing=west,lit=false": {
+    "facing=west,lit=false,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler",
       "y": 270
     },
 
 
-    "facing=east,lit=true": {
+    "facing=east,lit=true,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler_on",
       "y": 90
     },
-    "facing=north,lit=true": {
+    "facing=north,lit=true,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler_on"
     },
-    "facing=south,lit=true": {
+    "facing=south,lit=true,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler_on",
       "y": 180
     },
-    "facing=west,lit=true": {
+    "facing=west,lit=true,sylph_ember=false": {
       "model": "stellar_sorcery:block/essence_boiler_on",
+      "y": 270
+    },
+
+
+
+
+
+    "facing=east,lit=false,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler",
+      "y": 90
+    },
+    "facing=north,lit=false,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler"
+    },
+    "facing=south,lit=false,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler",
+      "y": 180
+    },
+    "facing=west,lit=false,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler",
+      "y": 270
+    },
+
+
+    "facing=east,lit=true,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler_on_sylph_ember",
+      "y": 90
+    },
+    "facing=north,lit=true,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler_on_sylph_ember"
+    },
+    "facing=south,lit=true,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler_on_sylph_ember",
+      "y": 180
+    },
+    "facing=west,lit=true,sylph_ember=true": {
+      "model": "stellar_sorcery:block/essence_boiler_on_sylph_ember",
       "y": 270
     }
   }

@@ -18,6 +18,8 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,7 +35,15 @@ import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.recipes.EssenceBoilerRecipe;
+import net.zuperz.stellar_sorcery.recipes.FluidRecipeInput;
+import net.zuperz.stellar_sorcery.recipes.ModRecipes;
+import net.zuperz.stellar_sorcery.recipes.EssenceBoilerRecipe;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyContainer, IHasFluidTank {
     public static final int SLOT_INGREDIENT_1 = 0;
@@ -147,8 +157,43 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
                 boiler.progress = 0;
             }
-        } else if (boiler.progress != 0) {
-            boiler.progress = 0;
+        }
+
+        else if (boiler.hasRecipe()) {
+
+            System.out.println("[EssenceBoiler] Recipe FOUND");
+            System.out.println("[EssenceBoiler] Progress: " + boiler.progress + "/" + boiler.maxProgress);
+
+            boiler.progress++;
+
+            if (boiler.progress >= boiler.maxProgress) {
+
+                System.out.println("[EssenceBoiler] Trying to craft...");
+
+                boolean crafted = boiler.craftRecipe();
+
+                if (!crafted) {
+                    System.out.println("[EssenceBoiler] CRAFT FAILED - locking progress");
+                    boiler.progress = boiler.maxProgress;
+                } else {
+                    System.out.println("[EssenceBoiler] CRAFT SUCCESS");
+                }
+            }
+
+        } else {
+            System.out.println("[EssenceBoiler] NO RECIPE FOUND");
+
+            System.out.println("[EssenceBoiler] --- DEBUG STATE ---");
+            System.out.println("Slot 0: " + boiler.inventory.getStackInSlot(0));
+            System.out.println("Slot 1: " + boiler.inventory.getStackInSlot(1));
+            System.out.println("Slot 2: " + boiler.inventory.getStackInSlot(2));
+
+            System.out.println("Fluid: " + boiler.getFluidTank().getFluid());
+            System.out.println("Fluid amount: " + boiler.getFluidTankAmount());
+
+            if (boiler.progress != 0) {
+                boiler.progress = 0;
+            }
         }
 
         boiler.setChanged();
@@ -450,5 +495,113 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     @Override
     public IFluidHandler getFluidHandler() {
         return fluidTank;
+    }
+
+    private FluidRecipeInput getRecipeInput(SimpleContainer inventory, FluidStack fluidStack) {
+
+        return new FluidRecipeInput(fluidStack) {
+
+            @Override
+            public ItemStack getItem(int index) {
+                return inventory.getItem(index).copy();
+            }
+
+            @Override
+            public int size() {
+                return inventory.getContainerSize();
+            }
+        };
+    }
+
+    private Optional<RecipeHolder<EssenceBoilerRecipe>> getCurrentRecipe() {
+        SimpleContainer inv = new SimpleContainer(
+                inventory.getStackInSlot(SLOT_INGREDIENT_1),
+                inventory.getStackInSlot(SLOT_INGREDIENT_2),
+                inventory.getStackInSlot(SLOT_INGREDIENT_3)
+        );
+
+        FluidStack fluid = fluidTank.getFluid();
+
+        FluidRecipeInput input = getRecipeInput(inv, fluid);
+
+        return level.getRecipeManager().getRecipeFor(
+                ModRecipes.ESSENCE_BOILER_RECIPE_TYPE.get(),
+                input,
+                level
+        );
+    }
+
+    public boolean hasRecipe() {
+        Optional<RecipeHolder<EssenceBoilerRecipe>> recipe = getCurrentRecipe();
+
+        if (recipe.isEmpty()) {
+            System.out.println("[EssenceBoiler] No recipe in registry! " + level.getRecipeManager().getAllRecipesFor(EssenceBoilerRecipe.Type.INSTANCE).size());
+            return false;
+        }
+
+        System.out.println("[EssenceBoiler] Recipe exists: " + recipe.get().id());
+
+        EssenceBoilerRecipe r = recipe.get().value();
+
+        if (!canAcceptFluidOutput(r)) {
+            System.out.println("test: 2");
+            return false;
+        }
+
+        System.out.println("test: 1");
+
+        maxProgress = r.recipeTime;
+
+        return true;
+    }
+
+    private boolean canAcceptFluidOutput(EssenceBoilerRecipe recipe) {
+
+        FluidStack tankFluid = fluidTank.getFluid();
+
+        if (!tankFluid.getFluid().isSame(recipe.inputFluid.getFluid())) {
+            return false;
+        }
+
+        if (tankFluid.getAmount() < recipe.inputFluid.getAmount()) {
+            return false;
+        }
+
+        int remaining = tankFluid.getAmount() - recipe.inputFluid.getAmount();
+
+        int resultAmount = remaining + recipe.outputFluid.getAmount();
+
+        if (resultAmount > fluidTank.getCapacity()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean craftRecipe() {
+
+        Optional<RecipeHolder<EssenceBoilerRecipe>> recipeOpt = getCurrentRecipe();
+
+        if (recipeOpt.isEmpty()) {
+            return false;
+        }
+
+        EssenceBoilerRecipe recipe = recipeOpt.get().value();
+
+        if (!canAcceptFluidOutput(recipe)) {
+            return false;
+        }
+
+        inventory.extractItem(SLOT_INGREDIENT_1, 1, false);
+        inventory.extractItem(SLOT_INGREDIENT_2, 1, false);
+        inventory.extractItem(SLOT_INGREDIENT_3, 1, false);
+
+        fluidTank.drain(recipe.inputFluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+
+        fluidTank.fill(recipe.outputFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+
+        progress = 0;
+
+        return true;
     }
 }

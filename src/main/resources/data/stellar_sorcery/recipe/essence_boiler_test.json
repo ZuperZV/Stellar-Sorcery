@@ -1,0 +1,24 @@
+{
+  "type": "stellar_sorcery:essence_boiler",
+
+  "ingredient": {
+    "item": "minecraft:blaze_powder"
+  },
+
+  "ingredients": [
+    { "item": "minecraft:ghast_tear" },
+    { "item": "minecraft:nether_wart" }
+  ],
+
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 1000
+  },
+
+  "output_fluid": {
+    "fluid": "minecraft:lava",
+    "amount": 250
+  },
+
+  "time": 100
+}

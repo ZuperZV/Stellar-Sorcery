@@ -118,6 +118,7 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.WRAITH_STRING.get());
                         pOutput.accept(ModItems.WRAITH_CLOAK.get());
 
+                        pOutput.accept(ModBlocks.SYLPH_EMBER.get());
                         pOutput.accept(ModBlocks.DEATH_BLOOM.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());

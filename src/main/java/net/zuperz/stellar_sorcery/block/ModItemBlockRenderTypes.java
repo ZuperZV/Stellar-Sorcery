@@ -32,8 +32,11 @@ public class ModItemBlockRenderTypes {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.ECHO_THORN_FLOWER.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.TILLED_DRIFTSOIL.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMART_SPAWNER.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.DEATH_BLOOM.get(), RenderType.cutout());
 
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.DEATH_BLOOM.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.SYLPH_EMBER.get(), RenderType.cutout());
+
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.ESSENCE_BOILER.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.HOLLOW_PORTAL.get(), RenderType.translucent());
 
             ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_NOCTILUME.get(), RenderType.translucent());

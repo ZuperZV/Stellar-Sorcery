@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_fire_up",
+  "textures": {
+    "fire": "stellar_sorcery:block/sylph_ember_1"
+  }
+}

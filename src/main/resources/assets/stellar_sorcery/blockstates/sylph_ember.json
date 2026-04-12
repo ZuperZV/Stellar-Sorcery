@@ -1,0 +1,172 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_floor"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_floor1"
+        }
+      ],
+      "when": {
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side1"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt1"
+        }
+      ],
+      "when": {
+        "OR": [
+          {
+            "north": "true"
+          },
+          {
+            "east": "false",
+            "north": "false",
+            "south": "false",
+            "up": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side",
+          "y": 90
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side1",
+          "y": 90
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt",
+          "y": 90
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt1",
+          "y": 90
+        }
+      ],
+      "when": {
+        "OR": [
+          {
+            "east": "true"
+          },
+          {
+            "east": "false",
+            "north": "false",
+            "south": "false",
+            "up": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side",
+          "y": 180
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side1",
+          "y": 180
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt",
+          "y": 180
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt1",
+          "y": 180
+        }
+      ],
+      "when": {
+        "OR": [
+          {
+            "south": "true"
+          },
+          {
+            "east": "false",
+            "north": "false",
+            "south": "false",
+            "up": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side",
+          "y": 270
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side1",
+          "y": 270
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt",
+          "y": 270
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_side_alt1",
+          "y": 270
+        }
+      ],
+      "when": {
+        "OR": [
+          {
+            "west": "true"
+          },
+          {
+            "east": "false",
+            "north": "false",
+            "south": "false",
+            "up": "false",
+            "west": "false"
+          }
+        ]
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "stellar_sorcery:block/sylph_ember_up"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_up1"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_up_alt"
+        },
+        {
+          "model": "stellar_sorcery:block/sylph_ember_up_alt1"
+        }
+      ],
+      "when": {
+        "up": "true"
+      }
+    }
+  ]
+}

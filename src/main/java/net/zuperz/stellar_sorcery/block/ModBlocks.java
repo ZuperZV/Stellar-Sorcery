@@ -92,6 +92,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> DEATH_BLOOM = registerBlock("death_bloom",
             () -> new DeathBloomBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SUNFLOWER)));
 
+    public static final DeferredBlock<Block> SYLPH_EMBER = registerBlock("sylph_ember",
+            () -> new SylphEmberBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE).mapColor(MapColor.COLOR_PURPLE)));
+
     public static final DeferredBlock<Block> BUDDING_MOONSHINE = registerBlock("budding_moonshine",
             () -> new MoonshineBuddingBlock(
                     BlockBehaviour.Properties.of()
