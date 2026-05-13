@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -533,5 +534,14 @@ public class SylphEmberBlock extends BaseFireBlock {
         SylphEmberBlock.setFlammable(Blocks.SMALL_DRIPLEAF, 60, 100);
         SylphEmberBlock.setFlammable(Blocks.HANGING_ROOTS, 30, 60);
         SylphEmberBlock.setFlammable(Blocks.GLOW_LICHEN, 15, 100);
+    }
+
+    @Override
+    protected boolean canBeReplaced(BlockState blockState, Fluid fluid) {
+        if (blockState.is(ModBlocks.DEATH_BLOOM)) {
+            return false;
+        }
+
+        return super.canBeReplaced(blockState, fluid);
     }
 }

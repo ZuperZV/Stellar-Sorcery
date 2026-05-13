@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_campfire",
+  "textures": {
+    "fire": "stellar_sorcery:block/essence_boiler_campfire_sylph_ember",
+    "lit_log": "stellar_sorcery:block/essence_boiler_campfire_log_lit_sylph_ember"
+  }
+}

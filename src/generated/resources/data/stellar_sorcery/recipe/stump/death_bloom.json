@@ -1,0 +1,27 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "minecraft:sunflower"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:shadow_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:root"
+    },
+    {
+      "item": "minecraft:sugar_cane"
+    },
+    {
+      "item": "minecraft:poisonous_potato"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:death_bloom"
+  },
+  "time": 80,
+  "time_of_day": "NIGHT"
+}

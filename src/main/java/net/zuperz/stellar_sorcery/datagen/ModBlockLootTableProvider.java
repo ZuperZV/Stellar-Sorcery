@@ -49,6 +49,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.STUMP.get());
         dropSelf(ModBlocks.SOUL_CANDLE.get());
         dropSelf(ModBlocks.ESSENCE_BOILER.get());
+        dropSelf(ModBlocks.BOILER_TIP.get());
         dropSelf(ModBlocks.ARCFORGE.get());
         dropSelf(ModBlocks.LUNAR_INFUSER.get());
         dropSelf(ModBlocks.LUNAR_JAR.get());
@@ -69,6 +70,8 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ECHO_THORN.get());
         dropSelf(ModBlocks.ECHO_THORN_FLOWER.get());
         dropSelf(ModBlocks.DEATH_BLOOM.get());
+
+        dropSelf(ModBlocks.SYLPH_EMBER.get());
 
         dropSelf(ModBlocks.DRIFTSOIL.get());
         this.add(ModBlocks.TILLED_DRIFTSOIL.get(), createPotFlowerItemTable(ModBlocks.DRIFTSOIL));
@@ -119,6 +122,13 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
         this.add(ModBlocks.SMART_SPAWNER.get(),
                 block -> createSingleItemTable(ModItems.SMART_UPGRADE_TEMPLATE.get())
+        );
+
+        this.add(ModBlocks.SYLPH_EMBER_CAMPFIRE.get(),
+                block -> createSilkTouchDispatchTable(
+                        block,
+                        this.applyExplosionCondition(block, LootItem.lootTableItem(Items.CHARCOAL))
+                )
         );
     }
 

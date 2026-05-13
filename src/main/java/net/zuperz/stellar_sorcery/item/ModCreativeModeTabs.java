@@ -53,6 +53,7 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.STUMP.get());
 
                         pOutput.accept(ModBlocks.ESSENCE_BOILER.get());
+                        pOutput.accept(ModBlocks.BOILER_TIP.get());
                         pOutput.accept(ModItems.EMPTY_ESSENCE_BOTTLE.get());
                         pOutput.accept(ModItems.EMPTY_ESSENCE_AMULET.get());
 
@@ -80,6 +81,7 @@ public class ModCreativeModeTabs {
                         pOutput.accept(fireJar);
 
                         ItemStack twigJar = new ItemStack(ModItems.TWIG_CLAY_JAR.get());
+                        twigJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_TWIG));
                         twigJar.set(DataComponents.POTION_CONTENTS, new PotionContents(ModPotions.JAR_TWIG));
                         pOutput.accept(twigJar);
 
@@ -118,8 +120,10 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.WRAITH_STRING.get());
                         pOutput.accept(ModItems.WRAITH_CLOAK.get());
 
+                        pOutput.accept(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
                         pOutput.accept(ModBlocks.SYLPH_EMBER.get());
                         pOutput.accept(ModBlocks.DEATH_BLOOM.get());
+                        pOutput.accept(ModItems.BLOOM_MEAL.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());

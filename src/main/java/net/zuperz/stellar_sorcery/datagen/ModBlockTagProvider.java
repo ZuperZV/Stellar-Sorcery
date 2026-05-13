@@ -31,7 +31,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
                 .add(ModBlocks.MOONSHINE_LARGE_BUD.get())
                 .add(ModBlocks.MOONSHINE_CLUSTER.get())
-                .add(ModBlocks.BUDDING_MOONSHINE.get());
+                .add(ModBlocks.BUDDING_MOONSHINE.get())
+                .add(ModBlocks.BOILER_TIP.get())
+                .add(ModBlocks.ESSENCE_BOILER.get());
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.VITAL_STUMP.get())
@@ -45,7 +47,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         this.tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(ModBlocks.VITAL_STUMP.get())
-                .add(ModBlocks.STUMP.get());
+                .add(ModBlocks.STUMP.get())
+                .add(ModBlocks.SYLPH_EMBER_CAMPFIRE.get())
+                .add(ModBlocks.ESSENCE_BOILER.get());
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.ASTRAL_ALTAR.get())
@@ -58,7 +62,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.MOONSHINE_MEDIUM_BUD.get())
                 .add(ModBlocks.MOONSHINE_LARGE_BUD.get())
                 .add(ModBlocks.MOONSHINE_CLUSTER.get())
-                .add(ModBlocks.BUDDING_MOONSHINE.get());
+                .add(ModBlocks.BUDDING_MOONSHINE.get())
+                .add(ModBlocks.BOILER_TIP.get())
+                .add(ModBlocks.ESSENCE_BOILER.get());
 
         this.tag(BlockTags.CROPS)
                 .add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
@@ -67,7 +73,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         this.tag(ModTags.Blocks.STELLER_SORCERY_FLOWERS_BLOCKS)
                 .add(ModBlocks.RED_CAMPION.get())
                 .add(ModBlocks.CALENDULA.get())
-                .add(ModBlocks.NIGELLA_DAMASCENA.get());
+                .add(ModBlocks.NIGELLA_DAMASCENA.get())
+                .add(ModBlocks.DEATH_BLOOM.get());
 
         this.tag(BlockTags.FLOWERS)
                 .add(ModBlocks.RED_CAMPION.get())
@@ -81,5 +88,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         this.tag(ModTags.Blocks.CHALK_BLOCKS)
                 .add(ModBlocks.WHITE_CHALK.get());
+
+        this.tag(BlockTags.CAMPFIRES)
+                .add(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
     }
 }

@@ -119,16 +119,28 @@ public class AstralAltarBlock extends BaseEntityBlock {
         if (pLevel.getBlockEntity(pPos) instanceof AstralAltarBlockEntity altar) {
 
             if (altar.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
-                altar.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
+
+                ItemStack toInsert = pStack.copy();
+                toInsert.setCount(1);
+
+                ItemStack remaining = altar.inventory.insertItem(0, toInsert, false);
+
+                if (remaining.isEmpty()) {
+                    pStack.shrink(1);
+                }
+
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
                 return ItemInteractionResult.SUCCESS;
             }
 
             else if (pStack.isEmpty() || !pStack.isEmpty() && !altar.inventory.getStackInSlot(0).isEmpty()) {
-                ItemStack extracted = altar.inventory.extractItem(0, 1, true);
+
+                int amount = altar.inventory.getStackInSlot(0).getCount();
+
+                ItemStack extracted = altar.inventory.extractItem(0, amount, true);
 
                 if (!extracted.isEmpty()) {
+
                     boolean addedToInventory = false;
 
                     for (int i = 0; i < pPlayer.getInventory().items.size(); i++) {
@@ -138,22 +150,28 @@ public class AstralAltarBlock extends BaseEntityBlock {
                                 && ItemStack.isSameItem(playerStack, extracted)
                                 && playerStack.getCount() < playerStack.getMaxStackSize()) {
 
-                            playerStack.grow(1);
+                            playerStack.grow(amount);
                             addedToInventory = true;
                             break;
                         }
                     }
 
                     if (!addedToInventory && pStack.isEmpty()) {
-                        pPlayer.setItemInHand(InteractionHand.MAIN_HAND, extracted);
+                        ItemStack handStack = extracted.copy();
+                        pPlayer.setItemInHand(InteractionHand.MAIN_HAND, handStack);
                         addedToInventory = true;
                     }
 
                     if (addedToInventory) {
                         altar.clearContents();
-                        altar.inventory.extractItem(0, 1, false);
-                        pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
+                        altar.inventory.extractItem(0, amount, false);
+
+                        pLevel.playSound(pPlayer, pPos,
+                                SoundEvents.ITEM_PICKUP,
+                                SoundSource.BLOCKS,
+                                1f, 1f);
                     }
+
                     return ItemInteractionResult.SUCCESS;
                 }
             }

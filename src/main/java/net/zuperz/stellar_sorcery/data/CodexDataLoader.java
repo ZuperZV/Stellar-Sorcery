@@ -1,6 +1,11 @@
 package net.zuperz.stellar_sorcery.data;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -9,165 +14,214 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.zuperz.stellar_sorcery.item.ModItems;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class CodexDataLoader {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Map<Integer, CodexEntry> entriesById = new HashMap<>();
+    private static final Map<Integer, CodexEntry> entriesById = new LinkedHashMap<>();
     private static final Map<String, Integer> idToInt = new HashMap<>();
-    private static final List<String> CATEGORY_ORDER = List.of("codex", "flora", "rituals", "lunar", "astral");
+    private static final List<CodexCategory> cachedCategories = new ArrayList<>();
+    private static final List<String> LEGACY_CATEGORY_ORDER = List.of(
+            "codex",
+            "flora",
+            "rituals",
+            "lunar",
+            "astral",
+            "stations",
+            "materials",
+            "relics",
+            "essences",
+            "jars",
+            "light"
+    );
 
     public static void load() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager resourceManager = server.getResourceManager();
-        entriesById.clear();
-        idToInt.clear();
-        int nextId = 0;
-
-        Map<ResourceLocation, Resource> resources = resourceManager.listResources("codex_entries", path -> path.getPath().endsWith(".json"));
-        List<Map.Entry<ResourceLocation, Resource>> sortedResources = new ArrayList<>(resources.entrySet());
-        sortedResources.sort(Comparator.comparing(entry -> entry.getKey().getPath()));
-
-        for (Map.Entry<ResourceLocation, Resource> entry : sortedResources) {
-            String path = entry.getKey().getPath();
-            if (!isSupportedCategoryPath(path)) {
-                continue;
-            }
-
-            try (InputStreamReader reader = new InputStreamReader(entry.getValue().open())) {
-                JsonElement root = JsonParser.parseReader(reader);
-                if (root.isJsonArray()) {
-                    for (JsonElement elem : root.getAsJsonArray()) {
-                        CodexEntry codexEntry = GSON.fromJson(elem, CodexEntry.class);
-                        int id = nextId++;
-                        entriesById.put(id, codexEntry);
-                        idToInt.put(codexEntry.id, id);
-                    }
-                } else {
-                    CodexEntry codexEntry = GSON.fromJson(root, CodexEntry.class);
-                    int id = nextId++;
-                    entriesById.put(id, codexEntry);
-                    idToInt.put(codexEntry.id, id);
-                }
-                System.out.println("[Codex] Indlæst: " + entry.getKey());
-            } catch (Exception e) {
-                System.err.println("[Codex] Fejl ved indlæsning af " + entry.getKey() + ": " + e.getMessage());
-            }
+        if (server == null) {
+            clear();
+            return;
         }
 
-
-        Map<ResourceLocation, Resource> category = resourceManager.listResources("codex_entries", path -> path.getPath().endsWith(".cat"));
-        System.out.println("category: " + category);
+        loadFromResourceManager(server.getResourceManager());
     }
 
-    public static List<CodexCategory> getAllCategories() {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager resourceManager = server.getResourceManager();
-        List<CodexCategory> categories = new ArrayList<>();
+    public static void loadFromResourceManager(ResourceManager resourceManager) {
+        clear();
 
-        Map<ResourceLocation, Resource> resources = resourceManager.listResources(
-                "codex_entries",
-                path -> path.getPath().endsWith(".json")
-        );
-
-        Map<String, List<ResourceLocation>> categoryToFiles = new HashMap<>();
+        Map<String, CategoryMetadata> metadataByFolder = loadCategoryMetadata(resourceManager);
+        Map<ResourceLocation, Resource> resources = resourceManager.listResources("codex_entries", path -> path.getPath().endsWith(".json"));
+        Map<String, List<ResourceLocation>> categoryToFiles = new LinkedHashMap<>();
 
         for (ResourceLocation rl : resources.keySet()) {
             String fullPath = rl.getPath();
-            if (!fullPath.startsWith("codex_entries/")) continue;
-
-            String relative = fullPath.substring("codex_entries/".length());
-            String[] split = relative.split("/");
-            if (split.length < 3) continue;
-
-            String category = split[0];
-            if (!isSupportedCategoryFolder(category)) continue;
-            categoryToFiles.computeIfAbsent(category, k -> new ArrayList<>()).add(rl);
-        }
-
-        Set<String> foundFolders = new HashSet<>();
-
-        List<String> sortedFolders = new ArrayList<>(categoryToFiles.keySet());
-        sortedFolders.sort(Comparator
-                .<String>comparingInt(folderName -> {
-                    String[] parts = folderName.split("_", 2);
-                    String id = parts.length > 0 ? parts[0] : folderName;
-                    int index = CATEGORY_ORDER.indexOf(id);
-                    return index >= 0 ? index : Integer.MAX_VALUE;
-                })
-                .thenComparing(folder -> folder));
-
-        for (String folderName : sortedFolders) {
-            if (!foundFolders.add(folderName)) continue;
-
-            String[] parts = folderName.split("_", 2);
-            String id = parts.length > 0 ? parts[0] : folderName;
-            String iconName = parts.length > 1 ? parts[1] : "minecraft-book";
-
-            String[] iconParts = iconName.split("-");
-            String namespace;
-            String path;
-            if (iconParts.length == 2) {
-                namespace = iconParts[0];
-                path = iconParts[1];
-            } else {
-                namespace = "minecraft";
-                path = iconParts[0];
+            if (!fullPath.startsWith("codex_entries/")) {
+                continue;
             }
 
-            ResourceLocation iconRL = ResourceLocation.fromNamespaceAndPath(namespace, path);
-            Item iconItem = BuiltInRegistries.ITEM.get(iconRL);
-            ItemStack icon = iconItem != null && iconItem != Items.AIR
-                    ? new ItemStack(iconItem)
-                    : new ItemStack(ModItems.CODEX_ARCANUM.get());
+            String relative = fullPath.substring("codex_entries/".length());
+            if ("_categories.json".equals(relative)) {
+                continue;
+            }
 
+            String[] split = relative.split("/");
+            if (split.length < 3) {
+                continue;
+            }
+
+            String categoryFolder = split[0];
+            String tierFolder = split[1];
+            if (!tierFolder.toLowerCase(Locale.ROOT).startsWith("tier_")) {
+                continue;
+            }
+
+            categoryToFiles.computeIfAbsent(categoryFolder, key -> new ArrayList<>()).add(rl);
+        }
+
+        List<String> sortedFolders = new ArrayList<>(categoryToFiles.keySet());
+        sortedFolders.sort(
+                Comparator.comparingInt((String folder) -> resolveCategoryOrder(folder, metadataByFolder.get(folder)))
+                        .thenComparing(folder -> resolveCategoryTitle(folder, metadataByFolder.get(folder)))
+                        .thenComparing(folder -> folder)
+        );
+
+        int nextId = 0;
+        for (String folder : sortedFolders) {
+            CategoryMetadata metadata = metadataByFolder.get(folder);
+            String categoryId = resolveCategoryId(folder, metadata);
+            String categoryTitle = resolveCategoryTitle(folder, metadata);
+            String categoryIconId = resolveCategoryIconId(folder, metadata);
+            int categoryOrder = resolveCategoryOrder(folder, metadata);
+
+            ItemStack icon = createIconStack(categoryIconId);
             List<CodexEntry> entries = new ArrayList<>();
             List<Integer> tiers = new ArrayList<>();
 
-            List<ResourceLocation> sortedFiles = new ArrayList<>(categoryToFiles.get(folderName));
-            sortedFiles.sort(Comparator.comparing(ResourceLocation::getPath));
+            List<ResourceLocation> files = new ArrayList<>(categoryToFiles.get(folder));
+            files.sort(Comparator.comparing(ResourceLocation::getPath));
 
-            for (ResourceLocation fileRL : sortedFiles) {
+            for (ResourceLocation fileRL : files) {
                 String relative = fileRL.getPath().substring("codex_entries/".length());
                 String[] split = relative.split("/");
-
-                if (split.length < 3) continue;
-
-                String tierFolder = split[1];
-                if (!tierFolder.toLowerCase(Locale.ROOT).startsWith("tier_")) continue;
-
-                int tier;
-                try {
-                    tier = Integer.parseInt(tierFolder.substring(5));
-                } catch (NumberFormatException e) {
-                    tier = 0;
+                if (split.length < 3) {
+                    continue;
                 }
 
+                int tier = parseTier(split[1]);
                 try (InputStream is = resourceManager.open(fileRL)) {
                     JsonObject json = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
                     CodexEntry entry = CodexEntry.fromJson(json);
                     entries.add(entry);
                     tiers.add(tier);
+
+                    entriesById.put(nextId, entry);
+                    idToInt.put(entry.id, nextId);
+                    nextId++;
                 } catch (Exception e) {
                     System.err.println("[Codex] Failed to load entry from " + fileRL + ": " + e.getMessage());
                 }
             }
 
-            categories.add(new CodexCategory(id, icon, entries, tiers));
+            cachedCategories.add(new CodexCategory(categoryId, categoryTitle, categoryIconId, icon, entries, tiers, categoryOrder));
         }
 
-        if (categories.isEmpty()) {
-            System.out.println("[Codex] No codex_entries folders found — using fallback.");
-            categories.add(new CodexCategory("default", new ItemStack(ModItems.CODEX_ARCANUM.get()), Collections.emptyList(), Collections.emptyList()));
+        if (cachedCategories.isEmpty()) {
+            cachedCategories.add(new CodexCategory(
+                    "default",
+                    "Default",
+                    "minecraft:book",
+                    new ItemStack(ModItems.CODEX_ARCANUM.get()),
+                    List.of(),
+                    List.of(),
+                    Integer.MAX_VALUE
+            ));
+        }
+    }
+
+    public static void applyEditorProject(CodexEditorProject project) {
+        clear();
+        if (project == null) {
+            return;
         }
 
-        return categories;
+        project.normalize();
+
+        int nextId = 0;
+        for (CodexEditorProject.Category category : project.categories) {
+            List<CodexEntry> entries = new ArrayList<>();
+            List<Integer> tiers = new ArrayList<>();
+
+            for (CodexEditorProject.Entry editorEntry : category.entries) {
+                CodexEntry entry = new CodexEntry();
+                entry.id = editorEntry.id;
+                entry.title = editorEntry.title;
+                entry.title_key = editorEntry.getTitleKey();
+                entry.type = editorEntry.type;
+                entry.icon = editorEntry.icon;
+                entry.search_items = new ArrayList<>(editorEntry.searchItems);
+                entry.related = new ArrayList<>(editorEntry.related);
+                entry.right_side = new ArrayList<>();
+
+                for (int pageIndex = 0; pageIndex < editorEntry.pages.size(); pageIndex++) {
+                    CodexEditorProject.Page editorPage = editorEntry.pages.get(pageIndex);
+                    CodexPage page = new CodexPage();
+                    page.modules = new ArrayList<>();
+
+                    for (int moduleIndex = 0; moduleIndex < editorPage.modules.size(); moduleIndex++) {
+                        CodexEditorProject.Module editorModule = editorPage.modules.get(moduleIndex);
+                        CodexModule module = new CodexModule();
+                        module.module_type = editorModule.moduleType;
+                        module.text = editorModule.text;
+                        module.text_key = editorEntry.getTextKey(pageIndex, moduleIndex);
+                        module.recipe_type = editorModule.recipeType;
+                        module.pattern = new ArrayList<>(editorModule.pattern);
+                        module.key = new LinkedHashMap<>(editorModule.key);
+                        module.result = editorModule.result;
+                        module.input = editorModule.input;
+                        module.output = editorModule.output;
+                        module.experience = editorModule.experience;
+                        module.cooking_time = editorModule.cookingTime;
+                        page.modules.add(module);
+                    }
+
+                    entry.right_side.add(page);
+                }
+
+                entries.add(entry);
+                tiers.add(editorEntry.tier);
+                entriesById.put(nextId, entry);
+                idToInt.put(entry.id, nextId);
+                nextId++;
+            }
+
+            cachedCategories.add(new CodexCategory(
+                    category.id,
+                    category.title,
+                    category.icon,
+                    createIconStack(category.icon),
+                    entries,
+                    tiers,
+                    category.order
+            ));
+        }
+    }
+
+    public static List<CodexCategory> getAllCategories() {
+        return List.copyOf(cachedCategories);
     }
 
     public static CodexEntry getEntryByInt(int id) {
@@ -179,29 +233,157 @@ public class CodexDataLoader {
     }
 
     public static Collection<CodexEntry> getAllEntries() {
-        return entriesById.values();
+        return List.copyOf(entriesById.values());
     }
 
-    private static boolean isSupportedCategoryPath(String fullPath) {
-        if (!fullPath.startsWith("codex_entries/")) {
-            return false;
-        }
-
-        String relative = fullPath.substring("codex_entries/".length());
-        String[] split = relative.split("/");
-        if (split.length < 3) {
-            return false;
-        }
-
-        return isSupportedCategoryFolder(split[0]);
+    private static void clear() {
+        entriesById.clear();
+        idToInt.clear();
+        cachedCategories.clear();
     }
 
-    private static boolean isSupportedCategoryFolder(String folderName) {
-        String[] parts = folderName.split("_", 2);
-        if (parts.length < 2 || !parts[1].contains("-")) {
-            return false;
+    private static Map<String, CategoryMetadata> loadCategoryMetadata(ResourceManager resourceManager) {
+        Map<String, CategoryMetadata> metadataByFolder = new HashMap<>();
+        Map<ResourceLocation, Resource> resources = resourceManager.listResources("codex_entries", path -> path.getPath().endsWith("_categories.json"));
+
+        for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
+            try (InputStreamReader reader = new InputStreamReader(entry.getValue().open())) {
+                JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+                JsonArray categories = root.getAsJsonArray("categories");
+                if (categories == null) {
+                    continue;
+                }
+
+                for (JsonElement element : categories) {
+                    if (!element.isJsonObject()) {
+                        continue;
+                    }
+
+                    CategoryMetadata metadata = GSON.fromJson(element, CategoryMetadata.class);
+                    if (metadata == null) {
+                        continue;
+                    }
+
+                    String folder = metadata.folder;
+                    if ((folder == null || folder.isBlank()) && metadata.id != null) {
+                        folder = metadata.id;
+                    }
+                    if (folder == null || folder.isBlank()) {
+                        continue;
+                    }
+
+                    metadataByFolder.put(folder, metadata);
+                }
+            } catch (Exception e) {
+                System.err.println("[Codex] Failed to load category metadata from " + entry.getKey() + ": " + e.getMessage());
+            }
         }
 
-        return CATEGORY_ORDER.contains(parts[0]);
+        return metadataByFolder;
+    }
+
+    private static int parseTier(String tierFolder) {
+        try {
+            return Integer.parseInt(tierFolder.substring(5));
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    private static String resolveCategoryId(String folder, CategoryMetadata metadata) {
+        if (metadata != null && metadata.id != null && !metadata.id.isBlank()) {
+            return metadata.id;
+        }
+
+        int splitIndex = folder.indexOf('_');
+        if (splitIndex > 0) {
+            return folder.substring(0, splitIndex);
+        }
+
+        return folder;
+    }
+
+    private static String resolveCategoryTitle(String folder, CategoryMetadata metadata) {
+        if (metadata != null && metadata.title != null && !metadata.title.isBlank()) {
+            return metadata.title;
+        }
+
+        return humanize(resolveCategoryId(folder, metadata));
+    }
+
+    private static String resolveCategoryIconId(String folder, CategoryMetadata metadata) {
+        if (metadata != null && metadata.icon != null && !metadata.icon.isBlank()) {
+            return metadata.icon;
+        }
+
+        int splitIndex = folder.indexOf('_');
+        if (splitIndex > 0 && splitIndex + 1 < folder.length()) {
+            String rawIcon = folder.substring(splitIndex + 1);
+            int namespaceSplit = rawIcon.indexOf('-');
+            if (namespaceSplit > 0 && namespaceSplit + 1 < rawIcon.length()) {
+                return rawIcon.substring(0, namespaceSplit) + ":" + rawIcon.substring(namespaceSplit + 1);
+            }
+            return rawIcon;
+        }
+
+        return "minecraft:book";
+    }
+
+    private static int resolveCategoryOrder(String folder, CategoryMetadata metadata) {
+        if (metadata != null && metadata.order != null) {
+            return metadata.order;
+        }
+
+        String categoryId = resolveCategoryId(folder, metadata);
+        int index = LEGACY_CATEGORY_ORDER.indexOf(categoryId);
+        return index >= 0 ? index : Integer.MAX_VALUE;
+    }
+
+    private static ItemStack createIconStack(String iconId) {
+        if (iconId == null || iconId.isBlank()) {
+            return new ItemStack(ModItems.CODEX_ARCANUM.get());
+        }
+
+        ResourceLocation rl = ResourceLocation.tryParse(iconId);
+        if (rl == null) {
+            return new ItemStack(ModItems.CODEX_ARCANUM.get());
+        }
+
+        Item item = BuiltInRegistries.ITEM.get(rl);
+        if (item == null || item == Items.AIR) {
+            return new ItemStack(ModItems.CODEX_ARCANUM.get());
+        }
+
+        return new ItemStack(item);
+    }
+
+    private static String humanize(String id) {
+        if (id == null || id.isBlank()) {
+            return "Category";
+        }
+
+        String normalized = id.replace('_', ' ').trim();
+        StringBuilder builder = new StringBuilder(normalized.length());
+        boolean upper = true;
+        for (char character : normalized.toCharArray()) {
+            if (character == ' ') {
+                upper = true;
+                builder.append(character);
+                continue;
+            }
+
+            builder.append(upper ? Character.toUpperCase(character) : character);
+            upper = false;
+        }
+
+        return builder.toString();
+    }
+
+    private static class CategoryMetadata {
+        private String folder;
+        private String id;
+        private String title;
+        private String icon;
+        private Integer order;
     }
 }

@@ -1,0 +1,22 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "minecraft:bone_meal"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:death_bloom"
+    },
+    {
+      "item": "stellar_sorcery:soul_bloom_seeds"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "count": 5,
+    "item": "stellar_sorcery:bloom_meal"
+  },
+  "time": 80,
+  "time_of_day": "NIGHT"
+}

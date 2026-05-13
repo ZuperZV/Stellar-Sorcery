@@ -1,6 +1,8 @@
 {
   "values": [
     "stellar_sorcery:vital_stump",
-    "stellar_sorcery:stump"
+    "stellar_sorcery:stump",
+    "stellar_sorcery:sylph_ember_campfire",
+    "stellar_sorcery:essence_boiler"
   ]
 }

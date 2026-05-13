@@ -54,7 +54,7 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 1;
+            return 64;
         }
 
         @Override
@@ -256,7 +256,14 @@ public class VitalStumpBlockEntity extends BlockEntity implements WorldlyContain
             for (MatchedItem matched : matchedIngredientSources.values()) {
                 matched.nexus.inventory.extractItem(matched.slot, 1, false);
             }
-            inventory.setStackInSlot(0, altarRecipe.output.copy());
+            ItemStack result = altarRecipe.output.copy();
+
+            int amount = result.getCount();
+            if (amount <= 0) amount = 1;
+
+            result.setCount(amount);
+
+            inventory.setStackInSlot(0, result);
 
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.ASH,

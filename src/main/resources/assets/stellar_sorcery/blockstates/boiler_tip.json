@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=north,on=false": { "model": "stellar_sorcery:block/boiler_tip" },
+    "facing=north,on=true":  { "model": "stellar_sorcery:block/boiler_tip_on" },
+
+    "facing=south,on=false": { "model": "stellar_sorcery:block/boiler_tip", "y": 180 },
+    "facing=south,on=true":  { "model": "stellar_sorcery:block/boiler_tip_on", "y": 180 },
+
+    "facing=east,on=false":  { "model": "stellar_sorcery:block/boiler_tip", "y": 90 },
+    "facing=east,on=true":   { "model": "stellar_sorcery:block/boiler_tip_on", "y": 90 },
+
+    "facing=west,on=false":  { "model": "stellar_sorcery:block/boiler_tip", "y": 270 },
+    "facing=west,on=true":   { "model": "stellar_sorcery:block/boiler_tip_on", "y": 270 },
+
+    "facing=up,on=false":  { "model": "stellar_sorcery:block/boiler_tip", "x": -90 },
+    "facing=up,on=true":   { "model": "stellar_sorcery:block/boiler_tip_on", "x": -90 },
+
+    "facing=down,on=false":  { "model": "stellar_sorcery:block/boiler_tip", "x": 90 },
+    "facing=down,on=true":   { "model": "stellar_sorcery:block/boiler_tip_on", "x": 90 }
+  }
+}

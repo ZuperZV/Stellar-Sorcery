@@ -105,14 +105,23 @@ public class VitalStumpBlock extends BaseEntityBlock {
         if (pLevel.getBlockEntity(pPos) instanceof VitalStumpBlockEntity altar) {
 
             if (altar.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
-                altar.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
+
+                ItemStack toInsert = pStack.copy();
+                toInsert.setCount(1);
+
+                ItemStack remaining = altar.inventory.insertItem(0, toInsert, false);
+
+                if (remaining.isEmpty()) {
+                    pStack.shrink(1);
+                }
+
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
                 return ItemInteractionResult.SUCCESS;
             }
 
             else if (pStack.isEmpty() || !pStack.isEmpty() && !altar.inventory.getStackInSlot(0).isEmpty()) {
-                ItemStack extracted = altar.inventory.extractItem(0, 1, true);
+                int amount = altar.inventory.getStackInSlot(0).getCount();
+                ItemStack extracted = altar.inventory.extractItem(0, amount, true);
 
                 if (!extracted.isEmpty()) {
                     boolean addedToInventory = false;
@@ -124,7 +133,7 @@ public class VitalStumpBlock extends BaseEntityBlock {
                                 && ItemStack.isSameItem(playerStack, extracted)
                                 && playerStack.getCount() < playerStack.getMaxStackSize()) {
 
-                            playerStack.grow(1);
+                            playerStack.grow(amount);
                             addedToInventory = true;
                             break;
                         }
@@ -137,7 +146,7 @@ public class VitalStumpBlock extends BaseEntityBlock {
 
                     if (addedToInventory) {
                         altar.clearContents();
-                        altar.inventory.extractItem(0, 1, false);
+                        altar.inventory.extractItem(0, amount, false);
                         pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 1f);
                     }
                     return ItemInteractionResult.SUCCESS;

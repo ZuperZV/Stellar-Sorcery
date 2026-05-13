@@ -14,10 +14,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -30,10 +32,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -45,6 +50,7 @@ import net.zuperz.stellar_sorcery.block.entity.custom.SoulCandleBlockEntity;
 import net.zuperz.stellar_sorcery.capability.RecipesHelper.SoulCandleCommand;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 import net.zuperz.stellar_sorcery.data.CodexBookmarksData;
+import net.zuperz.stellar_sorcery.data.CodexEditorPersistence;
 import net.zuperz.stellar_sorcery.data.IModPlayerData;
 import net.zuperz.stellar_sorcery.data.SigilDataLoader;
 import net.zuperz.stellar_sorcery.data.ArmAnimationLoader;
@@ -52,6 +58,7 @@ import net.zuperz.stellar_sorcery.effect.ModEffects;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.item.custom.SigilItem;
 import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
+import net.zuperz.stellar_sorcery.network.SyncCodexEditorPacket;
 import net.zuperz.stellar_sorcery.shaders.post.EssenceBottleItemShaderRenderer;
 
 import java.util.ArrayList;
@@ -88,6 +95,30 @@ public class ModEvents {
                 DamageContainer.Reduction.MOB_EFFECTS,
                 -extraDamage
         );
+    }
+
+    @SubscribeEvent
+    public static void onItemTick(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ItemEntity itemEntity)) {return;}
+
+        ItemStack stack = itemEntity.getItem();
+        if (!stack.is(ModBlocks.DEATH_BLOOM.get().asItem())) {return;}
+        if (!itemEntity.isOnFire()) {return;}
+
+        Level level = itemEntity.level();
+        if (level.isClientSide) {
+            return;
+        }
+
+        Level world = event.getEntity().getCommandSenderWorld();
+        BlockPos pos = BlockPos.containing(itemEntity.position());
+        BlockState state = world.getBlockState(pos);
+
+        if (state.getBlock() instanceof BaseFireBlock
+                && state.getBlock() != ModBlocks.SYLPH_EMBER.get()) {
+
+            world.setBlockAndUpdate(pos, ModBlocks.SYLPH_EMBER.get().defaultBlockState());
+        }
     }
 
     @SubscribeEvent
@@ -133,6 +164,15 @@ public class ModEvents {
             ArrayList<String> bookmarks = data.stellarSorceryGetBookmarks();
             PacketDistributor.sendToPlayer(player, new SyncBookmarksPacket(bookmarks));
         }
+
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        String json = CodexEditorPersistence.toJson(CodexEditorPersistence.fromCurrentData());
+        event.getRelevantPlayers().forEach(player ->
+                PacketDistributor.sendToPlayer(player, new SyncCodexEditorPacket(json, "", false))
+        );
     }
 
     @SubscribeEvent
@@ -210,6 +250,19 @@ public class ModEvents {
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
                 return;
+            }
+        }
+
+        if ((state.getBlock() instanceof BaseFireBlock) && !state.is(ModBlocks.SYLPH_EMBER.get()) && event.getItemStack().is(ModBlocks.DEATH_BLOOM.get().asItem())) {
+            if (!world.isClientSide) {
+                ItemStack itemStack = event.getItemStack();
+                itemStack.hurtAndBreak(1, player,
+                        LivingEntity.getSlotForHand(event.getHand()));
+
+                world.setBlockAndUpdate(pos, ModBlocks.SYLPH_EMBER.get().defaultBlockState());
+
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
             }
         }
 

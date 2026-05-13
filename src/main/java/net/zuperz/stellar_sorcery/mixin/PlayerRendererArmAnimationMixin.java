@@ -180,10 +180,10 @@ public abstract class PlayerRendererArmAnimationMixin {
         if (arm == null) return;
 
         Map<String, ModelPart> children = ((ModelPartAccessor)(Object)arm).stellar_sorcery$getChildren();
-        System.out.println("testing for fakeSleeve i children: " + children);
+        //System.out.println("testing for fakeSleeve i children: " + children);
         ModelPart fakeSleeve = children.get("stellar_sleeve");
         if (fakeSleeve == null) {
-            System.out.println("NEJJ");
+            //System.out.println("NEJJ");
             return;
         }
 

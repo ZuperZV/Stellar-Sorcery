@@ -277,6 +277,28 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         // Stump
 
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModBlocks.DEATH_BLOOM.get().asItem()),
+                        Ingredient.of(Blocks.SUNFLOWER),
+                        Ingredient.of(ModItems.SHADOW_CLAY_JAR),
+                        Ingredient.of(ModItems.ROOT),
+                        Ingredient.of(Items.SUGAR_CANE),
+                        Ingredient.of(Items.POISONOUS_POTATO)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(80)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.BLOOM_MEAL.get(), 5),
+                        Ingredient.of(Items.BONE_MEAL),
+                        Ingredient.of(ModBlocks.DEATH_BLOOM),
+                        Ingredient.of(ModItems.SOUL_BLOOM_SEEDS)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(80)
+                .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
+                .save(pWriter);
+
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get()),
                         Ingredient.of(Items.WHEAT_SEEDS),
                         Ingredient.of(ModBlocks.RED_CAMPION.asItem()),
@@ -287,7 +309,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .needsBlock(false)
                 .blockOutput(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
                 .timeOfDay(TimeOfDay.DAY)
-                .recipeTime(80)
+                .recipeTime(100)
                 .unlockedBy("has_wheat_seeds", has(Items.WHEAT_SEEDS))
                 .save(pWriter);
 

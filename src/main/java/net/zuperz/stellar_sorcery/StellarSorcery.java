@@ -10,8 +10,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.FoliageColor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
@@ -42,6 +44,9 @@ import net.zuperz.stellar_sorcery.network.SyncBookmarksPacket;
 import net.zuperz.stellar_sorcery.network.GazeCastPacket;
 import net.zuperz.stellar_sorcery.network.GazeCastRequestPacket;
 import net.zuperz.stellar_sorcery.network.ArmAnimationPacket;
+import net.zuperz.stellar_sorcery.network.RequestCodexEditorPacket;
+import net.zuperz.stellar_sorcery.network.SaveCodexEditorPacket;
+import net.zuperz.stellar_sorcery.network.SyncCodexEditorPacket;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
@@ -60,6 +65,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
+
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
 @Mod(StellarSorcery.MOD_ID)
 public class StellarSorcery
@@ -98,6 +107,17 @@ public class StellarSorcery
             ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.RED_CAMPION.getId(), ModBlocks.POTTED_RED_CAMPION);
             ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.CALENDULA.getId(), ModBlocks.POTTED_CALENDULA);
             ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.NIGELLA_DAMASCENA.getId(), ModBlocks.POTTED_NIGELLA_DAMASCENA);
+
+            try {
+                Field validBlocksField = BlockEntityType.class.getDeclaredField("validBlocks");
+                validBlocksField.setAccessible(true);
+                @SuppressWarnings("unchecked")
+                Set<Block> validBlocks = new HashSet<>((Set<Block>) validBlocksField.get(BlockEntityType.CAMPFIRE));
+                validBlocks.add(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
+                validBlocksField.set(BlockEntityType.CAMPFIRE, validBlocks);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to modify CAMPFIRE valid blocks", e);
+            }
         });
 
         ModFluids.registerFluidInteractions();
@@ -304,6 +324,21 @@ public class StellarSorcery
                 GazeCastRequestPacket.TYPE,
                 GazeCastRequestPacket.STREAM_CODEC,
                 GazeCastRequestPacket::handle
+        );
+        registrar.playToServer(
+                RequestCodexEditorPacket.TYPE,
+                RequestCodexEditorPacket.STREAM_CODEC,
+                RequestCodexEditorPacket::handle
+        );
+        registrar.playToServer(
+                SaveCodexEditorPacket.TYPE,
+                SaveCodexEditorPacket.STREAM_CODEC,
+                SaveCodexEditorPacket::handle
+        );
+        registrar.playToClient(
+                SyncCodexEditorPacket.TYPE,
+                SyncCodexEditorPacket.STREAM_CODEC,
+                SyncCodexEditorPacket::handle
         );
 
         LOGGER.info("[StellarSorcery] Network channel registered for BookmarkPacket!");

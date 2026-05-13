@@ -1,10 +1,11 @@
-// 1.21	2026-03-21T13:54:02.0458016	Tags for minecraft:block mod id stellar_sorcery
+// 1.21	2026-05-13T21:20:34.1352317	Tags for minecraft:block mod id stellar_sorcery
+d8b01ec53d517c8652f943c2809bfa0ff8d1b90d data/minecraft/tags/block/campfires.json
 8e93bb84813a717f59ed29635197e7eaa4803849 data/minecraft/tags/block/crops.json
 9540b664c31bd76dba2d8682c9375d7651490aae data/minecraft/tags/block/flowers.json
 7d3ab907c6315215204c098e7a9ce98590366ea7 data/minecraft/tags/block/flower_pots.json
-153402a89b3c05ce5bcc164d893f275dcbd29a16 data/minecraft/tags/block/mineable/axe.json
-c531dabbc7b80fd496f67daefe62b7f2f0ce63de data/minecraft/tags/block/mineable/pickaxe.json
-c531dabbc7b80fd496f67daefe62b7f2f0ce63de data/minecraft/tags/block/needs_iron_tool.json
+e339718ded59d9fa74c4b967473fd6c080196cfb data/minecraft/tags/block/mineable/axe.json
+343344fde6c1027f6dd70c5a10515672149a7a71 data/minecraft/tags/block/mineable/pickaxe.json
+343344fde6c1027f6dd70c5a10515672149a7a71 data/minecraft/tags/block/needs_iron_tool.json
 24f8329774d94f73ca723bc5d9ef6127e5a872a3 data/minecraft/tags/block/needs_stone_tool.json
 ecdf48200e2d03adee5e727dce85826c9a5809dd data/stellar_sorcery/tags/block/chalk_blocks.json
-9540b664c31bd76dba2d8682c9375d7651490aae data/stellar_sorcery/tags/block/steller_sorcery_flowers_blocks.json
+11b2540709b11b6cf6b053bef3c9ff52fee5eba5 data/stellar_sorcery/tags/block/steller_sorcery_flowers_blocks.json

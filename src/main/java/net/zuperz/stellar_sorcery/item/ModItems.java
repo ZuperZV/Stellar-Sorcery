@@ -127,6 +127,9 @@ public class ModItems {
             () -> new RitualDaggerItem(ModToolTiers.RITUAL,
                     new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.RITUAL, 3, -2.4f))));
 
+    public static final DeferredItem<Item> BLOOM_MEAL = ITEMS.register("bloom_meal",
+            () -> new BloomMealItem(new Item.Properties().stacksTo(16)));
+
     public static final DeferredItem<Item> BLOOD_VIAL = ITEMS.register("blood_vial",
             () -> new BloodVialItem(new Item.Properties().stacksTo(1)));
 

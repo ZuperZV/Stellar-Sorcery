@@ -50,6 +50,7 @@ import net.zuperz.stellar_sorcery.data.*;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.mixin.AdvancementTabMixin;
 import net.zuperz.stellar_sorcery.mixin.AdvancementsScreenMixin;
+import net.zuperz.stellar_sorcery.network.RequestCodexEditorPacket;
 import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import net.zuperz.stellar_sorcery.screen.Helpers.BackPageButton;
 import net.zuperz.stellar_sorcery.screen.Helpers.BookmarkButton;
@@ -78,8 +79,9 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     private PageButton forwardButton;
     private PageButton backWardButton;
     private BackPageButton backButton;
+    private Button editButton;
     private final boolean playTurnSound;
-    private List<CodexEntry> entryList = List.of();
+    public List<CodexEntry> entryList = List.of();
     private ItemStack hoveredStack = ItemStack.EMPTY;
     private final List<ClickableItemRegion> clickableItemRegions = new ArrayList<>();
     private final List<TextLinkRegion> textLinkRegions = new ArrayList<>();
@@ -240,6 +242,14 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     protected void createMenuControls() {
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).bounds(this.width / 2 - 100, (height - imageHeight) / 2 + 194, 200, 20).build());
+
+        if (canEditCodex()) {
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
+            this.editButton = this.addRenderableWidget(Button.builder(Component.literal("Edit"), button -> {
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new RequestCodexEditorPacket());
+            }).bounds(x + imageWidth - 52 - 20, y + imageHeight + 4 + 34, 48, 20).build());
+        }
     }
 
     protected void createPageControlButtons() {
@@ -428,7 +438,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             }
 
             if ("recipe".equals(module.module_type) || "furnace_recipe".equals(module.module_type)) {
-                drawY += getRecipeModuleHeight(module);
+                drawY += getRecipeModuleHeight(module, areaW - 4);
                 continue;
             }
 
@@ -639,7 +649,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             guiGraphics.renderItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2);
             registerClickableItem(cat.icon, areaX + ITEM_PADDING, drawY + (SLOT_HEIGHT - ITEM_SIZE) / 2, ITEM_SIZE, ITEM_SIZE);
 
-            Component message = Component.translatable("codex_arcanum.stellar_sorcery." + cat.id);
+            Component message = Component.literal(cat.getDisplayTitle());
 
             guiGraphics.drawString(font, message, areaX + ITEM_SIZE + ITEM_PADDING * 2, drawY + (SLOT_HEIGHT - 8) / 2, 0xFFFFFF);
 
@@ -933,15 +943,26 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             Rect2i rect = layout.getRectWithBorder();
             int layoutWidth = rect.getWidth();
             int layoutHeight = rect.getHeight();
-            int layoutX = layoutWidth < areaW ? drawX + (areaW - layoutWidth) / 2 : drawX;
+            int maxLayoutWidth = Math.max(1, areaW - 4);
+            float layoutScale = Math.min(1.0f, (float) maxLayoutWidth / (float) layoutWidth);
+            int scaledLayoutWidth = Math.max(1, Mth.ceil(layoutWidth * layoutScale));
+            int scaledLayoutHeight = Math.max(1, Mth.ceil(layoutHeight * layoutScale));
+            int layoutX = drawX + Math.max(0, (maxLayoutWidth - scaledLayoutWidth) / 2);
             int layoutY = drawY;
+            int scaledMouseX = Mth.floor(toUnscaledCoordinate(mouseX, layoutX, layoutScale));
+            int scaledMouseY = Mth.floor(toUnscaledCoordinate(mouseY, layoutY, layoutScale));
 
             layout.setPosition(layoutX, layoutY);
-            renderedJeiLayouts.add(new RenderedJeiLayout(layout, layoutX, layoutY));
+            renderedJeiLayouts.add(new RenderedJeiLayout(layout, layoutX, layoutY, layoutScale));
             layout.tick();
-            layout.drawRecipe(guiGraphics, mouseX, mouseY);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(layoutX, layoutY, 0);
+            guiGraphics.pose().scale(layoutScale, layoutScale, 1.0f);
+            guiGraphics.pose().translate(-layoutX, -layoutY, 0);
+            layout.drawRecipe(guiGraphics, scaledMouseX, scaledMouseY);
+            guiGraphics.pose().popPose();
 
-            return drawY + layoutHeight + 6;
+            return drawY + scaledLayoutHeight + 6;
         }
 
         if (isFurnace) {
@@ -1004,11 +1025,14 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         return drawY + slotSize * 3 + 25;
     }
 
-    private int getRecipeModuleHeight(CodexModule module) {
+    private int getRecipeModuleHeight(CodexModule module, int maxWidth) {
         int titleHeight = 12;
         Optional<IRecipeLayoutDrawable<?>> jeiLayout = getJeiLayoutForModule(module);
         if (jeiLayout.isPresent()) {
-            int layoutHeight = jeiLayout.get().getRectWithBorder().getHeight();
+            Rect2i rect = jeiLayout.get().getRectWithBorder();
+            int layoutWidth = Math.max(1, rect.getWidth());
+            float layoutScale = Math.min(1.0f, (float) Math.max(1, maxWidth) / (float) layoutWidth);
+            int layoutHeight = Mth.ceil(rect.getHeight() * layoutScale);
             return titleHeight + layoutHeight + 6;
         }
 
@@ -1106,7 +1130,14 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, Z_TOOLTIP);
         for (RenderedJeiLayout rendered : renderedJeiLayouts) {
-            rendered.layout.drawOverlays(guiGraphics, mouseX, mouseY);
+            int scaledMouseX = Mth.floor(toUnscaledCoordinate(mouseX, rendered.x, rendered.scale));
+            int scaledMouseY = Mth.floor(toUnscaledCoordinate(mouseY, rendered.y, rendered.scale));
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(rendered.x, rendered.y, 0);
+            guiGraphics.pose().scale(rendered.scale, rendered.scale, 1.0f);
+            guiGraphics.pose().translate(-rendered.x, -rendered.y, 0);
+            rendered.layout.drawOverlays(guiGraphics, scaledMouseX, scaledMouseY);
+            guiGraphics.pose().popPose();
         }
         guiGraphics.pose().popPose();
     }
@@ -1203,8 +1234,10 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
         for (int i = renderedJeiLayouts.size() - 1; i >= 0; i--) {
             RenderedJeiLayout rendered = renderedJeiLayouts.get(i);
+            double scaledMouseX = toUnscaledCoordinate(mouseX, rendered.x, rendered.scale);
+            double scaledMouseY = toUnscaledCoordinate(mouseY, rendered.y, rendered.scale);
             Optional<mezz.jei.api.gui.inputs.RecipeSlotUnderMouse> slotUnderMouse =
-                    rendered.layout.getSlotUnderMouse(mouseX, mouseY);
+                    rendered.layout.getSlotUnderMouse(scaledMouseX, scaledMouseY);
             if (slotUnderMouse.isEmpty()) continue;
 
             var slot = slotUnderMouse.get().slot();
@@ -1212,7 +1245,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             if (displayed.isEmpty()) continue;
 
             Rect2i rect = slot.getAreaIncludingBackground();
-            Rect2i area = new Rect2i(rendered.x + rect.getX(), rendered.y + rect.getY(), rect.getWidth(), rect.getHeight());
+            int scaledX = rendered.x + Mth.floor(rect.getX() * rendered.scale);
+            int scaledY = rendered.y + Mth.floor(rect.getY() * rendered.scale);
+            int scaledWidth = Math.max(1, Mth.ceil(rect.getWidth() * rendered.scale));
+            int scaledHeight = Math.max(1, Mth.ceil(rect.getHeight() * rendered.scale));
+            Rect2i area = new Rect2i(scaledX, scaledY, scaledWidth, scaledHeight);
             return createClickableIngredient(runtime, displayed.get(), area);
         }
 
@@ -1230,6 +1267,13 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         }
 
         return Optional.empty();
+    }
+
+    private double toUnscaledCoordinate(double mouseCoordinate, int origin, float scale) {
+        if (scale == 0.0f || scale == 1.0f) {
+            return mouseCoordinate;
+        }
+        return origin + ((mouseCoordinate - origin) / scale);
     }
 
     @Override
@@ -1873,11 +1917,11 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     private Component getEntryTitleComponent(CodexEntry entry) {
         if (entry == null) return Component.empty();
-        if (entry.title_key != null && !entry.title_key.isBlank()) {
-            return Component.translatable(entry.title_key);
-        }
         if (entry.title != null && !entry.title.isBlank()) {
             return Component.literal(entry.title);
+        }
+        if (entry.title_key != null && !entry.title_key.isBlank()) {
+            return Component.translatable(entry.title_key);
         }
         return Component.empty();
     }
@@ -1888,10 +1932,19 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     private String getModuleText(CodexModule module) {
         if (module == null) return "";
+        if (module.text != null && !module.text.isBlank()) {
+            return module.text;
+        }
         if (module.text_key != null && !module.text_key.isBlank()) {
             return Component.translatable(module.text_key).getString();
         }
-        return module.text != null ? module.text : "";
+        return "";
+    }
+
+    private boolean canEditCodex() {
+        return this.minecraft != null
+                && this.minecraft.player != null
+                && this.minecraft.player.hasPermissions(2);
     }
 
     private int getPlayerTier() {
@@ -2025,11 +2078,13 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
         private final IRecipeLayoutDrawable<?> layout;
         private final int x;
         private final int y;
+        private final float scale;
 
-        private RenderedJeiLayout(IRecipeLayoutDrawable<?> layout, int x, int y) {
+        private RenderedJeiLayout(IRecipeLayoutDrawable<?> layout, int x, int y, float scale) {
             this.layout = layout;
             this.x = x;
             this.y = y;
+            this.scale = scale;
         }
     }
 

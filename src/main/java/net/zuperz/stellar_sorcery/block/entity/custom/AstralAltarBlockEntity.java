@@ -58,7 +58,7 @@ public class AstralAltarBlockEntity extends BlockEntity implements WorldlyContai
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 1;
+            return 64;
         }
 
         @Override

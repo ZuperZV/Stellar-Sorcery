@@ -29,6 +29,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.SOUL_BLOOMS.get());
         basicItem(ModItems.SOUL_BLOOM_SEEDS.get());
 
+        basicItem(ModItems.BLOOM_MEAL.get());
+        basicItem(ModBlocks.SYLPH_EMBER_CAMPFIRE.get().asItem());
+
         basicItem(ModItems.ROOT.get());
         basicItem(ModItems.EMPTY_ESSENCE_BOTTLE.get());
         basicItem(ModItems.EMPTY_ESSENCE_AMULET.get());

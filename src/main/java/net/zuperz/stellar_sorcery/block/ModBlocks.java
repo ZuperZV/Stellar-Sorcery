@@ -59,6 +59,10 @@ public class ModBlocks {
             () -> new EssenceBoilerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAMPFIRE).requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.DEEPSLATE_TILES).noOcclusion().lightLevel(litBlockEmission(15)).ignitedByLava()));
 
+    public static final DeferredBlock<Block> BOILER_TIP = registerBlock("boiler_tip",
+            () -> new BoilerTipBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F, 6.0F)
+                    .sound(SoundType.DEEPSLATE_TILES).noOcclusion()));
+
     public static final DeferredBlock<Block> ARCFORGE = registerBlock("arcforge",
             () -> new ArcForgeBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(5.0F, 6.0F)
                     .sound(SoundType.TUFF_BRICKS).noOcclusion()));
@@ -94,6 +98,9 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> SYLPH_EMBER = registerBlock("sylph_ember",
             () -> new SylphEmberBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE).mapColor(MapColor.COLOR_PURPLE)));
+
+    public static final DeferredBlock<Block> SYLPH_EMBER_CAMPFIRE = registerBlock("sylph_ember_campfire",
+            () -> new CampfireBlock(true, 2, BlockBehaviour.Properties.ofFullCopy(Blocks.CAMPFIRE).mapColor(MapColor.COLOR_PURPLE)));
 
     public static final DeferredBlock<Block> BUDDING_MOONSHINE = registerBlock("budding_moonshine",
             () -> new MoonshineBuddingBlock(
