@@ -3,6 +3,7 @@ package net.zuperz.stellar_sorcery.block.custom;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -43,9 +45,15 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
+import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
+import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
+import net.zuperz.stellar_sorcery.fluid.PotionFluidHelper;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.particle.ColorBubbleData;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 import static net.minecraft.world.entity.LivingEntity.getSlotForHand;
 
@@ -188,6 +196,61 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
                 pLevel.playSound(null, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
                 return ItemInteractionResult.SUCCESS;
             }
+        } else {
+            PotionContents contents = pStack.get(DataComponents.POTION_CONTENTS);
+
+            FluidStack fluid = PotionFluidHelper.toFluid(contents, PotionFluidHelper.MB_PER_POTION);
+
+            if (pStack.is(Items.GLASS_BOTTLE)) {
+
+                if (!boiler.getFluidTank().isEmpty()) {
+
+                    FluidStack fluidTank = boiler.getFluidTank();
+
+                    PotionContents contentsInBoiler =
+                            PotionFluidHelper.fromFluid(fluidTank);
+
+                    if (contentsInBoiler != PotionContents.EMPTY) {
+
+                        ItemStack bottle = new ItemStack(Items.POTION);
+                        bottle.set(DataComponents.POTION_CONTENTS, contentsInBoiler);
+
+                        boiler.drainFluidTank(PotionFluidHelper.MB_PER_POTION);
+
+                        pStack.shrink(1);
+
+                        ItemEntity drop = new ItemEntity(
+                                pLevel,
+                                pPos.getX() + 0.5,
+                                pPos.getY() + 1.0,
+                                pPos.getZ() + 0.5,
+                                bottle
+                        );
+
+                        pLevel.addFreshEntity(drop);
+
+                        pLevel.playSound(null, pPos,
+                                SoundEvents.BOTTLE_FILL,
+                                SoundSource.BLOCKS, 1f, 1f);
+
+                        return ItemInteractionResult.SUCCESS;
+                    }
+                }
+            } else if (
+                    contents != null && contents != PotionContents.EMPTY && boiler.getFluidTankAmount() < boiler.getFluidTankCapacity() && (boiler.getFluidTank().isEmpty()
+                                    || Objects.equals(boiler.getFluidTank().getOrDefault(ModDataComponentTypes.POTION_CONTENTS, PotionContents.EMPTY),
+                                    fluid.getOrDefault(ModDataComponentTypes.POTION_CONTENTS, PotionContents.EMPTY)))) {
+
+                    boiler.fillFluidTank(fluid);
+
+                    pStack.shrink(1);
+
+                    pLevel.playSound(null, pPos,
+                            SoundEvents.BOTTLE_EMPTY,
+                            SoundSource.BLOCKS, 1f, 1f);
+
+                    return ItemInteractionResult.SUCCESS;
+            }
         }
 
         if (boiler.progress > 0) {
@@ -198,37 +261,42 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
             FluidStack itemFluid = fluidHandler.getFluidInTank(0);
             FluidStack tankFluid = boiler.getFluidTank();
 
-            if (boiler.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
-                int amountToDrain = boiler.getFluidTankCapacity() - boiler.getFluidTankAmount();
-                FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
-                if (!drainedSim.isEmpty()) {
-                    FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
-                    boiler.fillFluidTank(drained);
+            if (!(!tankFluid.isEmpty() && tankFluid.getFluid().getFluidType() == ModFluidTypes.POTION_FLUID_TYPE.get())) {
+                System.out.println("FluidType: " + tankFluid.getFluid().getFluidType());
+                System.out.println("POTION_FLUID_TYPE: " + ModFluidTypes.POTION_FLUID_TYPE.get());
 
-                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return ItemInteractionResult.SUCCESS;
+                if (boiler.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
+                    int amountToDrain = boiler.getFluidTankCapacity() - boiler.getFluidTankAmount();
+                    FluidStack drainedSim = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.SIMULATE);
+                    if (!drainedSim.isEmpty()) {
+                        FluidStack drained = fluidHandler.drain(amountToDrain, IFluidHandler.FluidAction.EXECUTE);
+                        boiler.fillFluidTank(drained);
+
+                        pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                        pLevel.playSound(null, pPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        return ItemInteractionResult.SUCCESS;
+                    }
                 }
-            }
 
-            if (!boiler.getFluidTank().isEmpty()) {
-                int amountAvailable = boiler.getFluidTankAmount();
-                FluidStack fluidToFill = boiler.getFluidTank().copy();
-                fluidToFill.setAmount(amountAvailable);
+                if (!boiler.getFluidTank().isEmpty()) {
+                    int amountAvailable = boiler.getFluidTankAmount();
+                    FluidStack fluidToFill = boiler.getFluidTank().copy();
+                    fluidToFill.setAmount(amountAvailable);
 
-                int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-                if (filledAmount > 0) {
-                    FluidStack fluidFilled = fluidToFill.copy();
-                    fluidFilled.setAmount(filledAmount);
-                    fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
+                    int filledAmount = fluidHandler.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
+                    if (filledAmount > 0) {
+                        FluidStack fluidFilled = fluidToFill.copy();
+                        fluidFilled.setAmount(filledAmount);
+                        fluidHandler.fill(fluidFilled, IFluidHandler.FluidAction.EXECUTE);
 
-                    boiler.drainFluidTank(filledAmount);
+                        boiler.drainFluidTank(filledAmount);
 
-                    pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
-                    pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
-                    boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
-                    return ItemInteractionResult.SUCCESS;
+                        pPlayer.setItemInHand(pHand, fluidHandler.getContainer());
+                        pLevel.playSound(null, pPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        pLevel.playSound(null, pPos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5f, 1f);
+                        boiler.wobble(EssenceBoilerBlockEntity.WobbleStyle.POSITIVE);
+                        return ItemInteractionResult.SUCCESS;
+                    }
                 }
             }
         }
@@ -389,22 +457,31 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
 
                 FluidStack fluidStack = boiler.getFluidTank();
 
-                int color;
+                int color = 0;
 
-                try {
-                    color = IClientFluidTypeExtensions
-                            .of(fluidStack.getFluid())
-                            .getTintColor(
-                                    fluidStack.getFluid().defaultFluidState(),
-                                    level,
-                                    pos
-                            );
-                } catch (Exception ignored) {
-                    return;
-                }
+                if (fluidStack.getFluid().getFluidType() == ModFluidTypes.POTION_FLUID_TYPE.get()) {
+                    PotionContents contents =
+                            fluidStack.getOrDefault(ModDataComponentTypes.POTION_CONTENTS, PotionContents.EMPTY);
 
-                if (color == -1 || color == 0xFFFFFFFF) {
-                    return;
+                    if (contents != PotionContents.EMPTY) {
+                        color = contents.getColor();
+                    }
+                } else {
+                    try {
+                        color = IClientFluidTypeExtensions
+                                .of(fluidStack.getFluid())
+                                .getTintColor(
+                                        fluidStack.getFluid().defaultFluidState(),
+                                        level,
+                                        pos
+                                );
+                    } catch (Exception ignored) {
+                        return;
+                    }
+
+                    if (color == -1 || color == 0xFFFFFFFF) {
+                        return;
+                    }
                 }
 
                 float red = ((color >> 16) & 0xFF) / 255F;

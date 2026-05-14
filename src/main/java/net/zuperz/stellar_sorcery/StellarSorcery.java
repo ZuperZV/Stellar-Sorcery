@@ -28,6 +28,7 @@ import net.zuperz.stellar_sorcery.effect.ModEffects;
 import net.zuperz.stellar_sorcery.fluid.BaseFluidType;
 import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.ModFluids;
+import net.zuperz.stellar_sorcery.fluid.PotionFluidType;
 import net.zuperz.stellar_sorcery.item.ModItemProperties;
 import net.zuperz.stellar_sorcery.item.custom.EssenceAmuletItem;
 import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
@@ -240,6 +241,8 @@ public class StellarSorcery
         public static void onClientExtensions(RegisterClientExtensionsEvent event) {
             event.registerFluidType(((BaseFluidType) ModFluidTypes.NOCTILUME_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
                     ModFluidTypes.NOCTILUME_FLUID_TYPE.get());
+            event.registerFluidType(((PotionFluidType) ModFluidTypes.POTION_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    ModFluidTypes.POTION_FLUID_TYPE.get());
         }
 
         @SubscribeEvent

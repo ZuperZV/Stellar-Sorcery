@@ -33,6 +33,17 @@ public class ModFluidTypes {
                             .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)));
 
+
+    public static final Supplier<FluidType> POTION_FLUID_TYPE = registerFluidType("potion",
+            new PotionFluidType(WATER_STILL_RL, WATER_FLOWING_RL, WATER_OVERLAY_RL,
+                    FluidType.Properties.create()
+                            .temperature(15)
+                            .density(1000)
+                            .viscosity(1000)
+                            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+                            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+            ));
+
     private static Supplier<FluidType> registerFluidType(String name, FluidType fluidType) {
         return FLUID_TYPES.register(name, () -> fluidType);
     }

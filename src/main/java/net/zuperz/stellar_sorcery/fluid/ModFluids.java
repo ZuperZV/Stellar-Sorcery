@@ -44,6 +44,29 @@ public class ModFluids {
             .slopeFindDistance(2).levelDecreasePerBlock(1)
             .block(ModFluids.NOCTILUME_BLOCK).bucket(ModFluids.NOCTILUME_BUCKET);
 
+
+
+
+    public static final Supplier<FlowingFluid> SOURCE_POTION = FLUIDS.register("source_potion",
+            () -> new BaseFlowingFluid.Source(ModFluids.POTION_PROPERTIES));
+    public static final Supplier<FlowingFluid> FLOWING_POTION = FLUIDS.register("flowing_potion",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.POTION_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> POTION_BLOCK = ModBlocks.BLOCKS.register("potion_block",
+            () -> new GlowingLiquidBlock(ModFluids.SOURCE_POTION.get(),
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                            .lightLevel(state -> 12)
+                            .noLootTable()));
+    public static final DeferredItem<Item> POTION_BUCKET = ModItems.ITEMS.registerItem("potion_bucket",
+            properties -> new BucketItem(ModFluids.SOURCE_POTION.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1)));
+
+    public static final BaseFlowingFluid.Properties POTION_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.POTION_FLUID_TYPE, SOURCE_POTION, FLOWING_POTION)
+            .slopeFindDistance(2).levelDecreasePerBlock(1)
+            .block(ModFluids.POTION_BLOCK).bucket(ModFluids.POTION_BUCKET);
+
+
+
     public static void registerFluidInteractions() {
         FluidInteractionRegistry.addInteraction(NeoForgeMod.LAVA_TYPE.value(), new FluidInteractionRegistry.InteractionInformation(
                 SOURCE_NOCTILUME.get().getFluidType(),
@@ -62,6 +85,28 @@ public class ModFluids {
                         return Blocks.ANDESITE.defaultBlockState();
                     } else {
                         return Blocks.GRAVEL.defaultBlockState();
+                    }
+                }));
+
+
+
+        FluidInteractionRegistry.addInteraction(NeoForgeMod.LAVA_TYPE.value(), new FluidInteractionRegistry.InteractionInformation(
+                SOURCE_POTION.get().getFluidType(),
+                fluidState -> {
+                    if (fluidState.isSource()) {
+                        return Blocks.DIORITE.defaultBlockState();
+                    } else {
+                        return Blocks.GRANITE.defaultBlockState();
+                    }
+                }));
+
+        FluidInteractionRegistry.addInteraction(NeoForgeMod.WATER_TYPE.value(), new FluidInteractionRegistry.InteractionInformation(
+                SOURCE_POTION.get().getFluidType(),
+                fluidState -> {
+                    if (fluidState.isSource()) {
+                        return Blocks.DIORITE.defaultBlockState();
+                    } else {
+                        return Blocks.GRANITE.defaultBlockState();
                     }
                 }));
     }

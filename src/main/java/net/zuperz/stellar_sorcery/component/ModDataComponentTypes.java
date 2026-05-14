@@ -2,6 +2,7 @@ package net.zuperz.stellar_sorcery.component;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,6 +46,9 @@ public class ModDataComponentTypes {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpellData>> SPELL_DATA = register("spell_data",
             builder -> builder.persistent(SpellData.CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<PotionContents>> POTION_CONTENTS = register("potion_contents",
+            builder -> builder.persistent(PotionContents.CODEC));
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
