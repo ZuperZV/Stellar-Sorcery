@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -89,8 +90,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     private final Lazy<FluidTank> fluidOptional = Lazy.of(() -> this.fluidTank);
 
-    private float rotation;
-
     public EssenceBoilerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ESSENCE_BOILER_BE.get(), pos, state);
     }
@@ -111,20 +110,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         boolean hasBottle = boiler.inventory.getStackInSlot(SLOT_CONTAINER).is(ModItems.EMPTY_ESSENCE_BOTTLE.get());
         boolean hasWater = boiler.getFluidTankAmount() >= 1000
                 && boiler.getFluidTank().getFluid().isSame(Fluids.WATER);
-
-        if (boiler.progress > 0 && level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(
-                    ParticleTypes.BUBBLE,
-                    pos.getX() + 0.5,
-                    pos.getY() + 1,
-                    pos.getZ() + 0.5,
-                    1,
-                    0.2,
-                    0.2,
-                    0.2,
-                    0.0
-            );
-        }
 
         if (hasAllIngredients && hasBottle && hasWater) {
             boiler.progress++;
@@ -153,7 +138,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
                 boiler.inventory.extractItem(SLOT_INGREDIENT_3, 1, false);
                 boiler.inventory.extractItem(SLOT_CONTAINER, 1, false);
                 boiler.drainFluidTank(1000);
-                boiler.insertOutput(essenceBottle);
+                boiler.popOutItem(essenceBottle);
 
                 boiler.progress = 0;
             }
@@ -238,7 +223,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         inventory.extractItem(essenceBottleSlot, 1, false);
         inventory.extractItem(ghastTearSlot, 1, false);
         inventory.extractItem(emptyAmuletSlot, 1, false);
-        insertOutput(amulet);
+        popOutItem(amulet);
 
         progress = 0;
         setChanged();
@@ -270,6 +255,35 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
             currentOutput.grow(output.getCount());
             inventory.setStackInSlot(SLOT_OUTPUT, currentOutput);
         }
+    }
+
+    private void popOutItem(ItemStack stack) {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+
+        double x = worldPosition.getX() + 0.5;
+        double y = worldPosition.getY() + 1.1;
+        double z = worldPosition.getZ() + 0.5;
+
+        ItemEntity itemEntity = new ItemEntity(level, x, y, z, stack.copy());
+
+        itemEntity.setDeltaMovement(
+                (level.random.nextDouble() - 0.5) * 0.1,
+                0.2,
+                (level.random.nextDouble() - 0.5) * 0.1
+        );
+
+        level.playSound(
+                null,
+                worldPosition,
+                SoundEvents.ITEM_PICKUP,
+                SoundSource.BLOCKS,
+                0.3f,
+                1.0f
+        );
+
+        level.addFreshEntity(itemEntity);
     }
 
     public ItemStackHandler getInputItems() {
@@ -420,14 +434,6 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         if (tag.contains("FluidTank", Tag.TAG_COMPOUND)) {
             this.fluidTank.readFromNBT(registries, tag.getCompound("FluidTank"));
         }
-    }
-
-    public float getRenderingRotation() {
-        rotation += 0.5f;
-        if (rotation >= 360) {
-            rotation = 0;
-        }
-        return rotation;
     }
 
     @Nullable

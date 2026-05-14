@@ -37,12 +37,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
 import net.zuperz.stellar_sorcery.item.ModItems;
+import net.zuperz.stellar_sorcery.particle.ColorBubbleData;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.world.entity.LivingEntity.getSlotForHand;
@@ -381,7 +383,50 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
                     );
                 }
             }
-        }
+
+            if (level.getBlockEntity(pos) instanceof EssenceBoilerBlockEntity boiler
+                    && !boiler.getFluidTank().isEmpty()) {
+
+                FluidStack fluidStack = boiler.getFluidTank();
+
+                int color;
+
+                try {
+                    color = IClientFluidTypeExtensions
+                            .of(fluidStack.getFluid())
+                            .getTintColor(
+                                    fluidStack.getFluid().defaultFluidState(),
+                                    level,
+                                    pos
+                            );
+                } catch (Exception ignored) {
+                    return;
+                }
+
+                if (color == -1 || color == 0xFFFFFFFF) {
+                    return;
+                }
+
+                float red = ((color >> 16) & 0xFF) / 255F;
+                float green = ((color >> 8) & 0xFF) / 255F;
+                float blue = (color & 0xFF) / 255F;
+
+                double spread = 10D / 16D / 2D;
+
+                double offsetX = (random.nextDouble() - 0.5D) * 2D * spread;
+                double offsetZ = (random.nextDouble() - 0.5D) * 2D * spread;
+
+                level.addParticle(
+                        new ColorBubbleData(red, green, blue),
+                        pos.getX() + 0.5 + offsetX,
+                        pos.getY() + 1,
+                        pos.getZ() + 0.5 + offsetZ,
+                        0,
+                        0.02,
+                        0
+                );
+            }
+            }
     }
 
     @Override

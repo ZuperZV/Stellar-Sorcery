@@ -47,6 +47,8 @@ import net.zuperz.stellar_sorcery.network.ArmAnimationPacket;
 import net.zuperz.stellar_sorcery.network.RequestCodexEditorPacket;
 import net.zuperz.stellar_sorcery.network.SaveCodexEditorPacket;
 import net.zuperz.stellar_sorcery.network.SyncCodexEditorPacket;
+import net.zuperz.stellar_sorcery.particle.ColorBubbleParticle;
+import net.zuperz.stellar_sorcery.particle.ModParticleTypes;
 import net.zuperz.stellar_sorcery.potion.ModPotions;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.screen.CodexArcanumScreen;
@@ -99,6 +101,8 @@ public class StellarSorcery
         ModMenuTypes.register(modEventBus);
         ModEffects.register(modEventBus);
 
+        ModParticleTypes.register(modEventBus);
+
         NeoForge.EVENT_BUS.register(this);
     }
 
@@ -140,6 +144,14 @@ public class StellarSorcery
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.CODEX_ARCANUM_MENU.get(), CodexArcanumScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void registerParticles(RegisterParticleProvidersEvent event) {
+            event.registerSpriteSet(
+                    ModParticleTypes.COLOR_BUBBLE.get(),
+                    ColorBubbleParticle.Provider::new
+            );
         }
 
         @SubscribeEvent

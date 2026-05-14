@@ -20,18 +20,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.zuperz.stellar_sorcery.block.entity.custom.ArcForgeBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
-import net.zuperz.stellar_sorcery.component.CelestialData;
-import net.zuperz.stellar_sorcery.component.ModDataComponentTypes;
 
 // Credits to TurtyWurty
 // Under MIT-License: https://github.com/DaRealTurtyWurty/1.20-Tutorial-Mod?tab=MIT-1-ov-file#readme
@@ -69,8 +61,9 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
         ItemStackHandler itemHandler = pBlockEntity.inventory;
 
-        float rotation = pBlockEntity.getRenderingRotation();
-        float radius = 0.4f;
+        float rotationTime = level.getGameTime() + pPartialTick;
+        float rotation = (rotationTime * 4.0f) % 360;
+        float radius = 0.55f;
         int itemCount = Math.min(itemHandler.getSlots(), 3);
 
         for (int i = 0; i < itemCount; i++) {
