@@ -45,6 +45,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("essence_boiler_be", () -> BlockEntityType.Builder.of(
                     EssenceBoilerBlockEntity::new, ModBlocks.ESSENCE_BOILER.get()).build(null));
 
+    public static final Supplier<BlockEntityType<BoilerTipBlockEntity>> BOILER_TIP_BE =
+            BLOCK_ENTITIES.register("boiler_tip_be", () -> BlockEntityType.Builder.of(
+                    BoilerTipBlockEntity::new, ModBlocks.BOILER_TIP.get()).build(null));
+
     public static final Supplier<BlockEntityType<ArcForgeBlockEntity>> ARCFORGE_BE =
             BLOCK_ENTITIES.register("arcforge_be", () -> BlockEntityType.Builder.of(
                     ArcForgeBlockEntity::new, ModBlocks.ARCFORGE.get()).build(null));

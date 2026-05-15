@@ -2,12 +2,14 @@ package net.zuperz.stellar_sorcery.block.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,11 +24,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
+import net.zuperz.stellar_sorcery.block.entity.custom.BoilerTipBlockEntity;
+import net.zuperz.stellar_sorcery.block.entity.custom.EssenceBoilerBlockEntity;
 import net.zuperz.stellar_sorcery.block.entity.custom.ItemEmitterBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class BoilerTipBlock extends Block {
+public class BoilerTipBlock extends Block implements EntityBlock {
     public static final BooleanProperty ON = BooleanProperty.create("on");
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
@@ -60,6 +65,46 @@ public class BoilerTipBlock extends Block {
     public BoilerTipBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ON, false));
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+
+        BlockEntity be = level.getBlockEntity(pos);
+
+        if (!(be instanceof BoilerTipBlockEntity tipBE)) {
+            return InteractionResult.FAIL;
+        }
+
+        tipBE.extractFluid = !tipBE.extractFluid;
+
+        if (!tipBE.extractFluid) {
+            return InteractionResult.SUCCESS;
+        }
+
+        BlockPos checkPos = pos.below();
+
+        while (checkPos.getY() > level.getMinBuildHeight()) {
+
+            BlockState checkState = level.getBlockState(checkPos);
+
+            if (checkState.is(ModBlocks.ESSENCE_BOILER)) {
+                tipBE.targetPosEntity = checkPos;
+                return InteractionResult.SUCCESS;
+            }
+
+            if (!checkState.isAir()) {
+                tipBE.extractFluid = false;
+                return InteractionResult.FAIL;
+            }
+
+            checkPos = checkPos.below();
+        }
+
+        tipBE.extractFluid = false;
+        return InteractionResult.FAIL;
     }
 
     @Override
@@ -130,5 +175,21 @@ public class BoilerTipBlock extends Block {
         }
 
         return buffer[0];
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new BoilerTipBlockEntity(pPos, pState);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+
+        return level.isClientSide ? null : (lvl, pos, st, be) -> {
+            if (be instanceof BoilerTipBlockEntity tip) {
+                BoilerTipBlockEntity.tick(lvl, pos, st, tip);
+            }
+        };
     }
 }

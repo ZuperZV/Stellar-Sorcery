@@ -145,37 +145,19 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         }
 
         else if (boiler.hasRecipe()) {
-
-            System.out.println("[EssenceBoiler] Recipe FOUND");
-            System.out.println("[EssenceBoiler] Progress: " + boiler.progress + "/" + boiler.maxProgress);
-
             boiler.progress++;
 
             if (boiler.progress >= boiler.maxProgress) {
 
-                System.out.println("[EssenceBoiler] Trying to craft...");
-
                 boolean crafted = boiler.craftRecipe();
 
                 if (!crafted) {
-                    System.out.println("[EssenceBoiler] CRAFT FAILED - locking progress");
                     boiler.progress = boiler.maxProgress;
                 } else {
-                    System.out.println("[EssenceBoiler] CRAFT SUCCESS");
                 }
             }
 
         } else {
-            System.out.println("[EssenceBoiler] NO RECIPE FOUND");
-
-            System.out.println("[EssenceBoiler] --- DEBUG STATE ---");
-            System.out.println("Slot 0: " + boiler.inventory.getStackInSlot(0));
-            System.out.println("Slot 1: " + boiler.inventory.getStackInSlot(1));
-            System.out.println("Slot 2: " + boiler.inventory.getStackInSlot(2));
-
-            System.out.println("Fluid: " + boiler.getFluidTank().getFluid());
-            System.out.println("Fluid amount: " + boiler.getFluidTankAmount());
-
             if (boiler.progress != 0) {
                 boiler.progress = 0;
             }
@@ -500,6 +482,10 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     @Override
     public IFluidHandler getFluidHandler() {
+        return fluidTank;
+    }
+
+    public FluidTank getTank() {
         return fluidTank;
     }
 
