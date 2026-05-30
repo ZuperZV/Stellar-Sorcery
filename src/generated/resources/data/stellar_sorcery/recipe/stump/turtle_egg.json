@@ -1,0 +1,24 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "minecraft:egg"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:extracter_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:shadow_clay_jar"
+    },
+    {
+      "item": "stellar_sorcery:water_clay_jar"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:turtle_egg"
+  },
+  "time": 400,
+  "time_of_day": "NIGHT"
+}

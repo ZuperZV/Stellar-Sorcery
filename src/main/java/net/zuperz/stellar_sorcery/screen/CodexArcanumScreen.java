@@ -172,6 +172,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
     @Override
     protected void init() {
         this.categories = CodexDataLoader.getAllCategories();
+        this.entryList = List.copyOf(CodexDataLoader.getAllEntries());
         this.selectedPage = 0;
 
         this.playerBookmarks.clear();

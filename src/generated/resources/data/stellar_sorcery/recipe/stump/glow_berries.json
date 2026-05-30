@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:sweet_berries"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:sun_clay_jar"
+    },
+    {
+      "item": "minecraft:sunflower"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:glow_berries"
+  },
+  "time": 400,
+  "time_of_day": "DAY"
+}

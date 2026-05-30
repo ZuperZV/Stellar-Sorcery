@@ -25,6 +25,7 @@ import net.zuperz.stellar_sorcery.StellarSorcery;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.custom.FritillariaMeleagrisCropBlock;
 import net.zuperz.stellar_sorcery.block.custom.SoulBloomCropBlock;
+import net.zuperz.stellar_sorcery.block.custom.SunflowerCropBlock;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -41,11 +42,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         makeCrop(((FritillariaMeleagrisCropBlock) ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get()), "fritillaria_meleagris_stage","fritillaria_meleagris_stage");
         makeCrop(((SoulBloomCropBlock) ModBlocks.SOUL_BLOOM_CROP.get()), "soul_bloom_stag","soul_bloom_stag");
+        makeCrop((SunflowerCropBlock) ModBlocks.SUNFLOWER_CROP.get(), "sunflower_stage", "sunflower_stage", true);
 
         flowerWithPot(ModBlocks.RED_CAMPION, ModBlocks.POTTED_RED_CAMPION, "red_campion", "flower_pot_cross");
         flowerWithPot(ModBlocks.CALENDULA, ModBlocks.POTTED_CALENDULA, "calendula", "flower_pot_cross");
         flowerWithPot(ModBlocks.NIGELLA_DAMASCENA, ModBlocks.POTTED_NIGELLA_DAMASCENA, "nigella_damascena", "flower_pot_cross");
 
+        blockWithItem(ModBlocks.NULLITE_BLOCK);
         blockWithItem(ModBlocks.BUDDING_MOONSHINE);
         blockWithItem(ModBlocks.DRIFTSOIL);
 
@@ -108,20 +111,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(deferredBlock.get(), models().cross(BuiltInRegistries.BLOCK.getKey(deferredBlock.get()).getPath(), blockTexture(deferredBlock.get())).renderType("cutout"));
     }
 
-    public void makeCrop(CropBlock block, String modelName, String textureName) {
-        getVariantBuilder(block).forAllStates(state -> {
-            IntegerProperty ageProp = getAgeProperty(state);
-            int age = state.getValue(ageProp);
-
-            return ConfiguredModel.builder()
-                    .modelFile(models().crop(
-                            modelName + age,
-                            modLoc("block/" + textureName + age)
-                    ).renderType("cutout"))
-                    .build();
-        });
-    }
-
     private static IntegerProperty getAgeProperty(BlockState state) {
         return state.getProperties().stream()
                 .filter(p -> p instanceof IntegerProperty ip && p.getName().equals("age"))
@@ -132,6 +121,34 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 );
     }
 
+    public void makeCrop(CropBlock block, String modelName, String textureName, boolean useCross) {
+        getVariantBuilder(block).forAllStates(state -> {
+            IntegerProperty ageProp = getAgeProperty(state);
+            int age = state.getValue(ageProp);
+
+            ModelFile model;
+
+            if (useCross) {
+                model = models().cross(
+                        modelName + age,
+                        modLoc("block/" + textureName + age)
+                ).renderType("cutout");
+            } else {
+                model = models().crop(
+                        modelName + age,
+                        modLoc("block/" + textureName + age)
+                ).renderType("cutout");
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .build();
+        });
+    }
+
+    public void makeCrop(CropBlock block, String modelName, String textureName) {
+        makeCrop(block, modelName, textureName, false);
+    }
 
     private void flowerWithPot(DeferredBlock<Block> flowerBlock, DeferredBlock<Block> pottedBlock, String name, String flowerPotShape) {
         simpleBlock(flowerBlock.get(),

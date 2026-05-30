@@ -91,7 +91,6 @@ public class BoilerTipBlock extends Block implements EntityBlock {
             BlockState checkState = level.getBlockState(checkPos);
 
             if (checkState.is(ModBlocks.ESSENCE_BOILER)) {
-                tipBE.targetPosEntity = checkPos;
                 return InteractionResult.SUCCESS;
             }
 

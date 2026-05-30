@@ -78,6 +78,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> SOUL_BLOOM_CROP = BLOCKS.register("soul_bloom_crop",
             () -> new SoulBloomCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 
+    public static final DeferredBlock<Block> SUNFLOWER_CROP = BLOCKS.register("sunflower_crop",
+            () -> new SunflowerCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SUNFLOWER)));
+
     public static final DeferredBlock<Block> CALENDULA = registerBlock("calendula",
             () -> new FlowerBlock(MobEffects.LUCK, 8, BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)));
     public static final DeferredBlock<Block> POTTED_CALENDULA = BLOCKS.register("potted_calendula",
@@ -127,6 +130,7 @@ public class ModBlocks {
                             .pushReaction(PushReaction.DESTROY)
             )
     );
+
     public static final DeferredBlock<Block> MOONSHINE_LARGE_BUD = registerBlock("moonshine_large_bud",
             () -> new AmethystClusterBlock(
                     5.0F, 3.0F, BlockBehaviour.Properties.ofLegacyCopy(Blocks.AMETHYST_CLUSTER).sound(SoundType.MEDIUM_AMETHYST_BUD).lightLevel(p_152629_ -> 4)

@@ -1,0 +1,18 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "NIGHT",
+  "ingredient": {
+    "item": "minecraft:brown_mushroom"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:extracter_clay_jar"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:warped_fungus"
+  },
+  "time": 300,
+  "time_of_day": "NIGHT"
+}

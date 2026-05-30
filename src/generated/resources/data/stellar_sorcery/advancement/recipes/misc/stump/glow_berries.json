@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sun_clay_jar": {
+      "conditions": {
+        "items": [
+          {
+            "items": "stellar_sorcery:sun_clay_jar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "stellar_sorcery:stump/glow_berries"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sun_clay_jar"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "stellar_sorcery:stump/glow_berries"
+    ]
+  }
+}

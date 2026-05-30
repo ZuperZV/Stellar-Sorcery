@@ -1,0 +1,24 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "tag": "c:seeds"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:sun_clay_jar"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:sugar_cane"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "stellar_sorcery:sunflower_seeds"
+  },
+  "time": 400,
+  "time_of_day": "DAY"
+}

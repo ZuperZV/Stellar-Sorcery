@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -154,6 +155,11 @@ public class DeathBloomBlock extends Block implements BonemealableBlock {
         if (!state.canSurvive(level, pos)) {
             level.destroyBlock(pos, true);
         }
+    }
+
+    @Override
+    public boolean isLadder(BlockState state, LevelReader level, BlockPos pos, LivingEntity entity) {
+        return state.getValue(PLACEMENT_STATE) != SunflowerEnum.GROUND_BOTTOM;
     }
 
     @Override

@@ -5,13 +5,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
 import net.zuperz.stellar_sorcery.block.custom.BoilerTipBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
@@ -26,9 +29,16 @@ public class BoilerTipBlockEntity extends BlockEntity {
         super(ModBlockEntities.BOILER_TIP_BE.get(), pos, state);
     }
 
+    private final FluidTank visualTank = new FluidTank(1000) {
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
+    };
+
+    private final Lazy<FluidTank> fluidOptional = Lazy.of(() -> this.visualTank);
+
     public boolean extractFluid = false;
-    public BlockPos targetPosEntity = null;
-    private FluidStack cachedFluid = FluidStack.EMPTY;
 
     public static void tick(Level level, BlockPos pos, BlockState state, BoilerTipBlockEntity tip) {
 
@@ -41,44 +51,57 @@ public class BoilerTipBlockEntity extends BlockEntity {
 
         BlockEntity sourceBE = level.getBlockEntity(behindPos);
 
-        if (!(sourceBE instanceof EssenceBoilerBlockEntity sourceBoiler)) {
-            tip.setFluidStack(FluidStack.EMPTY);
-            return;
-        }
+        if (sourceBE instanceof EssenceBoilerBlockEntity sourceBoiler) {
 
-        tip.setFluidStack(sourceBoiler.getTank().getFluid().copy());
-        level.sendBlockUpdated(pos, state, state, 3);
+            if (!tip.extractFluid && !powered) return;
 
-        if (!tip.extractFluid && !powered) return;
+            BlockPos targetPos = pos.below();
 
-        BlockPos targetPos = pos.below();
+            while (targetPos.getY() > level.getMinBuildHeight()) {
 
-        while (targetPos.getY() > level.getMinBuildHeight()) {
+                BlockState check = level.getBlockState(targetPos);
 
-            BlockState check = level.getBlockState(targetPos);
+                if (check.is(ModBlocks.ESSENCE_BOILER)) {
 
-            if (check.is(ModBlocks.ESSENCE_BOILER)) {
+                    BlockEntity targetBE = level.getBlockEntity(targetPos);
 
-                BlockEntity targetBE = level.getBlockEntity(targetPos);
+                    if (targetBE instanceof EssenceBoilerBlockEntity targetBoiler) {
 
-                if (targetBE instanceof EssenceBoilerBlockEntity targetBoiler) {
+                        boolean success = transfermb(sourceBoiler, targetBoiler, 5);
 
-                    boolean success = transfermb(sourceBoiler, targetBoiler, 5);
+                        if (!success) {
+                            tip.extractFluid = false;
+                        } else {
 
-                    if (!success) {
-                        tip.extractFluid = false;
+                            tip.fluidOptional.get().setFluid(sourceBoiler.getTank().getFluid().copy());
+                            tip.setChanged();
+
+                            if (level != null) {
+                                level.sendBlockUpdated(pos, state, state, 3);
+                            }
+
+                            level.sendBlockUpdated(
+                                    pos,
+                                    state,
+                                    state,
+                                    3
+                            );
+                        }
+
+                        return;
                     }
+                }
 
+                if (!check.isAir()) {
+                    tip.extractFluid = false;
                     return;
                 }
+
+                targetPos = targetPos.below();
             }
 
-            if (!check.isAir()) {
-                tip.extractFluid = false;
-                return;
-            }
-
-            targetPos = targetPos.below();
+        } else {
+            tip.extractFluid = false;
         }
     }
 
@@ -109,32 +132,46 @@ public class BoilerTipBlockEntity extends BlockEntity {
         return true;
     }
 
+
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
 
-        CompoundTag fluidTag = new CompoundTag();
-        cachedFluid.save(provider, fluidTag);
-
-        tag.put("fluid", fluidTag);
+        CompoundTag tankTag = new CompoundTag();
+        visualTank.writeToNBT(provider, tankTag);
+        tag.put("visualTank", tankTag);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
 
-        if (tag.contains("fluid", Tag.TAG_COMPOUND)) {
-            cachedFluid = FluidStack.parseOptional(provider, tag.getCompound("fluid"));
+        if (tag.contains("visualTank", Tag.TAG_COMPOUND)) {
+            visualTank.readFromNBT(provider, tag.getCompound("visualTank"));
         } else {
-            cachedFluid = FluidStack.EMPTY;
+            visualTank.setFluid(FluidStack.EMPTY);
         }
     }
 
     public FluidStack getFluidStack() {
-        return cachedFluid;
+        return this.visualTank.getFluid();
     }
 
-    private void setFluidStack(FluidStack stack) {
-        this.cachedFluid = stack;
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        saveAdditional(tag, provider);
+        return tag;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        loadAdditional(tag, provider);
     }
 }

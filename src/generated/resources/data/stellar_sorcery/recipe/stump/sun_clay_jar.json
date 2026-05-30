@@ -6,10 +6,10 @@
   },
   "ingredients": [
     {
-      "item": "minecraft:glowstone_dust"
+      "item": "minecraft:lantern"
     },
     {
-      "item": "minecraft:blaze_powder"
+      "item": "minecraft:glow_berries"
     }
   ],
   "needs_block": false,

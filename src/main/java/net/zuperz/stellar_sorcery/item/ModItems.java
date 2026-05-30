@@ -102,6 +102,9 @@ public class ModItems {
     public static final DeferredItem<Item> SOUL_BLOOMS = ITEMS.registerItem("soul_blooms",
             Item::new, new Item.Properties().food(ModFoodProperties.SOUL_BLOOMS));
 
+    public static final DeferredItem<Item> SUNFLOWER_SEEDS = ITEMS.register("sunflower_seeds",
+            () -> new ItemNameBlockItem(ModBlocks.SUNFLOWER_CROP.get(), new Item.Properties()));
+
     public static final DeferredItem<Item> NULLITE_NUGGET = ITEMS.registerItem("nullite_nugget",
             Item::new, new Item.Properties());
 

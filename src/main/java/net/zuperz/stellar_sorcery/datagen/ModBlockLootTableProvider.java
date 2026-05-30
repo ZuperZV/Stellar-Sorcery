@@ -88,6 +88,11 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         this.add(ModBlocks.SOUL_BLOOM_CROP.get(), this.createCropDrops(ModBlocks.SOUL_BLOOM_CROP.get(),
                 ModItems.FRITILLARIA_MELEAGRIS.get(), ModItems.FRITILLARIA_MELEAGRIS_SEEDS.asItem(), soulBloomLootItemConditionBuilder));
 
+        LootItemCondition.Builder sunflowerLootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(ModBlocks.SUNFLOWER_CROP.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SoulBloomCropBlock.AGE, 6));
+        this.add(ModBlocks.SUNFLOWER_CROP.get(), this.createCropDrops(ModBlocks.SUNFLOWER_CROP.get(),
+                Items.SUNFLOWER, ModItems.SUNFLOWER_SEEDS.asItem(), sunflowerLootItemConditionBuilder));
+
         this.dropSelf(ModBlocks.RED_CAMPION.get());
         this.add(ModBlocks.POTTED_RED_CAMPION.get(), createPotFlowerItemTable(ModBlocks.RED_CAMPION));
 

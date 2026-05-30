@@ -80,6 +80,11 @@ public class CodexEditorScreen extends Screen {
     private Button deleteModuleButton;
     private Button moduleTypeButton;
 
+    private String lastCategoryTitle = "";
+    private String lastEntryTitle = "";
+    private boolean categoryIdWasManuallyChanged = false;
+    private boolean entryIdWasManuallyChanged = false;
+
     private EditBox categoryIdBox;
     private EditBox categoryTitleBox;
     private EditBox categoryIconBox;
@@ -105,6 +110,17 @@ public class CodexEditorScreen extends Screen {
     private EditBox furnaceOutputBox;
     private EditBox furnaceExperienceBox;
     private EditBox furnaceTimeBox;
+
+    private Button categoryIconSelectButton;
+
+    private Button entryIconSelectButton;
+    private Button entrySearchSelectButton;
+    private Button entryRelatedSelectButton;
+
+    private Button recipeResultSelectButton;
+
+    private Button furnaceInputSelectButton;
+    private Button furnaceOutputSelectButton;
 
     public CodexEditorScreen(CodexEditorProject project) {
         super(Component.literal("Codex Editor"));
@@ -259,9 +275,19 @@ public class CodexEditorScreen extends Screen {
         int x = OUTER_MARGIN;
         int y = OUTER_MARGIN + TOP_BAR_HEIGHT + 18 + CATEGORY_VISIBLE_ROWS * LIST_ROW_HEIGHT + 36;
 
-        categoryIdBox = addField(new EditBox(font, x, y, LEFT_COLUMN_WIDTH, FIELD_HEIGHT, Component.empty()));
+        categoryIdBox = addField(new EditBox(font, x, y, LEFT_COLUMN_WIDTH - 22, FIELD_HEIGHT, Component.empty()));
         categoryTitleBox = addField(new EditBox(font, x, y + FIELD_ROW_SPACING, LEFT_COLUMN_WIDTH, FIELD_HEIGHT, Component.empty()));
-        categoryIconBox = addField(new EditBox(font, x, y + FIELD_ROW_SPACING * 2, LEFT_COLUMN_WIDTH, FIELD_HEIGHT, Component.empty()));
+        categoryIconBox = addField(new EditBox(font, x, y + FIELD_ROW_SPACING * 2, LEFT_COLUMN_WIDTH - 22, FIELD_HEIGHT, Component.empty()));
+
+        categoryIconSelectButton = addRenderableWidget(
+                Button.builder(Component.literal("..."), button -> {
+                    minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                        if (selectedCategory() != null) {
+                            selectedCategory().icon = itemId;
+                            categoryIconBox.setValue(itemId);
+                        }
+                    }));
+                }).bounds(x + LEFT_COLUMN_WIDTH - 20, y + FIELD_ROW_SPACING * 2, 20, FIELD_HEIGHT).build());
 
         categoryIdBox.setResponder(value -> {
             if (syncingFields || selectedCategory() == null) {
@@ -274,7 +300,24 @@ public class CodexEditorScreen extends Screen {
             if (syncingFields || selectedCategory() == null) {
                 return;
             }
-            selectedCategory().title = value;
+
+            CodexEditorProject.Category category = selectedCategory();
+
+            String oldGeneratedId = generateId(lastCategoryTitle);
+
+            if (category.id.isBlank() || category.id.equals(oldGeneratedId)) {
+                String newId = generateId(value);
+
+                category.id = newId;
+
+                syncingFields = true;
+                categoryIdBox.setValue(newId);
+                syncingFields = false;
+            }
+
+            category.title = value;
+            lastCategoryTitle = value;
+
             refreshCategoryButtons();
         });
         categoryIconBox.setResponder(value -> {
@@ -291,10 +334,44 @@ public class CodexEditorScreen extends Screen {
         entryIdBox = addField(new EditBox(font, rightX, y, rightWidth, FIELD_HEIGHT, Component.empty()));
         entryTitleBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING, rightWidth, FIELD_HEIGHT, Component.empty()));
         entryTypeBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 2, rightWidth, FIELD_HEIGHT, Component.empty()));
-        entryIconBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 3, rightWidth, FIELD_HEIGHT, Component.empty()));
+        entryIconBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 3, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
         entryTierBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 4, rightWidth, FIELD_HEIGHT, Component.empty()));
-        entrySearchBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 5, rightWidth, FIELD_HEIGHT, Component.empty()));
-        entryRelatedBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 6, rightWidth, FIELD_HEIGHT, Component.empty()));
+        entrySearchBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 5, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
+        entryRelatedBox = addField(new EditBox(font, rightX, y + FIELD_ROW_SPACING * 6, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
+
+        // Add item selection buttons for entry fields
+        entryIconSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedEntry() != null) {
+                    selectedEntry().icon = itemId;
+                    entryIconBox.setValue(itemId);
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, y + FIELD_ROW_SPACING * 3, 20, FIELD_HEIGHT).build());
+
+        entrySearchSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedEntry() != null) {
+                    List<String> items = selectedEntry().searchItems;
+                    if (!items.contains(itemId)) {
+                        items.add(itemId);
+                        entrySearchBox.setValue(String.join(", ", items));
+                    }
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, y + FIELD_ROW_SPACING * 5, 20, FIELD_HEIGHT).build());
+
+         entryRelatedSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedEntry() != null) {
+                    List<String> items = selectedEntry().related;
+                    if (!items.contains(itemId)) {
+                        items.add(itemId);
+                        entryRelatedBox.setValue(String.join(", ", items));
+                    }
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, y + FIELD_ROW_SPACING * 6, 20, FIELD_HEIGHT).build());
 
         entryIdBox.setResponder(value -> {
             if (syncingFields || selectedEntry() == null) {
@@ -303,13 +380,32 @@ public class CodexEditorScreen extends Screen {
             selectedEntry().id = value;
             refreshEntryButtons();
         });
+
         entryTitleBox.setResponder(value -> {
             if (syncingFields || selectedEntry() == null) {
                 return;
             }
-            selectedEntry().title = value;
+
+            CodexEditorProject.Entry entry = selectedEntry();
+
+            String oldGeneratedId = generateId(lastEntryTitle);
+
+            if (entry.id.isBlank() || entry.id.equals(oldGeneratedId)) {
+                String newId = generateId(value);
+
+                entry.id = newId;
+
+                syncingFields = true;
+                entryIdBox.setValue(newId);
+                syncingFields = false;
+            }
+
+            entry.title = value;
+            lastEntryTitle = value;
+
             refreshEntryButtons();
         });
+
         entryTypeBox.setResponder(value -> {
             if (syncingFields || selectedEntry() == null) {
                 return;
@@ -340,6 +436,18 @@ public class CodexEditorScreen extends Screen {
             }
             selectedEntry().related = splitCsv(value);
         });
+    }
+
+    private String generateId(String title) {
+        if (title == null) {
+            return "";
+        }
+
+        return title
+                .trim()
+                .toLowerCase()
+                .replaceAll("[^a-z0-9\\s_]", "")
+                .replaceAll("\\s+", "_");
     }
 
     private void initModuleFields(int rightX, int rightWidth) {
@@ -438,16 +546,44 @@ public class CodexEditorScreen extends Screen {
         textModuleBox = addField(new EditBox(font, rightX, fieldTop, rightWidth, FIELD_HEIGHT, Component.empty()));
 
         recipeTypeBox = addField(new EditBox(font, rightX, fieldTop, rightWidth, FIELD_HEIGHT, Component.empty()));
-        recipeResultBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING, rightWidth, FIELD_HEIGHT, Component.empty()));
+        recipeResultBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
         recipePattern1Box = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 2, rightWidth, FIELD_HEIGHT, Component.empty()));
         recipePattern2Box = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 3, rightWidth, FIELD_HEIGHT, Component.empty()));
         recipePattern3Box = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 4, rightWidth, FIELD_HEIGHT, Component.empty()));
         recipeKeysBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 5, rightWidth, FIELD_HEIGHT, Component.empty()));
 
-        furnaceInputBox = addField(new EditBox(font, rightX, fieldTop, rightWidth, FIELD_HEIGHT, Component.empty()));
-        furnaceOutputBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING, rightWidth, FIELD_HEIGHT, Component.empty()));
+        furnaceInputBox = addField(new EditBox(font, rightX, fieldTop, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
+        furnaceOutputBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING, rightWidth - 22, FIELD_HEIGHT, Component.empty()));
         furnaceExperienceBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 2, rightWidth, FIELD_HEIGHT, Component.empty()));
         furnaceTimeBox = addField(new EditBox(font, rightX, fieldTop + FIELD_ROW_SPACING * 3, rightWidth, FIELD_HEIGHT, Component.empty()));
+
+        // Add item selection buttons for recipe and furnace fields
+        recipeResultSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedModule() != null) {
+                    selectedModule().result = itemId;
+                    recipeResultBox.setValue(itemId);
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, fieldTop + FIELD_ROW_SPACING, 20, FIELD_HEIGHT).build());
+
+        furnaceInputSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedModule() != null) {
+                    selectedModule().input = itemId;
+                    furnaceInputBox.setValue(itemId);
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, fieldTop, 20, FIELD_HEIGHT).build());
+
+        furnaceOutputSelectButton = addRenderableWidget(Button.builder(Component.literal("..."), button -> {
+            minecraft.setScreen(new ItemSelectionScreen(this, itemId -> {
+                if (selectedModule() != null) {
+                    selectedModule().output = itemId;
+                    furnaceOutputBox.setValue(itemId);
+                }
+            }));
+        }).bounds(rightX + rightWidth - 20, fieldTop + FIELD_ROW_SPACING, 20, FIELD_HEIGHT).build());
 
         textModuleBox.setResponder(value -> {
             if (syncingFields || selectedModule() == null) {
@@ -653,6 +789,14 @@ public class CodexEditorScreen extends Screen {
         entrySearchBox.setValue(entry != null ? String.join(", ", entry.searchItems) : "");
         entryRelatedBox.setValue(entry != null ? String.join(", ", entry.related) : "");
 
+        if (category != null) {
+            lastCategoryTitle = category.title;
+        }
+
+        if (entry != null) {
+            lastEntryTitle = entry.title;
+        }
+
         CodexEditorProject.Module module = selectedModule();
         textModuleBox.setValue(module != null ? module.text : "");
 
@@ -705,6 +849,27 @@ public class CodexEditorScreen extends Screen {
         moduleTypeButton.visible = moduleTab;
         moduleUpButton.visible = moduleTab;
         moduleDownButton.visible = moduleTab;
+
+        categoryIconSelectButton.visible = categoryIconBox.visible;
+        categoryIconSelectButton.active = categoryIconBox.visible;
+
+        entryIconSelectButton.visible = entryIconBox.visible;
+        entryIconSelectButton.active = entryIconBox.visible;
+
+        entrySearchSelectButton.visible = entrySearchBox.visible;
+        entrySearchSelectButton.active = entrySearchBox.visible;
+
+        entryRelatedSelectButton.visible = entryRelatedBox.visible;
+        entryRelatedSelectButton.active = entryRelatedBox.visible;
+
+        recipeResultSelectButton.visible = recipeResultBox.visible;
+        recipeResultSelectButton.active = recipeResultBox.visible;
+
+        furnaceInputSelectButton.visible = furnaceInputBox.visible;
+        furnaceInputSelectButton.active = furnaceInputBox.visible;
+
+        furnaceOutputSelectButton.visible = furnaceOutputBox.visible;
+        furnaceOutputSelectButton.active = furnaceOutputBox.visible;
 
         for (Button button : moduleButtons) {
             button.visible = moduleTab && button.visible;

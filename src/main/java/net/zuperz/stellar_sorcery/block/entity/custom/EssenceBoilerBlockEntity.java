@@ -527,7 +527,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         Optional<RecipeHolder<EssenceBoilerRecipe>> recipe = getCurrentRecipe();
 
         if (recipe.isEmpty()) {
-            System.out.println("[EssenceBoiler] No recipe in registry! " + level.getRecipeManager().getAllRecipesFor(EssenceBoilerRecipe.Type.INSTANCE).size());
+            //System.out.println("[EssenceBoiler] No recipe in registry! " + level.getRecipeManager().getAllRecipesFor(EssenceBoilerRecipe.Type.INSTANCE).size());
             return false;
         }
 

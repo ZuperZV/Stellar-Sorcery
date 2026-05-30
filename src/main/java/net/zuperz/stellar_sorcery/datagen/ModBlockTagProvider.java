@@ -68,7 +68,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         this.tag(BlockTags.CROPS)
                 .add(ModBlocks.FRITILLARIA_MELEAGRIS_CROP.get())
-                .add(ModBlocks.SOUL_BLOOM_CROP.get());
+                .add(ModBlocks.SOUL_BLOOM_CROP.get())
+                .add(ModBlocks.SUNFLOWER_CROP.get());
 
         this.tag(ModTags.Blocks.STELLER_SORCERY_FLOWERS_BLOCKS)
                 .add(ModBlocks.RED_CAMPION.get())

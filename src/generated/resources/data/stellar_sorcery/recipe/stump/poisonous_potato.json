@@ -1,0 +1,21 @@
+{
+  "type": "stellar_sorcery:stump",
+  "fake_time_of_day": "DAY",
+  "ingredient": {
+    "item": "minecraft:potato"
+  },
+  "ingredients": [
+    {
+      "item": "stellar_sorcery:stone_clay_jar"
+    },
+    {
+      "item": "minecraft:rotten_flesh"
+    }
+  ],
+  "needs_block": false,
+  "output": {
+    "item": "minecraft:poisonous_potato"
+  },
+  "time": 400,
+  "time_of_day": "DAY"
+}

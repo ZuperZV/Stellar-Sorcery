@@ -266,14 +266,20 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_book", has(Items.BOOK))
                 .save(pWriter);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SUNFLOWER_SEEDS, 6)
+                .requires(Items.SUNFLOWER)
+                .requires(Items.SUNFLOWER)
+                .unlockedBy("has_sunflower", has(Items.SUNFLOWER))
+                .save(pWriter);
+
         // Furnaces
 
-        SimpleCookingRecipeBuilder.blasting (Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC , ModItems.CLAY_JAR.get(), 0.20f , 100)
-                .unlockedBy("has_soft_clay_jar",inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()))
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC, ModItems.CLAY_JAR.get(), 0.20f, 100)
+                .unlockedBy("has_soft_clay_jar", inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()))
                 .save(pWriter, ResourceLocation.fromNamespaceAndPath(StellarSorcery.MOD_ID, "clay_jar_from_blasting"));
 
-        SimpleCookingRecipeBuilder.smelting (Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC , ModItems.CLAY_JAR.get(), 0.15f , 200)
-                .unlockedBy("has_soft_clay_jar",inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.SOFT_CLAY_JAR.get()), RecipeCategory.MISC, ModItems.CLAY_JAR.get(), 0.15f, 200)
+                .unlockedBy("has_soft_clay_jar", inventoryTrigger(ItemPredicate.Builder.item().of(ModItems.SOFT_CLAY_JAR.get()).build()));
 
         // Stump
 
@@ -511,8 +517,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SUN_CLAY_JAR.get()),
                         Ingredient.of(ModItems.CLAY_JAR),
-                        Ingredient.of(Items.GLOWSTONE_DUST),
-                        Ingredient.of(Items.BLAZE_POWDER)
+                        Ingredient.of(Items.LANTERN),
+                        Ingredient.of(Items.GLOW_BERRIES)
                 )
                 .timeOfDay(TimeOfDay.DAY)
                 .recipeTime(300)
@@ -553,6 +559,121 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .timeOfDay(TimeOfDay.BOTH)
                 .recipeTime(300)
                 .unlockedBy("has_clay_jar", has(ModItems.CLAY_JAR))
+                .save(pWriter);
+
+
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.GLOW_BERRIES),
+                        Ingredient.of(Items.SWEET_BERRIES),
+                        Ingredient.of(ModItems.SUN_CLAY_JAR),
+                        Ingredient.of(Items.SUNFLOWER)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(400)
+                .unlockedBy("has_sun_clay_jar", has(ModItems.SUN_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.GLOW_INK_SAC),
+                        Ingredient.of(Items.INK_SAC),
+                        Ingredient.of(ModItems.SUN_CLAY_JAR),
+                        Ingredient.of(Items.SUNFLOWER)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(200)
+                .unlockedBy("has_sun_clay_jar", has(ModItems.SUN_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.POISONOUS_POTATO),
+                        Ingredient.of(Items.POTATO),
+                        Ingredient.of(ModItems.STONE_CLAY_JAR),
+                        Ingredient.of(Items.ROTTEN_FLESH)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(400)
+                .unlockedBy("has_sun_clay_jar", has(ModItems.SUN_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.SUNFLOWER_SEEDS.get()),
+                        Ingredient.of(Tags.Items.SEEDS),
+                        Ingredient.of(ModItems.SUN_CLAY_JAR),
+                        Ingredient.of(Items.BONE_MEAL),
+                        Ingredient.of(Items.SUGAR_CANE)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(400)
+                .unlockedBy("has_sun_clay_jar", has(ModItems.SUN_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.POTATO),
+                        Ingredient.of(Tags.Items.SEEDS),
+                        Ingredient.of(ModItems.STONE_CLAY_JAR),
+                        Ingredient.of(Items.BONE_MEAL),
+                        Ingredient.of(ModItems.FRITILLARIA_MELEAGRIS)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(400)
+                .unlockedBy("has_stone_clay_jar", has(ModItems.STONE_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.CARROT),
+                        Ingredient.of(Tags.Items.SEEDS),
+                        Ingredient.of(ModItems.WATER_CLAY_JAR),
+                        Ingredient.of(Items.BONE_MEAL),
+                        Ingredient.of(ModItems.ROOT)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(400)
+                .unlockedBy("has_water_clay_jar", has(ModItems.WATER_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.CRIMSON_FUNGUS),
+                        Ingredient.of(Items.RED_MUSHROOM),
+                        Ingredient.of(ModItems.EXTRACTER_CLAY_JAR)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(300)
+                .unlockedBy("has_red_mushroom", has(Items.RED_MUSHROOM))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.WARPED_FUNGUS),
+                        Ingredient.of(Items.BROWN_MUSHROOM),
+                        Ingredient.of(ModItems.EXTRACTER_CLAY_JAR)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(300)
+                .unlockedBy("has_red_mushroom", has(Items.RED_MUSHROOM))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.TURTLE_EGG),
+                        Ingredient.of(Items.EGG),
+                        Ingredient.of(ModItems.EXTRACTER_CLAY_JAR),
+                        Ingredient.of(ModItems.SHADOW_CLAY_JAR),
+                        Ingredient.of(ModItems.WATER_CLAY_JAR)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(400)
+                .unlockedBy("has_extracter_clay_jar", has(ModItems.EXTRACTER_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.SNIFFER_EGG),
+                        Ingredient.of(Items.TURTLE_EGG),
+                        Ingredient.of(ModItems.EXTRACTER_CLAY_JAR),
+                        Ingredient.of(ModItems.SHADOW_CLAY_JAR),
+                        Ingredient.of(ModItems.STONE_CLAY_JAR)
+                )
+                .timeOfDay(TimeOfDay.NIGHT)
+                .recipeTime(400)
+                .unlockedBy("has_extracter_clay_jar", has(ModItems.EXTRACTER_CLAY_JAR))
+                .save(pWriter);
+
+        StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(Items.LEATHER, 2),
+                        Ingredient.of(Items.ROTTEN_FLESH),
+                        Ingredient.of(ModItems.FIRE_CLAY_JAR),
+                        Ingredient.of(ModItems.STONE_CLAY_JAR)
+                )
+                .timeOfDay(TimeOfDay.DAY)
+                .recipeTime(300)
+                .unlockedBy("has_sun_clay_jar", has(ModItems.SUN_CLAY_JAR))
                 .save(pWriter);
 
         StumpRecipeBuilder.stump(RecipeCategory.MISC, new ItemStack(ModItems.FRITILLARIA_MELEAGRIS.get()),

@@ -1,6 +1,6 @@
-// 1.21	2026-05-13T21:20:34.1352317	Tags for minecraft:block mod id stellar_sorcery
+// 1.21	2026-05-30T00:30:31.1994	Tags for minecraft:block mod id stellar_sorcery
 d8b01ec53d517c8652f943c2809bfa0ff8d1b90d data/minecraft/tags/block/campfires.json
-8e93bb84813a717f59ed29635197e7eaa4803849 data/minecraft/tags/block/crops.json
+174c86764a7393d4bf77dbdd839a6f97bf2ff66a data/minecraft/tags/block/crops.json
 9540b664c31bd76dba2d8682c9375d7651490aae data/minecraft/tags/block/flowers.json
 7d3ab907c6315215204c098e7a9ce98590366ea7 data/minecraft/tags/block/flower_pots.json
 e339718ded59d9fa74c4b967473fd6c080196cfb data/minecraft/tags/block/mineable/axe.json

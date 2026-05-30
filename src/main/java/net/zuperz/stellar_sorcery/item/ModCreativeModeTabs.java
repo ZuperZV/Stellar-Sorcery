@@ -123,6 +123,8 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
                         pOutput.accept(ModBlocks.SYLPH_EMBER.get());
                         pOutput.accept(ModBlocks.DEATH_BLOOM.get());
+                        pOutput.accept(ModItems.SUNFLOWER_SEEDS.get());
+                        pOutput.accept(Items.SUNFLOWER);
                         pOutput.accept(ModItems.BLOOM_MEAL.get());
 
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());

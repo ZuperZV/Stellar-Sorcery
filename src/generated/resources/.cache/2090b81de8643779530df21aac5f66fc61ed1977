@@ -1,4 +1,4 @@
-// 1.21	2026-05-13T20:10:54.3102661	Item Models: stellar_sorcery
+// 1.21	2026-05-30T00:30:31.2036198	Item Models: stellar_sorcery
 9b17885bbaa7bb2a6b9daa85ef341c3f2144b7d0 assets/stellar_sorcery/models/item/bloom_meal.json
 98992f798884b8eaacdf265728eabae0b8e1da38 assets/stellar_sorcery/models/item/bluestone_dust.json
 4dd229dc3960bf0c34e0aad024a28dfa81966f88 assets/stellar_sorcery/models/item/calendula.json
@@ -31,6 +31,7 @@ e28166434fc7aeec65167091d9df755aa8638a61 assets/stellar_sorcery/models/item/smar
 57d6a45233d04fb8bd415c9922240c193e98b152 assets/stellar_sorcery/models/item/soul_bloom_seeds.json
 91d45bbb857ba0e3c44fd8c83a4b0d6788607134 assets/stellar_sorcery/models/item/stone_clay_jar.json
 81860b9b1892cd4b773c95d9ff732eea3151d4aa assets/stellar_sorcery/models/item/storm_clay_jar.json
+3b01c1ba7cd84ca853b077b7a036a211c19f3562 assets/stellar_sorcery/models/item/sunflower_seeds.json
 7d30d796ad3e297db33065fe72a47d6f3b467c4d assets/stellar_sorcery/models/item/sun_clay_jar.json
 fe36306809f699cc0eb566f1283ecbd6681e1739 assets/stellar_sorcery/models/item/sylph_ember_campfire.json
 4b3d0ccb0bc701608aa1bb75593ab21d550233b5 assets/stellar_sorcery/models/item/twig_clay_jar.json

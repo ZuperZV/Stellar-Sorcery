@@ -229,12 +229,6 @@ public class EssenceAmuletItem extends Item {
                                 .append(Component.translatable("potion.potency." + e.getAmplifier()));
                     }
 
-                    if (e.getDuration() > 20) {
-                        line = line.append(" (")
-                                .append(MobEffectUtil.formatDuration(e, 1.0F, 20.0F))
-                                .append(")");
-                    }
-
                     tooltip.add(line.withStyle(e.getEffect().value().getCategory().getTooltipFormatting()));
                 }
             }
@@ -243,13 +237,6 @@ public class EssenceAmuletItem extends Item {
 
             if (shader != null) {
                 MutableComponent line = Component.translatable(String.valueOf(shader.shaderId));
-
-
-                if (shader.durationTicks > 20) {
-                    line = line.append(" (")
-                            .append(formatShaderDuration(shader, 1.0F, 20.0F))
-                            .append(")");
-                }
 
                 tooltip.add(line.withStyle(ChatFormatting.DARK_PURPLE));
             }

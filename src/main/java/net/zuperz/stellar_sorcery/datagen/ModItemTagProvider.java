@@ -35,11 +35,13 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
         this.tag(ItemTags.VILLAGER_PLANTABLE_SEEDS)
                 .add(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get())
-                .add(ModItems.SOUL_BLOOM_SEEDS.get());
+                .add(ModItems.SOUL_BLOOM_SEEDS.get())
+                .add(ModItems.SUNFLOWER_SEEDS.get());
 
         this.tag(Tags.Items.SEEDS)
                 .add(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get())
-                .add(ModItems.SOUL_BLOOM_SEEDS.get());
+                .add(ModItems.SOUL_BLOOM_SEEDS.get())
+                .add(ModItems.SUNFLOWER_SEEDS.get());
 
         this.tag(Tags.Items.FOODS_FOOD_POISONING)
                 .add(ModItems.FRITILLARIA_MELEAGRIS.get())
