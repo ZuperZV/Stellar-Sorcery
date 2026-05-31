@@ -4,7 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +21,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.zuperz.stellar_sorcery.block.ModBlocks;
@@ -72,6 +76,8 @@ import net.zuperz.stellar_sorcery.network.SetBookmarksPacket;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Mod(StellarSorcery.MOD_ID)
 public class StellarSorcery
@@ -137,6 +143,42 @@ public class StellarSorcery
         SigilDataLoader.load();
         SpellDataLoader.load();
         GazeDataLoader.load();
+        EssenceEffectDataLoader.load();
+        EssenceIngredientEffectDataLoader.load();
+    }
+
+    @SubscribeEvent
+    public void onAddReloadListeners(AddReloadListenerEvent event) {
+
+        event.addListener(new PreparableReloadListener() {
+
+            @Override
+            public CompletableFuture<Void> reload(
+                    PreparationBarrier barrier,
+                    ResourceManager manager,
+                    ProfilerFiller prepProfiler,
+                    ProfilerFiller reloadProfiler,
+                    Executor backgroundExecutor,
+                    Executor gameExecutor
+            ) {
+
+                return CompletableFuture.runAsync(() -> {
+                    CodexDataLoader.loadFromResourceManager(manager);
+                    PlanetDataLoader.loadFromResourceManager(manager);
+                    SigilDataLoader.loadFromResourceManager(manager);
+                    SpellDataLoader.loadFromResourceManager(manager);
+                    GazeDataLoader.loadFromResourceManager(manager);
+                    EssenceEffectDataLoader.loadFromResourceManager(manager);
+                    EssenceIngredientEffectDataLoader.loadFromResourceManager(manager);
+
+                }, backgroundExecutor).thenCompose(barrier::wait);
+            }
+
+            @Override
+            public String getName() {
+                return "stellar_sorcery:essence_data";
+            }
+        });
     }
 
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

@@ -18,17 +18,24 @@ public class GazeDataLoader {
 
     public static void load() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager rm = server.getResourceManager();
+        if (server == null) {
+            return;
+        }
+
+        loadFromResourceManager(server.getResourceManager());
+    }
+
+    public static void loadFromResourceManager(ResourceManager resourceManager) {
 
         GazeRegistry.clear();
 
-        loadGazes(rm);
-        loadModifiers(rm);
+        loadGazes(resourceManager);
+        loadModifiers(resourceManager);
     }
 
-    private static void loadGazes(ResourceManager rm) {
+    private static void loadGazes(ResourceManager resourceManager) {
         Map<ResourceLocation, Resource> files =
-                rm.listResources("gaze", p -> isJsonDataFile(p.getPath()));
+                resourceManager.listResources("gaze", p -> isJsonDataFile(p.getPath()));
 
         for (ResourceLocation rl : files.keySet()) {
             try (InputStreamReader reader = new InputStreamReader(files.get(rl).open())) {

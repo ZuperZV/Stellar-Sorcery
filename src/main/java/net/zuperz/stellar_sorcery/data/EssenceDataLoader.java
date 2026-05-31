@@ -42,13 +42,11 @@ public class EssenceDataLoader {
                 String key = entry.getKey();
                 JsonObject obj = entry.getValue();
 
-                // Navn
                 String name = obj.has("name") ? obj.get("name").getAsString() : null;
                 if (name != null) {
                     nameMap.put(key, name);
                 }
 
-                // Effekter
                 List<MobEffectInstance> effects = new ArrayList<>();
                 if (obj.has("effects")) {
                     for (JsonElement el : obj.getAsJsonArray("effects")) {

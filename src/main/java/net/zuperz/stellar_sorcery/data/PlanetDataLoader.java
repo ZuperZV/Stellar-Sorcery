@@ -24,9 +24,15 @@ public class PlanetDataLoader {
     private static final Map<String, ResourceLocation> NAME_TO_ID = new HashMap<>();
 
     public static void load() {
-
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager resourceManager = server.getResourceManager();
+        if (server == null) {
+            return;
+        }
+
+        loadFromResourceManager(server.getResourceManager());
+    }
+
+    public static void loadFromResourceManager(ResourceManager resourceManager) {
 
         PLANET_DATA.clear();
         NAME_TO_ID.clear();

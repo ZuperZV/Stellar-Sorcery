@@ -1,0 +1,10 @@
+{
+  "item": "minecraft:fermented_spider_eye",
+
+  "effects": [
+    { "id": "stellar_sorcery:spider_vision"},
+    { "id": "stellar_sorcery:spider_vision.json"},
+    { "id": "stellar_sorcery:essence_effects/spider_vision.json"},
+    { "id": "stellar_sorcery:essence_effects/spider_vision"}
+  ]
+}

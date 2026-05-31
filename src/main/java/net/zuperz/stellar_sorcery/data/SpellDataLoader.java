@@ -20,13 +20,20 @@ public class SpellDataLoader {
 
     public static void load() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager rm = server.getResourceManager();
+        if (server == null) {
+            return;
+        }
+
+        loadFromResourceManager(server.getResourceManager());
+    }
+
+    public static void loadFromResourceManager(ResourceManager resourceManager) {
 
         SpellRegistry.clear();
 
-        loadAreas(rm);
-        loadRunes(rm);
-        loadModifiers(rm);
+        loadAreas(resourceManager);
+        loadRunes(resourceManager);
+        loadModifiers(resourceManager);
     }
 
     private static void loadAreas(ResourceManager rm) {

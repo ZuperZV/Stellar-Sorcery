@@ -1,5 +1,7 @@
 package net.zuperz.stellar_sorcery.screen;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -7,6 +9,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -15,6 +19,10 @@ import net.zuperz.stellar_sorcery.data.CodexEditorPersistence;
 import net.zuperz.stellar_sorcery.data.CodexEditorProject;
 import net.zuperz.stellar_sorcery.network.SaveCodexEditorPacket;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -121,6 +129,8 @@ public class CodexEditorScreen extends Screen {
 
     private Button furnaceInputSelectButton;
     private Button furnaceOutputSelectButton;
+
+    private int refreshCounter = 9;
 
     public CodexEditorScreen(CodexEditorProject project) {
         super(Component.literal("Codex Editor"));
@@ -640,9 +650,15 @@ public class CodexEditorScreen extends Screen {
 
     private void saveProject() {
         project.normalize();
+
         saveInProgress = true;
         refreshAllState();
-        PacketDistributor.sendToServer(new SaveCodexEditorPacket(CodexEditorPersistence.toJson(project)));
+
+        String json = CodexEditorPersistence.toJson(project);
+
+        PacketDistributor.sendToServer(
+                new SaveCodexEditorPacket(json)
+        );
     }
 
     public void handleServerSync(CodexEditorProject project) {
@@ -816,6 +832,8 @@ public class CodexEditorScreen extends Screen {
     }
 
     private void refreshVisibility() {
+        refreshFieldValues();
+
         boolean entryTab = activeTab == EditorTab.ENTRY;
         boolean hasCategory = selectedCategory() != null;
         boolean hasEntry = selectedEntry() != null;
@@ -850,26 +868,7 @@ public class CodexEditorScreen extends Screen {
         moduleUpButton.visible = moduleTab;
         moduleDownButton.visible = moduleTab;
 
-        categoryIconSelectButton.visible = categoryIconBox.visible;
-        categoryIconSelectButton.active = categoryIconBox.visible;
-
-        entryIconSelectButton.visible = entryIconBox.visible;
-        entryIconSelectButton.active = entryIconBox.visible;
-
-        entrySearchSelectButton.visible = entrySearchBox.visible;
-        entrySearchSelectButton.active = entrySearchBox.visible;
-
-        entryRelatedSelectButton.visible = entryRelatedBox.visible;
-        entryRelatedSelectButton.active = entryRelatedBox.visible;
-
-        recipeResultSelectButton.visible = recipeResultBox.visible;
-        recipeResultSelectButton.active = recipeResultBox.visible;
-
-        furnaceInputSelectButton.visible = furnaceInputBox.visible;
-        furnaceInputSelectButton.active = furnaceInputBox.visible;
-
-        furnaceOutputSelectButton.visible = furnaceOutputBox.visible;
-        furnaceOutputSelectButton.active = furnaceOutputBox.visible;
+        refreshButtonForFields();
 
         for (Button button : moduleButtons) {
             button.visible = moduleTab && button.visible;
@@ -901,6 +900,29 @@ public class CodexEditorScreen extends Screen {
         addFurnaceModuleButton.active = moduleTab && hasEntry;
         deleteModuleButton.active = moduleTab && hasModule;
         moduleTypeButton.active = moduleTab && hasModule;
+    }
+
+    private void refreshButtonForFields() {
+        categoryIconSelectButton.visible = categoryIconBox.visible;
+        categoryIconSelectButton.active = categoryIconBox.visible;
+
+        entryIconSelectButton.visible = entryIconBox.visible;
+        entryIconSelectButton.active = entryIconBox.visible;
+
+        entrySearchSelectButton.visible = entrySearchBox.visible;
+        entrySearchSelectButton.active = entrySearchBox.visible;
+
+        entryRelatedSelectButton.visible = entryRelatedBox.visible;
+        entryRelatedSelectButton.active = entryRelatedBox.visible;
+
+        recipeResultSelectButton.visible = recipeResultBox.visible;
+        recipeResultSelectButton.active = recipeResultBox.visible;
+
+        furnaceInputSelectButton.visible = furnaceInputBox.visible;
+        furnaceInputSelectButton.active = furnaceInputBox.visible;
+
+        furnaceOutputSelectButton.visible = furnaceOutputBox.visible;
+        furnaceOutputSelectButton.active = furnaceOutputBox.visible;
     }
 
     private void ensureSelections() {
@@ -947,6 +969,13 @@ public class CodexEditorScreen extends Screen {
         renderPanels(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderLabels(guiGraphics);
+
+        refreshCounter++;
+
+        if (refreshCounter >= 10) {
+            refreshButtonForFields();
+            refreshCounter = 0;
+        }
     }
 
     private void renderPanels(GuiGraphics guiGraphics) {
@@ -1236,5 +1265,43 @@ public class CodexEditorScreen extends Screen {
     private enum EditorTab {
         ENTRY,
         MODULE
+    }
+
+    private void applyRecipeToModule(JsonObject json, CodexEditorProject.Module module) {
+        module.moduleType = json.get("type").getAsString().replace("minecraft:", "");
+
+        JsonObject result = json.getAsJsonObject("result");
+        module.result = result.get("item").getAsString();
+
+        JsonArray pattern = json.getAsJsonArray("pattern");
+        module.pattern = new ArrayList<>();
+        for (var el : pattern) {
+            module.pattern.add(el.getAsString());
+        }
+
+        JsonObject key = json.getAsJsonObject("key");
+        module.key = new LinkedHashMap<>();
+        for (var entry : key.entrySet()) {
+            module.key.put(entry.getKey(),
+                    entry.getValue().getAsJsonObject().get("item").getAsString());
+        }
+    }
+
+    public static JsonObject loadRecipe(MinecraftServer server, String recipeId) throws IOException {
+        String[] split = recipeId.split(":");
+
+        String namespace = split[0];
+        String path = split[1];
+
+        Path file = server.getWorldPath(LevelResource.DATAPACK_DIR)
+                .resolve(namespace)
+                .resolve("recipes")
+                .resolve(path + ".json");
+
+        if (!Files.exists(file)) {
+            throw new FileNotFoundException("Recipe not found: " + recipeId);
+        }
+
+        return com.google.gson.JsonParser.parseString(Files.readString(file)).getAsJsonObject();
     }
 }

@@ -948,7 +948,7 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
             float layoutScale = Math.min(1.0f, (float) maxLayoutWidth / (float) layoutWidth);
             int scaledLayoutWidth = Math.max(1, Mth.ceil(layoutWidth * layoutScale));
             int scaledLayoutHeight = Math.max(1, Mth.ceil(layoutHeight * layoutScale));
-            int layoutX = drawX + Math.max(0, (maxLayoutWidth - scaledLayoutWidth) / 2);
+            int layoutX = drawX + Math.max(0, (maxLayoutWidth - scaledLayoutWidth) / 2) + 2;
             int layoutY = drawY;
             int scaledMouseX = Mth.floor(toUnscaledCoordinate(mouseX, layoutX, layoutScale));
             int scaledMouseY = Mth.floor(toUnscaledCoordinate(mouseY, layoutY, layoutScale));
@@ -1145,21 +1145,32 @@ public class CodexArcanumScreen extends AbstractContainerScreen<CodexArcanumMenu
 
     private List<RecipeType<?>> getPreferredRecipeTypes(CodexModule module) {
         List<RecipeType<?>> types = new ArrayList<>();
+
         if ("recipe".equals(module.module_type)) {
             String type = module.recipe_type == null ? "" : module.recipe_type.toLowerCase();
-            if (type.isEmpty() || "crafting_table".equals(type)) {
-                types.add(RecipeTypes.CRAFTING);
-            } else if ("stonecutting".equals(type)) {
-                types.add(RecipeTypes.STONECUTTING);
-            } else if ("smithing".equals(type)) {
-                types.add(RecipeTypes.SMITHING);
+
+            if (!type.isEmpty() && !"crafting_table".equals(type)) {
+                Optional<RecipeType<?>> customType = JEIPlugin.getJeiRuntime()
+                        .getRecipeManager()
+                        .getRecipeType(ResourceLocation.parse(type));
+
+                if (customType.isPresent()) {
+                    types.add(customType.get());
+                    return types;
+                }
             }
-        } else if ("furnace_recipe".equals(module.module_type)) {
+            types.add(RecipeTypes.CRAFTING);
+            types.add(RecipeTypes.STONECUTTING);
+            types.add(RecipeTypes.SMITHING);
+        }
+
+        else if ("furnace_recipe".equals(module.module_type)) {
             types.add(RecipeTypes.SMELTING);
             types.add(RecipeTypes.BLASTING);
             types.add(RecipeTypes.SMOKING);
             types.add(RecipeTypes.CAMPFIRE_COOKING);
         }
+
         return types;
     }
 

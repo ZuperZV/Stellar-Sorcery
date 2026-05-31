@@ -44,10 +44,10 @@ public class ModCreativeModeTabs {
                         tier3_codex_arcanum.set(ModDataComponentTypes.CODEX_TIER, new CodexTierData(3));
                         pOutput.accept(tier3_codex_arcanum);
 
-                        pOutput.accept(ModItems.CELESTIAL_BLADE.get());
+                        //pOutput.accept(ModItems.CELESTIAL_BLADE.get());
 
-                        pOutput.accept(ModBlocks.ASTRAL_ALTAR.get());
-                        pOutput.accept(ModBlocks.ASTRAL_NEXUS.get());
+                        //pOutput.accept(ModBlocks.ASTRAL_ALTAR.get());
+                        //pOutput.accept(ModBlocks.ASTRAL_NEXUS.get());
 
                         pOutput.accept(ModBlocks.VITAL_STUMP.get());
                         pOutput.accept(ModBlocks.STUMP.get());
@@ -71,7 +71,7 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModBlocks.ITEM_EMITTER.get());
                         pOutput.accept(ModItems.ROOT.get());
-                        pOutput.accept(ModItems.BLUESTONE_DUST.get());
+                        //pOutput.accept(ModItems.BLUESTONE_DUST.get());
 
                         pOutput.accept(ModItems.SOFT_CLAY_JAR.get());
                         pOutput.accept(ModItems.CLAY_JAR.get());
@@ -120,8 +120,8 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.WRAITH_STRING.get());
                         pOutput.accept(ModItems.WRAITH_CLOAK.get());
 
-                        pOutput.accept(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
-                        pOutput.accept(ModBlocks.SYLPH_EMBER.get());
+                        //pOutput.accept(ModBlocks.SYLPH_EMBER_CAMPFIRE.get());
+                        //pOutput.accept(ModBlocks.SYLPH_EMBER.get());
                         pOutput.accept(ModBlocks.DEATH_BLOOM.get());
                         pOutput.accept(ModItems.SUNFLOWER_SEEDS.get());
                         pOutput.accept(Items.SUNFLOWER);
@@ -130,8 +130,8 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS.get());
                         pOutput.accept(ModItems.FRITILLARIA_MELEAGRIS_SEEDS.get());
 
-                        pOutput.accept(ModItems.SOUL_BLOOMS.get());
-                        pOutput.accept(ModItems.SOUL_BLOOM_SEEDS.get());
+                        //pOutput.accept(ModItems.SOUL_BLOOMS.get());
+                        //pOutput.accept(ModItems.SOUL_BLOOM_SEEDS.get());
 
                         pOutput.accept(ModBlocks.RED_CAMPION.get());
                         pOutput.accept(ModBlocks.CALENDULA.get());
@@ -144,12 +144,12 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModFluids.NOCTILUME_BUCKET.get());
 
-                        pOutput.accept(ModItems.RITUAL_DAGGER.get());
-                        pOutput.accept(ModItems.BLOOD_VIAL.get());
-                        pOutput.accept(ModItems.WOODOO_DOLL.get());
+                        //pOutput.accept(ModItems.RITUAL_DAGGER.get());
+                        //pOutput.accept(ModItems.BLOOD_VIAL.get());
+                        //pOutput.accept(ModItems.WOODOO_DOLL.get());
 
-                        pOutput.accept(ModItems.NULLITE_NUGGET.get());
-                        pOutput.accept(ModItems.NULLITE_INGOT.get());
+                        //pOutput.accept(ModItems.NULLITE_NUGGET.get());
+                        //pOutput.accept(ModItems.NULLITE_INGOT.get());
                         pOutput.accept(ModItems.SMART_UPGRADE_TEMPLATE.get());
                         pOutput.accept(ModBlocks.SMART_SPAWNER.get());
                         pOutput.accept(Blocks.SPAWNER);

@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.zuperz.stellar_sorcery.StellarSorcery;
@@ -13,6 +14,9 @@ import net.zuperz.stellar_sorcery.data.CodexDataLoader;
 import net.zuperz.stellar_sorcery.data.CodexEditorPersistence;
 import net.zuperz.stellar_sorcery.data.CodexEditorProject;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -48,6 +52,14 @@ public record SaveCodexEditorPacket(String json) implements CustomPacketPayload 
                 MinecraftServer server = player.server;
                 CodexEditorProject project = CodexEditorPersistence.fromJson(msg.json());
                 project = CodexEditorPersistence.sanitizeProject(project);
+
+                Path datapackDir = server
+                        .getWorldPath(net.minecraft.world.level.storage.LevelResource.DATAPACK_DIR)
+                        .resolve(project.packId);
+
+                createBackup(datapackDir, project.packId);
+                deleteDirectoryContents(datapackDir);
+
                 CodexEditorPersistence.writeDatapack(server, project);
 
                 var packRepository = server.getPackRepository();
@@ -120,5 +132,60 @@ public record SaveCodexEditorPacket(String json) implements CustomPacketPayload 
         }
 
         return folderName;
+    }
+
+    private static void deleteDirectoryContents(Path directory) throws IOException {
+        if (!Files.exists(directory)) return;
+
+        try (var paths = Files.walk(directory)) {
+            paths.sorted(java.util.Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+    }
+
+    private static void createBackup(Path datapackDir, String packName) throws IOException {
+        if (!Files.exists(datapackDir)) {
+            return;
+        }
+
+        String timestamp = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+
+        Path backupDir = datapackDir.getParent()
+                .resolve(packName + "_backup")
+                .resolve(timestamp);
+
+        Files.createDirectories(backupDir);
+
+        try (var paths = Files.walk(datapackDir)) {
+            paths.forEach(source -> {
+                try {
+                    Path target = backupDir.resolve(datapackDir.relativize(source));
+
+                    if (Files.isDirectory(source)) {
+                        Files.createDirectories(target);
+                    } else {
+                        Files.copy(
+                                source,
+                                target,
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                        );
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    }
+
+    public static Path getDatapackPath(MinecraftServer server, String packId) {
+        return server.getWorldPath(LevelResource.DATAPACK_DIR)
+                .resolve(packId);
     }
 }

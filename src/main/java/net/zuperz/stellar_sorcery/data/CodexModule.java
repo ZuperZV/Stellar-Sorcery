@@ -11,6 +11,7 @@ public class CodexModule {
 
     // Crafting recipe
     public String recipe_type; // fx "crafting_table"
+    public String recipeId; // fx "stellar_sorcery:my_sword_recipe"
     public List<String> pattern;
     public Map<String, String> key;
     public String result;

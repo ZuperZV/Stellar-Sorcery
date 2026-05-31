@@ -25,13 +25,20 @@ public class SigilDataLoader {
 
     public static void load() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ResourceManager manager = server.getResourceManager();
+        if (server == null) {
+            return;
+        }
+
+        loadFromResourceManager(server.getResourceManager());
+    }
+
+    public static void loadFromResourceManager(ResourceManager resourceManager) {
 
         SIGIL_DATA.clear();
         SHADER_DATA.clear();
         NAME_TO_ID.clear();
 
-        Map<ResourceLocation, Resource> resources = manager.listResources(
+        Map<ResourceLocation, Resource> resources = resourceManager.listResources(
                 "sigils",
                 path -> path.getPath().endsWith(".json")
         );

@@ -31,7 +31,6 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.BIOME, ModBiomes::boostrap)
     ;
 
-
     public ModWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(StellarSorcery.MOD_ID));
     }
