@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -50,6 +51,7 @@ import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 import net.zuperz.stellar_sorcery.fluid.PotionFluidHelper;
 import net.zuperz.stellar_sorcery.item.ModItems;
 import net.zuperz.stellar_sorcery.particle.ColorBubbleData;
+import net.zuperz.stellar_sorcery.particle.ModParticleTypes;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.Nullable;
 
@@ -425,31 +427,22 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
         }
 
         if (state.getValue(LIT)) {
-            if (random.nextInt(10) == 0) {
-                level.playLocalSound(
-                        (double)pos.getX() + 0.5,
-                        (double)pos.getY() + 0.5,
-                        (double)pos.getZ() + 0.5,
-                        SoundEvents.CAMPFIRE_CRACKLE,
-                        SoundSource.BLOCKS,
-                        0.5F + random.nextFloat(),
-                        random.nextFloat() * 0.7F + 0.6F,
-                        false
-                );
+            ParticleOptions particle = ParticleTypes.LAVA;
+
+            if (state.getValue(EssenceBoilerBlock.SYLPH_EMBER)) {
+                particle = ModParticleTypes.SYLPH_EMBER_LIT.get();
             }
 
             if (random.nextInt(5) == 0) {
-                for (int i = 0; i < random.nextInt(1) + 1; i++) {
-                    level.addParticle(
-                            ParticleTypes.LAVA,
-                            (double)pos.getX() + 0.5,
-                            (double)pos.getY() + 0.5,
-                            (double)pos.getZ() + 0.5,
-                            (double)(random.nextFloat() / 2.0F),
-                            5.0E-5,
-                            (double)(random.nextFloat() / 2.0F)
-                    );
-                }
+                level.addParticle(
+                        particle,
+                        pos.getX() + 0.5,
+                        pos.getY() + 0.5,
+                        pos.getZ() + 0.5,
+                        random.nextFloat() / 2.0F,
+                        5.0E-5,
+                        random.nextFloat() / 2.0F
+                );
             }
 
             if (level.getBlockEntity(pos) instanceof EssenceBoilerBlockEntity boiler
@@ -513,7 +506,7 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
             ItemStack stack = itemEntity.getItem();
 
             Item item = stack.getItem();
-            if (item == ModBlocks.DEATH_BLOOM.asItem() && level.getBlockState(pos).getValue(LIT)) {
+            if (item == ModBlocks.DEATH_BLOOM.asItem() && level.getBlockState(pos).getValue(LIT) && !level.getBlockState(pos).getValue(SYLPH_EMBER)) {
                 entity.discard();
 
                 level.setBlock(pos, state.setValue(SYLPH_EMBER, true), 3);

@@ -57,49 +57,108 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         pPoseStack.popPose();
     }
 
-    private void RenderItem(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedOverlay, Level level, BlockPos pos) {
+    private void RenderItem(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick,
+                            PoseStack pPoseStack, MultiBufferSource pBufferSource,
+                            int pPackedOverlay, Level level, BlockPos pos) {
+
         pPoseStack.pushPose();
-        pPoseStack.translate(0.5, 0.7 + plusY, 0.5);
-        pPoseStack.scale(0.3f, 0.3f, 0.3f);
+        pPoseStack.translate(0.5, 0.79 + plusY, 0.5);
+        pPoseStack.scale(0.6f, 0.6f, 0.6f);
 
         ItemStackHandler itemHandler = pBlockEntity.inventory;
 
         float rotationTime = level.getGameTime() + pPartialTick;
         float rotation = (rotationTime * 4.0f) % 360;
-        float radius = 0.55f;
+
+        float radius = 0.35f;
         int itemCount = Math.min(itemHandler.getSlots(), 3);
+
+        if (itemCount == 0) {
+            pPoseStack.popPose();
+            return;
+        }
+
+        float fluidDisplayLevel = pBlockEntity.fluidDisplayLevel;
+
+        float transitionFactor = Math.min(fluidDisplayLevel / 0.3f, 1.0f);
 
         for (int i = 0; i < itemCount; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                pPoseStack.pushPose();
 
-                float angle = (rotation + (360f / itemCount) * i) * (float) Math.PI / 180f;
-                float baseX = radius * (float) Math.cos(angle);
-                float baseZ = radius * (float) Math.sin(angle);
+            if (stack.isEmpty())
+                continue;
 
-                float slotSeed = i * 31.7f;
-                float time = (pBlockEntity.getLevel().getGameTime() + pPartialTick + slotSeed) * 0.1f;
+            pPoseStack.pushPose();
 
-                float bobbingY = (float) Math.sin(time) * 0.05f;
-                float jitterX = (float) Math.sin(time * 0.7f) * 0.05f;
-                float jitterZ = (float) Math.cos(time * 0.7f) * 0.05f;
+            float angle = (rotation + (360f / itemCount) * i) * ((float) Math.PI / 180f);
+            float dryAngle = (351.51562f + (360f / itemCount) * i) * ((float) Math.PI / 180f);
 
-                pPoseStack.translate(baseX + jitterX, 0.15 + bobbingY, baseZ + jitterZ);
+            float baseX = radius * (float) Math.cos(angle);
+            float baseZ = radius * (float) Math.sin(angle);
+            float dryBaseX = radius * (float) Math.cos(dryAngle);
+            float dryBaseZ = radius * (float) Math.sin(dryAngle);
 
-                float itemRotation = rotation * 1.5f;
-                pPoseStack.mulPose(Axis.YP.rotationDegrees(itemRotation));
-                pPoseStack.mulPose(Axis.YP.rotationDegrees(90));
+            float slotSeed = i * 31.7f;
+            float time = (level.getGameTime() + pPartialTick + slotSeed) * 0.1f;
 
-                itemRenderer.renderStatic(stack, ItemDisplayContext.GROUND,
-                        getLightLevel(level, pos), pPackedOverlay, pPoseStack, pBufferSource, level, 1);
+            float bobbingY = (float) Math.sin(time) * 0.05f;
+            float jitterX = (float) Math.sin(time * 0.7f) * 0.05f;
+            float jitterZ = (float) Math.cos(time * 0.7f) * 0.05f;
 
-                pPoseStack.popPose();
-            }
-        }
-    }
+            // !FLUID
+            float dryX = dryBaseX;
+            float dryY = 0f;
+            float dryZ = dryBaseZ;
+
+            float dryRotY = 0f;
+            float dryRotX = -90f;
+            float dryYOffset = -0.13f;
+
+            // FLUID
+            float wetX = baseX + jitterX;
+            float wetY = 0.15f + bobbingY;
+            float wetZ = baseZ + jitterZ;
+
+            float wetRotY = rotation * 0.35f;
+            float wetRotX = 0f;
+            float wetYOffset = 0f;
+
+            // TRANSITION
+            float x = Mth.lerp(transitionFactor, dryX, wetX);
+            float y = Mth.lerp(transitionFactor, dryY, wetY);
+            float z = Mth.lerp(transitionFactor, dryZ, wetZ);
+
+            float rotY = Mth.lerp(transitionFactor, dryRotY, wetRotY);
+            float rotX = Mth.lerp(transitionFactor, dryRotX, wetRotX);
+
+            float yOffset = Mth.lerp(transitionFactor, dryYOffset, wetYOffset);
+
+            // Apply position translation first
+            pPoseStack.translate(x, y + yOffset, z);
+
+            // Then apply rotations to the item itself
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(rotY));
+            pPoseStack.mulPose(Axis.XP.rotationDegrees(rotX));
+
+
+             itemRenderer.renderStatic(
+                     stack,
+                     ItemDisplayContext.GROUND,
+                     getLightLevel(level, pos),
+                     pPackedOverlay,
+                     pPoseStack,
+                     pBufferSource,
+                     level,
+                     1
+             );
+             pPoseStack.popPose();
+         }
+         pPoseStack.popPose();
+     }
 
     private void RenderFluid(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, Level level, BlockPos pos) {
+        pPoseStack.pushPose();
+
         EssenceBoilerBlockEntity.WobbleStyle wobbleStyle = pBlockEntity.lastWobbleStyle;
         if (wobbleStyle != null && pBlockEntity.getLevel() != null) {
             float wobbleProgress = ((float)(pBlockEntity.getLevel().getGameTime() - pBlockEntity.wobbleStartedAtTick) + pPartialTick) / wobbleStyle.duration;
@@ -118,23 +177,47 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
         FluidStack fluidStack = pBlockEntity.getFluidTank();
 
-        plusY = -0.2f + (fluidStack.getAmount() / 1000f) * 0.5f;
-
         if (!fluidStack.isEmpty()) {
+            pBlockEntity.cachedFluid = fluidStack.copy();
+            pBlockEntity.renderCachedFluid = true;
+        }
 
-            IClientFluidTypeExtensions fluidType = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+        FluidStack renderFluid = pBlockEntity.renderCachedFluid ? pBlockEntity.cachedFluid : FluidStack.EMPTY;
 
-            ResourceLocation stillTexture = fluidType.getStillTexture(fluidStack);
+        float targetFluidLevel = fluidStack.isEmpty()
+                ? 0f
+                : Mth.clamp(fluidStack.getAmount() / 1000f - 0.2f, 0f, 1f);
+
+        float fluidIncrement = 0.01f;
+
+        if (pBlockEntity.fluidDisplayLevel < targetFluidLevel) {
+            pBlockEntity.fluidDisplayLevel = Math.min(pBlockEntity.fluidDisplayLevel + fluidIncrement, targetFluidLevel);
+        } else if (pBlockEntity.fluidDisplayLevel > targetFluidLevel) {
+            pBlockEntity.fluidDisplayLevel = Math.max(pBlockEntity.fluidDisplayLevel - fluidIncrement, targetFluidLevel);
+        }
+
+        if (pBlockEntity.fluidDisplayLevel <= 0.0001f) {
+            pBlockEntity.renderCachedFluid = false;
+            pBlockEntity.cachedFluid = FluidStack.EMPTY;
+        }
+
+        plusY = -0.2f + pBlockEntity.fluidDisplayLevel * 0.5f;
+
+        if (!renderFluid.isEmpty()) {
+
+            IClientFluidTypeExtensions fluidType = IClientFluidTypeExtensions.of(renderFluid.getFluid());
+
+            ResourceLocation stillTexture = fluidType.getStillTexture(renderFluid);
 
             TextureAtlasSprite sprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(stillTexture);
 
-            int color = fluidType.getTintColor(fluidStack.getFluid().defaultFluidState(), level, pos);
+            int color = fluidType.getTintColor(renderFluid.getFluid().defaultFluidState(), level, pos);
 
-            if (fluidStack.getFluid().getFluidType() == ModFluidTypes.POTION_FLUID_TYPE.get()) {
+            if (renderFluid.getFluid().getFluidType() == ModFluidTypes.POTION_FLUID_TYPE.get()) {
                 PotionContents contents =
-                        fluidStack.getOrDefault(ModDataComponentTypes.POTION_CONTENTS, PotionContents.EMPTY);
+                        renderFluid.getOrDefault(ModDataComponentTypes.POTION_CONTENTS, PotionContents.EMPTY);
 
                 if (contents != PotionContents.EMPTY) {
                     color = contents.getColor();
@@ -146,7 +229,7 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
             float xMin = 0.10f, xMax = 0.90f;
             float zMin = 0.10f, zMax = 0.90f;
-            float y = 0.7f + plusY;
+            float y = 0.79f + plusY;
 
             drawQuad(
                     builder,
@@ -158,6 +241,8 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
                     getLightLevel(level, pos),
                     color
             );
+
+            plusY -= 0.4f;
         }
 
         pPoseStack.popPose();

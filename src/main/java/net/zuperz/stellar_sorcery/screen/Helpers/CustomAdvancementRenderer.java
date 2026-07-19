@@ -32,8 +32,8 @@ public class CustomAdvancementRenderer {
         drawContents(graphics, x, y, selected);
 
         if (codexScreen.showAdvancement && screen != null) {
-            graphics.pose().popPose();
-
+            // drawContents already manages its own pose stack. Do not pop here — it would
+            // unbalance the global pose stack and cause "Pose stack not empty" errors.
             graphics.pose().pushPose();
             graphics.pose().translate(codexScreen.advancementX, codexScreen.advancementY, codexScreen.Z_TOOLTIP + 100);
 

@@ -157,8 +157,8 @@ public class AstralAltarBlockEntityRenderer implements BlockEntityRenderer<Astra
             itemRenderer.renderStatic(centerStack, ItemDisplayContext.FIXED,
                     getLightLevel(pBlockEntity.getLevel(), pBlockEntity.getBlockPos()),
                     OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, pBlockEntity.getLevel(), 1);
-            pPoseStack.popPose();
         }
+        pPoseStack.popPose();
 
         // Entity //
 

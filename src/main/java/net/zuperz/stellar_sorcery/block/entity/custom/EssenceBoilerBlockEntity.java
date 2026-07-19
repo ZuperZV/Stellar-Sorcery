@@ -25,12 +25,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.zuperz.stellar_sorcery.block.custom.EssenceBoilerBlock;
 import net.zuperz.stellar_sorcery.block.entity.ModBlockEntities;
 import net.zuperz.stellar_sorcery.capability.IFluidHandler.IHasFluidTank;
 import net.zuperz.stellar_sorcery.component.EssenceBottleData;
@@ -40,6 +42,7 @@ import net.zuperz.stellar_sorcery.recipes.EssenceBoilerRecipe;
 import net.zuperz.stellar_sorcery.recipes.FluidRecipeInput;
 import net.zuperz.stellar_sorcery.recipes.ModRecipes;
 import net.zuperz.stellar_sorcery.recipes.EssenceBoilerRecipe;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -61,10 +64,15 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
 
     public int progress = 0;
     public int maxProgress = 60;
+    public float sylphEmberLitTime = -1;
+    public int sylphEmberLitMaxTime = 240;
     public static final int EVENT_WOBBLE = 1;
     public long wobbleStartedAtTick;
     @Nullable
     public WobbleStyle lastWobbleStyle;
+    public float fluidDisplayLevel;
+    public FluidStack cachedFluid = FluidStack.EMPTY;
+    public boolean renderCachedFluid;
 
     public final ItemStackHandler inventory = new ItemStackHandler(TOTAL_SLOTS) {
         @Override
@@ -99,8 +107,50 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
             return;
         }
 
+        state = getBlockState(level, pos, state, boiler);
+
+        if (TickCraft(level, pos, state, boiler)) return;
+
+        boiler.setChanged();
+        level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+    }
+
+    private static @NotNull BlockState getBlockState(Level level, BlockPos pos, BlockState state, EssenceBoilerBlockEntity boiler) {
+        if (!state.getValue(BlockStateProperties.LIT)) {
+            state = state.setValue(EssenceBoilerBlock.SYLPH_EMBER, false);
+
+            level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6f, 0.65f);
+        }
+
+        if (state.getValue(EssenceBoilerBlock.SYLPH_EMBER)) {
+
+            if (boiler.sylphEmberLitTime < 0) {
+                boiler.sylphEmberLitTime = boiler.sylphEmberLitMaxTime;
+
+                level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.6f, 0.65f);
+            }
+
+            if (boiler.sylphEmberLitTime > 0) {
+                boiler.sylphEmberLitTime--;
+            }
+
+            if (boiler.sylphEmberLitTime <= 0) {
+                boiler.sylphEmberLitTime = -1;
+
+                state = state.setValue(EssenceBoilerBlock.SYLPH_EMBER, false);
+                level.setBlock(pos, state, 3);
+
+                boiler.setChanged();
+            }
+        }
+
+        // System.out.println("sylphEmberLitTime: " + boiler.sylphEmberLitTime);
+        return state;
+    }
+
+    private static boolean TickCraft(Level level, BlockPos pos, BlockState state, EssenceBoilerBlockEntity boiler) {
         if (boiler.tryCraftAmulet(level, pos, state)) {
-            return;
+            return true;
         }
 
         boolean hasAllIngredients = !boiler.inventory.getStackInSlot(SLOT_INGREDIENT_1).isEmpty()
@@ -130,7 +180,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
                     boiler.progress = boiler.maxProgress;
                     boiler.setChanged();
                     level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
-                    return;
+                    return true;
                 }
 
                 boiler.inventory.extractItem(SLOT_INGREDIENT_1, 1, false);
@@ -162,9 +212,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
                 boiler.progress = 0;
             }
         }
-
-        boiler.setChanged();
-        level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        return false;
     }
 
     private boolean tryCraftAmulet(Level level, BlockPos pos, BlockState state) {
@@ -401,6 +449,8 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         super.saveAdditional(tag, registries);
         tag.put("inventory", inventory.serializeNBT(registries));
         tag.putInt("progress", progress);
+        tag.putFloat("sylph_ember_lit_time", sylphEmberLitTime);
+        tag.putInt("sylph_ember_lit_max_time", sylphEmberLitMaxTime);
 
         CompoundTag fluidTankTag = new CompoundTag();
         this.fluidTank.writeToNBT(registries, fluidTankTag);
@@ -412,6 +462,8 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
         super.loadAdditional(tag, registries);
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
         progress = tag.getInt("progress");
+        sylphEmberLitTime = tag.getFloat("sylph_ember_lit_time");
+        sylphEmberLitMaxTime = tag.getInt("sylph_ember_lit_max_time");
 
         if (tag.contains("FluidTank", Tag.TAG_COMPOUND)) {
             this.fluidTank.readFromNBT(registries, tag.getCompound("FluidTank"));
