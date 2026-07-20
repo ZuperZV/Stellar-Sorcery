@@ -1,11 +1,14 @@
 package net.zuperz.stellar_sorcery.block.entity.renderer;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -35,8 +38,25 @@ import net.zuperz.stellar_sorcery.fluid.ModFluidTypes;
 // Under MIT-License: https://github.com/Tutorials-By-Kaupenjoe/NeoForge-Course-121-Module-7/blob/main/src/main/java/net/kaupenjoe/mccourse/block/entity/renderer/TankBlockEntityRenderer.java
 
 public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<EssenceBoilerBlockEntity> {
+    private static final RenderType FLUID_OVER_ITEMS = RenderType.create(
+            "stellar_sorcery:essence_boiler_fluid_over_items",
+            DefaultVertexFormat.NEW_ENTITY,
+            VertexFormat.Mode.QUADS,
+            1536,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(true)
+    );
+
     private final ItemRenderer itemRenderer;
-    float plusY = 0.1f;
 
     public EssenceBoilerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.itemRenderer = context.getItemRenderer();
@@ -51,18 +71,21 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
         pPoseStack.pushPose();
 
-        RenderFluid(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, level, pos);
-        RenderItem(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedOverlay, level, pos);
+        updateFluidDisplay(pBlockEntity);
+        float fluidYOffset = getFluidYOffset(pBlockEntity);
+
+        RenderItem(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedOverlay, level, pos, fluidYOffset);
+        RenderFluid(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, level, pos, fluidYOffset);
 
         pPoseStack.popPose();
     }
 
     private void RenderItem(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick,
                             PoseStack pPoseStack, MultiBufferSource pBufferSource,
-                            int pPackedOverlay, Level level, BlockPos pos) {
+                            int pPackedOverlay, Level level, BlockPos pos, float fluidYOffset) {
 
         pPoseStack.pushPose();
-        pPoseStack.translate(0.5, 0.79 + plusY, 0.5);
+        pPoseStack.translate(0.5, 0.79 + fluidYOffset - 0.4f, 0.5);
         pPoseStack.scale(0.6f, 0.6f, 0.6f);
 
         ItemStackHandler itemHandler = pBlockEntity.inventory;
@@ -70,6 +93,13 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
         float rotationTime = level.getGameTime() + pPartialTick;
         float rotation = (rotationTime * 4.0f) % 360;
 
+        try {
+            if (!pBlockEntity.getFluidTank().isEmpty()) {
+                pBlockEntity.dryRotation = rotation;
+            }
+        } catch (Exception ignored) {
+            // Defensive: if getFluidTank() isn't available for some reason, skip assignment
+        }
         float radius = 0.35f;
         int itemCount = Math.min(itemHandler.getSlots(), 3);
 
@@ -91,7 +121,7 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
             pPoseStack.pushPose();
 
             float angle = (rotation + (360f / itemCount) * i) * ((float) Math.PI / 180f);
-            float dryAngle = (351.51562f + (360f / itemCount) * i) * ((float) Math.PI / 180f);
+            float dryAngle = (pBlockEntity.dryRotation + (360f / itemCount) * i) * ((float) Math.PI / 180f);
 
             float baseX = radius * (float) Math.cos(angle);
             float baseZ = radius * (float) Math.sin(angle);
@@ -107,8 +137,8 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
 
             // !FLUID
             float dryX = dryBaseX;
-            float dryY = 0f;
-            float dryZ = dryBaseZ;
+            float dryY = 0.74f;
+            float dryZ = dryBaseZ +0.13f;
 
             float dryRotY = 0f;
             float dryRotX = -90f;
@@ -124,19 +154,23 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
             float wetYOffset = 0f;
 
             // TRANSITION
-            float x = Mth.lerp(transitionFactor, dryX, wetX);
-            float y = Mth.lerp(transitionFactor, dryY, wetY);
-            float z = Mth.lerp(transitionFactor, dryZ, wetZ);
+            float easedTransition = transitionFactor * transitionFactor * (3.0f - 2.0f * transitionFactor);
 
-            float rotY = Mth.lerp(transitionFactor, dryRotY, wetRotY);
-            float rotX = Mth.lerp(transitionFactor, dryRotX, wetRotX);
+            float x = Mth.lerp(easedTransition, dryX, wetX);
+            float y = Mth.lerp(easedTransition, dryY, wetY);
+            float z = Mth.lerp(easedTransition, dryZ, wetZ);
 
-            float yOffset = Mth.lerp(transitionFactor, dryYOffset, wetYOffset);
+            float rotY = rotation * 0.35f * easedTransition;
+            float rotX = Mth.lerp(easedTransition, dryRotX, wetRotX);
 
-            // Apply position translation first
-            pPoseStack.translate(x, y + yOffset, z);
+            float yOffset = Mth.lerp(easedTransition, dryYOffset, wetYOffset);
 
-            // Then apply rotations to the item itself
+            float finalY = y + yOffset;
+            if (finalY >= 0.75f)
+                finalY = 0.75f;
+
+            pPoseStack.translate(x, finalY, z);
+
             pPoseStack.mulPose(Axis.YP.rotationDegrees(rotY));
             pPoseStack.mulPose(Axis.XP.rotationDegrees(rotX));
 
@@ -156,7 +190,7 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
          pPoseStack.popPose();
      }
 
-    private void RenderFluid(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, Level level, BlockPos pos) {
+    private void RenderFluid(EssenceBoilerBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, Level level, BlockPos pos, float fluidYOffset) {
         pPoseStack.pushPose();
 
         EssenceBoilerBlockEntity.WobbleStyle wobbleStyle = pBlockEntity.lastWobbleStyle;
@@ -175,33 +209,7 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
             }
         }
 
-        FluidStack fluidStack = pBlockEntity.getFluidTank();
-
-        if (!fluidStack.isEmpty()) {
-            pBlockEntity.cachedFluid = fluidStack.copy();
-            pBlockEntity.renderCachedFluid = true;
-        }
-
         FluidStack renderFluid = pBlockEntity.renderCachedFluid ? pBlockEntity.cachedFluid : FluidStack.EMPTY;
-
-        float targetFluidLevel = fluidStack.isEmpty()
-                ? 0f
-                : Mth.clamp(fluidStack.getAmount() / 1000f - 0.2f, 0f, 1f);
-
-        float fluidIncrement = 0.01f;
-
-        if (pBlockEntity.fluidDisplayLevel < targetFluidLevel) {
-            pBlockEntity.fluidDisplayLevel = Math.min(pBlockEntity.fluidDisplayLevel + fluidIncrement, targetFluidLevel);
-        } else if (pBlockEntity.fluidDisplayLevel > targetFluidLevel) {
-            pBlockEntity.fluidDisplayLevel = Math.max(pBlockEntity.fluidDisplayLevel - fluidIncrement, targetFluidLevel);
-        }
-
-        if (pBlockEntity.fluidDisplayLevel <= 0.0001f) {
-            pBlockEntity.renderCachedFluid = false;
-            pBlockEntity.cachedFluid = FluidStack.EMPTY;
-        }
-
-        plusY = -0.2f + pBlockEntity.fluidDisplayLevel * 0.5f;
 
         if (!renderFluid.isEmpty()) {
 
@@ -224,12 +232,11 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
                 }
             }
 
-            RenderType renderType = RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
-            VertexConsumer builder = pBufferSource.getBuffer(renderType);
+            VertexConsumer builder = pBufferSource.getBuffer(FLUID_OVER_ITEMS);
 
             float xMin = 0.10f, xMax = 0.90f;
             float zMin = 0.10f, zMax = 0.90f;
-            float y = 0.79f + plusY;
+            float y = 0.79f + fluidYOffset;
 
             drawQuad(
                     builder,
@@ -241,11 +248,39 @@ public class EssenceBoilerBlockEntityRenderer implements BlockEntityRenderer<Ess
                     getLightLevel(level, pos),
                     color
             );
-
-            plusY -= 0.4f;
         }
 
         pPoseStack.popPose();
+    }
+
+    private void updateFluidDisplay(EssenceBoilerBlockEntity pBlockEntity) {
+        FluidStack fluidStack = pBlockEntity.getFluidTank();
+
+        if (!fluidStack.isEmpty()) {
+            pBlockEntity.cachedFluid = fluidStack.copy();
+            pBlockEntity.renderCachedFluid = true;
+        }
+
+        float targetFluidLevel = fluidStack.isEmpty()
+                ? 0f
+                : Mth.clamp(fluidStack.getAmount() / 1000f - 0.2f, 0f, 1f);
+
+        float fluidIncrement = 0.005f;
+
+        if (pBlockEntity.fluidDisplayLevel < targetFluidLevel) {
+            pBlockEntity.fluidDisplayLevel = Math.min(pBlockEntity.fluidDisplayLevel + fluidIncrement, targetFluidLevel);
+        } else if (pBlockEntity.fluidDisplayLevel > targetFluidLevel) {
+            pBlockEntity.fluidDisplayLevel = Math.max(pBlockEntity.fluidDisplayLevel - fluidIncrement, targetFluidLevel);
+        }
+
+        if (pBlockEntity.fluidDisplayLevel <= 0.0001f) {
+            pBlockEntity.renderCachedFluid = false;
+            pBlockEntity.cachedFluid = FluidStack.EMPTY;
+        }
+    }
+
+    private float getFluidYOffset(EssenceBoilerBlockEntity pBlockEntity) {
+        return -0.2f + pBlockEntity.fluidDisplayLevel * 0.5f;
     }
 
     private static void drawQuad(

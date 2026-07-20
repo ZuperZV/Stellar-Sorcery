@@ -264,8 +264,8 @@ public class EssenceBoilerBlock extends BaseEntityBlock {
             FluidStack tankFluid = boiler.getFluidTank();
 
             if (!(!tankFluid.isEmpty() && tankFluid.getFluid().getFluidType() == ModFluidTypes.POTION_FLUID_TYPE.get())) {
-                System.out.println("FluidType: " + tankFluid.getFluid().getFluidType());
-                System.out.println("POTION_FLUID_TYPE: " + ModFluidTypes.POTION_FLUID_TYPE.get());
+                //System.out.println("FluidType: " + tankFluid.getFluid().getFluidType());
+                //System.out.println("POTION_FLUID_TYPE: " + ModFluidTypes.POTION_FLUID_TYPE.get());
 
                 if (boiler.getFluidTank().isEmpty() || tankFluid.getFluid().isSame(itemFluid.getFluid())) {
                     int amountToDrain = boiler.getFluidTankCapacity() - boiler.getFluidTankAmount();

@@ -71,6 +71,7 @@ public class EssenceBoilerBlockEntity extends BlockEntity implements WorldlyCont
     @Nullable
     public WobbleStyle lastWobbleStyle;
     public float fluidDisplayLevel;
+    public float dryRotation = 351.51562f;
     public FluidStack cachedFluid = FluidStack.EMPTY;
     public boolean renderCachedFluid;
 
